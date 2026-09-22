@@ -1,0 +1,109 @@
+# Derived audio — lives in share/ (audio/, stems/, ab/, the .eleven-ran sentinel), never
+# committed. The directory entry is what covers backing tracks (.flac) and the sentinel;
+# the extension rules catch stray renders written outside it.
+share/
+*.mp3
+*.wav
+
+# Python / tooling caches
+__pycache__/
+.ruff_cache/
+*.pyc
+
+# Every session, whole. One directory per run of the pipeline — the filled-in input, the
+# week's diff, the ACT read, the letter — so this single rule covers all four stages, where
+# it used to take four rules across four directories and still let a stray file through.
+# These are the most personal files the repo touches, and an unattended run must never be
+# committable by accident. Set PETROGRAPH_OUT to relocate the whole set somewhere backed up;
+# the diffs in particular are a unique record, since File Recovery prunes at ~7 days.
+#
+# The templates stay tracked — they are the form, not the content. The re-include is
+# explicit because git will not resurrect a file from inside an excluded directory, and the
+# glob covers every TEMPLATE*.md variant, so adding one does not silently leave it untracked.
+sessions/*
+!sessions/TEMPLATE*.md
+
+# NER source corpora — megabytes of raw note text, regenerable from the vault. Unlike
+# reviews/, nothing here is a unique historical record, so none of it is worth committing.
+corpus/
+
+# Message exports — real message text from ~/Library/Messages/chat.db, and other
+# people's words rather than my own. Regenerable from the database on demand, and
+# strictly more sensitive than the note corpus: never committed, never published.
+messages/
+
+# Browsing history — what was open in Chrome, Firefox or Safari over the window, hour by
+# hour, straight out of the browser's own database. Regenerable on demand, and about as
+# revealing as anything the repo touches: grouping the visits makes the file shorter, not
+# less personal, since the page titles are still in it. Never committed, never published to
+# the gist. browsing_history.py refuses to write outside a gitignored path, so this entry
+# is what makes the tool run at all.
+browsing/
+
+# Context attachments written by providers that had nowhere better to put them. Anything
+# genuinely sensitive should be written into the repository that owns it instead — see
+# providers.example.conf — but a provider with no `out` lands here, and here is ignored.
+context/
+
+# Provider configuration — the commands that assemble a week's context. Gitignored because
+# it holds the paths of private repositories; providers.example.conf is the tracked copy.
+providers.conf
+
+# opencode's project config — the providers and models `--llm opencode` can reach. Gitignored
+# because it holds the host names and keys of whatever you are pointing it at, which are as
+# personal as a repository path; opencode.example.json is the tracked copy. opencode reads it
+# from the directory the CLI ran in, and the run is made from the repository root, so this is
+# where it belongs.
+opencode.json
+
+# The BAML client, generated from baml_src/ by `just baml`. 250-odd files and ~10 MB of
+# emitted Python and vendored stdlib: regenerable, not source. The pairing that produced it is
+# what is worth committing, and that lives in baml.toml and in the tool's own dependency pin.
+tools/baml_sdk/
+.baml/
+
+# Secrets — API keys live here, never committed
+.env
+
+# Installed agent skills (npx skills add …) — regenerable, not source
+.agents/
+.claude/skills/
+skills-lock.json
+
+# OS
+.DS_Store
+
+# The one-off host. `site/public/` is assembled from synthetic/ by `just site-build` and is a copy
+# of files already tracked there; node_modules is the Access plugin; .dev.vars and .wrangler hold
+# the password and wrangler's own state. The gate in site/functions/ IS tracked — it is the thing
+# that makes the deployment safe, and it fails closed, so it is worth reading in a diff.
+site/public/
+site/node_modules/
+site/.dev.vars
+# wrangler's state, wherever it is run from — the root or site/.
+.wrangler/
+# One real page, staged for the password-gated deployment. Never committed: it is the whole
+# connectome of a private vault in a single file.
+site/private/
+# Names of every page ever published behind the password — see LEDGER in tools/site_private.py.
+# Only filenames, but local state about a private deployment, so it stays local.
+site/.private-published
+
+# The opencode exemplar — a real read of a real week, kept next to the code because that is
+# where weekly_review.py looks for it, and never committed: it is a whole week of one person,
+# medications and other people included. The repo ships without it and the run skips it when it
+# is missing, so supply your own if you want a local model held to a standard.
+tools/example.md
+
+# The real vault measured — about sixty numbers describing how the owner writes: edits per week,
+# note and hunk lengths, typo and entity rates. No note text and no titles, but it is genuine
+# behavioural data about a private practice rather than anything synthetic, so it stays local.
+# `just synth-profile` rebuilds it from the vault; the generators exit with that instruction when
+# it is missing, so a clone without a vault fails clean rather than silently inventing a shape.
+synthetic/profile.json
+
+# The same measurement as a prose brief: rates for edits per week, note and hunk lengths,
+# filename shape, typo and name density, written from profile.json by `just synth-profile`. It is
+# the description of a private notebook, not a description of a synthetic one, so it stays local
+# with the profile it came from. The generators name it when it is missing.
+synthetic/style-guide.md

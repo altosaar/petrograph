@@ -1,0 +1,42 @@
+#!/usr/bin/env bash
+# Refuse to commit the real vault, by path and by content.
+#
+# `.gitignore` already covers `sessions/*` and `site/private/`, and that is the thing doing the
+# work day to day. This is the second lock, for the cases a gitignore cannot see: a `git add -f`,
+# a rendered page copied somewhere tracked under a different name, a future directory nobody
+# thought to ignore. It compares CONTENT as well as paths, so renaming a file does not get it past.
+#
+# Tracked and enabled with `core.hooksPath`, so it survives a fresh clone rather than living in
+# .git/hooks where it would have to be reinstalled by hand and silently would not be.
+#
+#   git config core.hooksPath .githooks     # what `just guard` sets
+set -euo pipefail
+
+staged="$(git diff --cached --name-only --diff-filter=ACMR)"
+[ -z "$staged" ] && exit 0
+
+fail() { echo "pre-commit: REFUSED — $*" >&2; exit 1; }
+
+# 1. By path. Anything from the real sessions directory or the private deployment staging area.
+while IFS= read -r path; do
+    case "$path" in
+        sessions/TEMPLATE*) ;;
+        sessions/*|site/private/*) fail "$path is the real vault. Nothing in it is committable." ;;
+    esac
+done <<< "$staged"
+
+# 2. By content. Every rendered page in the real vault, by hash, whatever it has been renamed to.
+shopt -s nullglob
+real=(sessions/*.html site/private/*.html)
+if [ ${#real[@]} -gt 0 ]; then
+    hashes="$(shasum -a 256 "${real[@]}" | awk '{print $1}' | sort -u)"
+    while IFS= read -r path; do
+        [ -f "$path" ] || continue
+        h="$(git show ":$path" | shasum -a 256 | awk '{print $1}')"
+        if grep -qx "$h" <<< "$hashes"; then
+            fail "$path is byte-identical to a page rendered from the real vault."
+        fi
+    done <<< "$staged"
+fi
+
+exit 0

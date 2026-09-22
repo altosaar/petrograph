@@ -1,0 +1,1588 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>hunks — obsidian, week by week</title>
+<style>
+  :root {
+    /* Ink and paper are aliases onto the palette's own tokens, so switching palette moves
+       the ground and the type along with the marks. The contrasts in series.css were
+       measured against that ground; hues on somebody else's paper are an unchecked claim. */
+    --ink: var(--text);
+    --paper: var(--bg);
+    --yellow: #ffe500;
+    --cyan: #4de1ff;
+    --pink: #ff6ec7;
+    --lime: #b6ff3c;
+    --orange: #ff8a3d;
+    --shadow: 6px 6px 0 var(--ink);
+    /* jaan.io's motion tokens, same names and same curve, so the pages move alike. */
+    --dur-fast: 200ms;
+    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+    --series-1: #a65c00;
+    --series-2: #00779e;
+    --series-3: #9864f7;
+    --series-4: #b58700;
+    --series-5: #009ba9;
+    --series-6: #a80009;
+    --series-7: #005a2f;
+    --series-8: #6d31c3;
+    --series-9: #8b0091;
+    --series-link: #65006a;
+    --series-rest: #b9b2a0;
+    --bg: #fff9f0;
+    --card: #f7efe4;
+    --surface: #f1e8dd;
+    --text: #39322c;
+    --muted: #6c635b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--paper); color: var(--ink);
+    font: 15px/1.5 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  h1, h2, h3 { font-family: Helvetica, Arial, sans-serif; font-weight: 900; margin: 0; }
+  header {
+    border-bottom: 4px solid var(--ink); background: var(--yellow);
+    padding: 18px 20px; display: flex; flex-wrap: wrap; gap: 16px; align-items: baseline;
+  }
+  header h1 { font-size: 30px; letter-spacing: -1px; text-transform: uppercase; }
+  header .meta { font-size: 13px; }
+  .layout { display: grid; grid-template-columns: minmax(280px, 26%) minmax(0, 1fr); gap: 20px; padding: 20px; align-items: start; }
+  @media (max-width: 860px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+  /* A grid item defaults to min-width:auto, so one long unbroken line — a URL in a
+     note or a message — widens the column past the viewport. Let the column shrink. */
+  .panel { background: var(--card); border: 4px solid var(--ink); box-shadow: var(--shadow); min-width: 0; }
+  .panel > h2 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 1px;
+    padding: 8px 12px; border-bottom: 4px solid var(--ink); background: var(--cyan);
+  }
+  .controls { padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+  input[type=search], select {
+    font: inherit; padding: 8px 10px; border: 3px solid var(--ink);
+    background: var(--paper); width: 100%;
+  }
+  input[type=search]:focus, select:focus { outline: 4px solid var(--pink); outline-offset: 2px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    font: inherit; font-size: 12px; padding: 4px 8px; cursor: pointer;
+    border: 3px solid var(--ink); background: var(--card); text-transform: lowercase;
+  }
+  .chip[aria-pressed="true"] { background: var(--lime); box-shadow: 3px 3px 0 var(--ink); }
+
+  /* Tall enough to use the window, and it scrolls past that. The gradients at the
+     top and bottom edges signal there is more rather than letting a long list look
+     truncated — they are `background-attachment: local`, so they only show on the
+     side that actually has more content. */
+  #names {
+    max-height: 78vh; overflow-y: auto; border-top: 4px solid var(--ink);
+    background:
+      linear-gradient(var(--card) 30%, rgba(244,241,228,0)) top / 100% 24px no-repeat,
+      linear-gradient(rgba(244,241,228,0), var(--paper) 70%) bottom / 100% 24px no-repeat;
+    background-attachment: local, local;
+  }
+  .name-row {
+    width: 100%; text-align: left; font: inherit; cursor: pointer; background: var(--card);
+    border: 0; border-bottom: 2px solid var(--ink); padding: 8px 12px;
+    display: flex; justify-content: space-between; gap: 10px; align-items: center;
+  }
+  .name-row:hover { background: var(--yellow); }
+  .name-row[aria-current="true"] { background: var(--pink); }
+  .name-row .n { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .count { font-size: 12px; border: 2px solid var(--ink); padding: 0 6px; background: var(--paper); }
+
+  .detail { padding: 16px; }
+  .detail h2.title { font-size: 32px; letter-spacing: -1px; word-break: break-word; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 4px; }
+  .badge { font-size: 12px; padding: 3px 8px; border: 3px solid var(--ink); background: var(--paper); }
+
+  .hist { display: flex; align-items: flex-end; gap: 3px; height: 60px; margin: 16px 0 6px; }
+  .hist div { flex: 1; background: var(--ink); min-height: 2px; }
+  .hist-axis { display: flex; justify-content: space-between; font-size: 11px; }
+
+  .mention { border: 3px solid var(--ink); margin-top: 14px; background: var(--paper); }
+  .mention .head {
+    padding: 6px 10px; border-bottom: 3px solid var(--ink); background: var(--card);
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 12px;
+  }
+  .mention .head .path { font-weight: 700; word-break: break-all; }
+  .mention pre {
+    margin: 0; padding: 10px; white-space: pre-wrap; overflow-wrap: anywhere;
+    font: inherit; font-size: 13px; max-height: 320px; overflow-y: auto;
+  }
+  mark { background: var(--yellow); border: 2px solid var(--ink); padding: 0 2px; }
+  .empty { padding: 40px 16px; text-align: center; font-size: 14px; }
+  kbd { border: 2px solid var(--ink); padding: 0 4px; background: var(--paper); font-size: 12px; }
+  :root[data-palette="arrietty-2010"] {
+    --series-1: #6eb447;
+    --series-2: #fb86ff;
+    --series-3: #006abe;
+    --series-4: #b26bfc;
+    --series-5: #c23500;
+    --series-6: #00d1b8;
+    --series-7: #d45e00;
+    --series-8: #a82fae;
+    --series-9: #9d54e3;
+    --series-link: #ffd24b;
+    --bg: #1c170f;
+    --card: #2b251d;
+    --surface: #342d25;
+    --text: #eae1d9;
+    --muted: #aaa198;
+  }
+  :root[data-palette="arrietty-2010-light"] {
+    --series-1: #3c7e00;
+    --series-2: #0890ff;
+    --series-3: #7323b4;
+    --series-4: #8a2300;
+    --series-5: #009280;
+    --series-6: #af8a00;
+    --series-7: #bd5400;
+    --series-8: #c34cc8;
+    --series-9: #5b0095;
+    --series-link: #65006a;
+    --bg: #fff9f0;
+    --card: #f7efe4;
+    --surface: #f1e8dd;
+    --text: #39322c;
+    --muted: #6c635b;
+  }
+  :root[data-palette="earwig-and-the-witch-2020"] {
+    --series-1: #fa813a;
+    --series-2: #94b1ff;
+    --series-3: #a06fff;
+    --series-4: #008a7e;
+    --series-5: #ca2200;
+    --series-6: #a82fae;
+    --series-7: #f7c900;
+    --series-8: #00f3a1;
+    --series-9: #834dde;
+    --series-link: #fec4ff;
+    --bg: #1e1611;
+    --card: #2d241e;
+    --surface: #362c26;
+    --text: #ece0da;
+    --muted: #ada19a;
+  }
+  :root[data-palette="earwig-and-the-witch-2020-light"] {
+    --series-1: #b75100;
+    --series-2: #1c2ab3;
+    --series-3: #9561f3;
+    --series-4: #009f91;
+    --series-5: #951600;
+    --series-6: #ac8b00;
+    --series-7: #008a5a;
+    --series-8: #7840d1;
+    --series-9: #820088;
+    --series-link: #65006a;
+    --bg: #fff9f5;
+    --card: #faede5;
+    --surface: #f4e7df;
+    --text: #3b312d;
+    --muted: #6e635d;
+  }
+  :root[data-palette="from-up-on-poppy-hill-2011"] {
+    --series-1: #c9b800;
+    --series-2: #39c5ec;
+    --series-3: #8443d3;
+    --series-4: #008874;
+    --series-5: #ff8dbe;
+    --series-6: #cf8100;
+    --series-7: #e13154;
+    --series-8: #ab6fff;
+    --series-9: #467600;
+    --series-link: #a8fa55;
+    --bg: #1c170f;
+    --card: #2b251d;
+    --surface: #342d25;
+    --text: #eae1d9;
+    --muted: #aaa198;
+  }
+  :root[data-palette="from-up-on-poppy-hill-2011-light"] {
+    --series-1: #7b7000;
+    --series-2: #007995;
+    --series-3: #ab6fff;
+    --series-4: #00a089;
+    --series-5: #910056;
+    --series-6: #c37900;
+    --series-7: #fb4c68;
+    --series-8: #6d26b8;
+    --series-9: #385f00;
+    --series-link: #2a4a00;
+    --bg: #fff9f0;
+    --card: #f7efe4;
+    --surface: #f1e8dd;
+    --text: #39322c;
+    --muted: #6c635b;
+  }
+  :root[data-palette="ghibli-master"] {
+    --series-1: #ef890f;
+    --series-2: #49c2f4;
+    --series-3: #a82fae;
+    --series-4: #9e6bfe;
+    --series-5: #ffcc5f;
+    --series-6: #ea3d35;
+    --series-7: #008f4e;
+    --series-8: #834dde;
+    --series-9: #cd56d2;
+    --series-link: #00e8fc;
+    --bg: #1c170f;
+    --card: #2b251d;
+    --surface: #342d25;
+    --text: #eae1d9;
+    --muted: #aaa198;
+  }
+  :root[data-palette="ghibli-master-light"] {
+    --series-1: #a65c00;
+    --series-2: #00779e;
+    --series-3: #9864f7;
+    --series-4: #b58700;
+    --series-5: #009ba9;
+    --series-6: #a80009;
+    --series-7: #005a2f;
+    --series-8: #6d31c3;
+    --series-9: #8b0091;
+    --series-link: #65006a;
+    --bg: #fff9f0;
+    --card: #f7efe4;
+    --surface: #f1e8dd;
+    --text: #39322c;
+    --muted: #6c635b;
+  }
+  :root[data-palette="grave-of-the-fireflies-1988"] {
+    --series-1: #f18913;
+    --series-2: #53c1f9;
+    --series-3: #a82fae;
+    --series-4: #9b67fa;
+    --series-5: #009bab;
+    --series-6: #007915;
+    --series-7: #de2c51;
+    --series-8: #804adb;
+    --series-9: #ffa4a9;
+    --series-link: #ffcc5f;
+    --bg: #1c170f;
+    --card: #2b251d;
+    --surface: #342d25;
+    --text: #eae1d9;
+    --muted: #aaa198;
+  }
+  :root[data-palette="grave-of-the-fireflies-1988-light"] {
+    --series-1: #a75c00;
+    --series-2: #0077a4;
+    --series-3: #9864f7;
+    --series-4: #b58700;
+    --series-5: #009bab;
+    --series-6: #00550c;
+    --series-7: #a60033;
+    --series-8: #672abc;
+    --series-9: #fb4c68;
+    --series-link: #6d0073;
+    --bg: #fff9f0;
+    --card: #f7efe4;
+    --surface: #f1e8dd;
+    --text: #39322c;
+    --muted: #6c635b;
+  }
+  :root[data-palette="howl-s-moving-castle-2004"] {
+    --series-1: #faa300;
+    --series-2: #50c1f8;
+    --series-3: #a82fae;
+    --series-4: #9864f7;
+    --series-5: #b08e00;
+    --series-6: #009bab;
+    --series-7: #da284e;
+    --series-8: #ac87ff;
+    --series-9: #ff6074;
+    --series-link: #82ff84;
+    --bg: #1c170f;
+    --card: #2b251d;
+    --surface: #342d25;
+    --text: #eae1d9;
+    --muted: #aaa198;
+  }
+  :root[data-palette="howl-s-moving-castle-2004-light"] {
+    --series-1: #9b6300;
+    --series-2: #0077a4;
+    --series-3: #9561f3;
+    --series-4: #ac8b00;
+    --series-5: #00550c;
+    --series-6: #009bab;
+    --series-7: #a60033;
+    --series-8: #672abc;
+    --series-9: #fb4c68;
+    --series-link: #6d0073;
+    --bg: #fff9f0;
+    --card: #f7efe4;
+    --surface: #f1e8dd;
+    --text: #39322c;
+    --muted: #6c635b;
+  }
+  :root[data-palette="kiki-s-delivery-service-1989"] {
+    --series-1: #00bffc;
+    --series-2: #ff9b90;
+    --series-3: #ab4b00;
+    --series-4: #7e46d8;
+    --series-5: #0094a4;
+    --series-6: #ec468f;
+    --series-7: #5dbd05;
+    --series-8: #a06fff;
+    --series-9: #cf2677;
+    --series-link: #ffd661;
+    --bg: #15181c;
+    --card: #23262a;
+    --surface: #2b2e33;
+    --text: #e2e2e6;
+    --muted: #a2a3a8;
+  }
+  :root[data-palette="kiki-s-delivery-service-1989-light"] {
+    --series-1: #00779f;
+    --series-2: #af534b;
+    --series-3: #580ca8;
+    --series-4: #af8a00;
+    --series-5: #009bab;
+    --series-6: #9c0055;
+    --series-7: #357200;
+    --series-8: #9561f3;
+    --series-9: #da3380;
+    --series-link: #682b00;
+    --bg: #f7faff;
+    --card: #ecf0f6;
+    --surface: #e6eaf0;
+    --text: #333337;
+    --muted: #65656a;
+  }
+  :root[data-palette="laputa-castle-in-the-sky-1986"] {
+    --series-1: #f6842c;
+    --series-2: #51c1f8;
+    --series-3: #a82fae;
+    --series-4: #a46cff;
+    --series-5: #d42515;
+    --series-6: #0098a5;
+    --series-7: #007c57;
+    --series-8: #874cdc;
+    --series-9: #ff9c8c;
+    --series-link: #ffc334;
+    --bg: #14181c;
+    --card: #22262a;
+    --surface: #2b2f33;
+    --text: #e2e2e5;
+    --muted: #a0a3a6;
+  }
+  :root[data-palette="laputa-castle-in-the-sky-1986-light"] {
+    --series-1: #b05600;
+    --series-2: #0077a4;
+    --series-3: #985ff1;
+    --series-4: #800500;
+    --series-5: #b58700;
+    --series-6: #009ead;
+    --series-7: #006c4b;
+    --series-8: #6520b4;
+    --series-9: #ac0a00;
+    --series-link: #65006a;
+    --bg: #f6fbff;
+    --card: #ebf1f6;
+    --surface: #e5eaef;
+    --text: #343336;
+    --muted: #636568;
+  }
+  :root[data-palette="lupin-iii-the-castle-of-cagliostro-1979"] {
+    --series-1: #00b2fc;
+    --series-2: #ffa838;
+    --series-3: #007e44;
+    --series-4: #a243cb;
+    --series-5: #de367e;
+    --series-6: #00ddf3;
+    --series-7: #ff796b;
+    --series-8: #b95ae3;
+    --series-9: #cd1819;
+    --series-link: #ffda74;
+    --bg: #16181c;
+    --card: #24262b;
+    --surface: #2c2e33;
+    --text: #e3e2e6;
+    --muted: #a3a3a8;
+  }
+  :root[data-palette="lupin-iii-the-castle-of-cagliostro-1979-light"] {
+    --series-1: #0076aa;
+    --series-2: #c77c00;
+    --series-3: #00572d;
+    --series-4: #c91a6d;
+    --series-5: #009bab;
+    --series-6: #886b00;
+    --series-7: #a30008;
+    --series-8: #8018a7;
+    --series-9: #df312b;
+    --series-link: #5d007c;
+    --bg: #f8faff;
+    --card: #edf0f7;
+    --surface: #e7e9f0;
+    --text: #343337;
+    --muted: #656469;
+  }
+  :root[data-palette="my-neighbor-totoro-1988"] {
+    --series-1: #f49600;
+    --series-2: #3971f8;
+    --series-3: #d395ff;
+    --series-4: #866200;
+    --series-5: #b72494;
+    --series-6: #00d5b4;
+    --series-7: #ff6a67;
+    --series-8: #ffb1e5;
+    --series-9: #973fca;
+    --series-link: #7bff94;
+    --bg: #121919;
+    --card: #212727;
+    --surface: #292f2f;
+    --text: #e0e3e2;
+    --muted: #9fa4a3;
+  }
+  :root[data-palette="my-neighbor-totoro-1988-light"] {
+    --series-1: #a06000;
+    --series-2: #2154d8;
+    --series-3: #004e1b;
+    --series-4: #61008c;
+    --series-5: #b58700;
+    --series-6: #e454bd;
+    --series-7: #00927b;
+    --series-8: #940018;
+    --series-9: #7b1dac;
+    --series-link: #710059;
+    --bg: #f3fcfc;
+    --card: #eaf2f2;
+    --surface: #e3ebeb;
+    --text: #323434;
+    --muted: #626666;
+  }
+  :root[data-palette="my-neighbors-the-yamadas-1999"] {
+    --series-1: #f18915;
+    --series-2: #67bdff;
+    --series-3: #a06fff;
+    --series-4: #ca48bd;
+    --series-5: #cd1819;
+    --series-6: #008472;
+    --series-7: #00b967;
+    --series-8: #8954e5;
+    --series-9: #af2ba3;
+    --series-link: #ffd06f;
+    --bg: #1e1613;
+    --card: #2d2321;
+    --surface: #362c29;
+    --text: #ede0dd;
+    --muted: #ada09d;
+  }
+  :root[data-palette="my-neighbors-the-yamadas-1999-light"] {
+    --series-1: #a75b00;
+    --series-2: #1174b2;
+    --series-3: #b58700;
+    --series-4: #a06fff;
+    --series-5: #a30008;
+    --series-6: #00a089;
+    --series-7: #00572d;
+    --series-8: #6222b6;
+    --series-9: #9b0c90;
+    --series-link: #7e0075;
+    --bg: #fff8f6;
+    --card: #fbedea;
+    --surface: #f4e6e2;
+    --text: #3b312f;
+    --muted: #6e6260;
+  }
+  :root[data-palette="nausicaa-of-the-valley-of-the-wind-1984"] {
+    --series-1: #00cefb;
+    --series-2: #ff9d73;
+    --series-3: #8e3fcc;
+    --series-4: #b38800;
+    --series-5: #00929a;
+    --series-6: #cd1819;
+    --series-7: #e15bcd;
+    --series-8: #c07cff;
+    --series-9: #b1299f;
+    --series-link: #74ffa2;
+    --bg: #13181b;
+    --card: #212729;
+    --surface: #2a2f32;
+    --text: #e1e3e4;
+    --muted: #9fa3a5;
+  }
+  :root[data-palette="nausicaa-of-the-valley-of-the-wind-1984-light"] {
+    --series-1: #007995;
+    --series-2: #b0552c;
+    --series-3: #731cae;
+    --series-4: #b38800;
+    --series-5: #009ca5;
+    --series-6: #9e0008;
+    --series-7: #005427;
+    --series-8: #9a4cda;
+    --series-9: #950086;
+    --series-link: #76006a;
+    --bg: #f5fbff;
+    --card: #eaf2f4;
+    --surface: #e4ebef;
+    --text: #323434;
+    --muted: #626668;
+  }
+  :root[data-palette="ocean-waves-1993"] {
+    --series-1: #fbb400;
+    --series-2: #59c0fc;
+    --series-3: #ab4b00;
+    --series-4: #8145d6;
+    --series-5: #008d9d;
+    --series-6: #e3397c;
+    --series-7: #ff8386;
+    --series-8: #a772ff;
+    --series-9: #b68100;
+    --series-link: #00ffa2;
+    --bg: #15181c;
+    --card: #23262b;
+    --surface: #2c2e33;
+    --text: #e3e2e6;
+    --muted: #a2a3a8;
+  }
+  :root[data-palette="ocean-waves-1993-light"] {
+    --series-1: #936700;
+    --series-2: #0076aa;
+    --series-3: #5a09a6;
+    --series-4: #009bab;
+    --series-5: #c61365;
+    --series-6: #fc4d5d;
+    --series-7: #00633c;
+    --series-8: #a46cff;
+    --series-9: #ae7c00;
+    --series-link: #682b00;
+    --bg: #f7faff;
+    --card: #ecf0f7;
+    --surface: #e7e9f0;
+    --text: #333336;
+    --muted: #646469;
+  }
+  :root[data-palette="only-yesterday-1991"] {
+    --series-1: #00b6fb;
+    --series-2: #ff9d71;
+    --series-3: #7e46d8;
+    --series-4: #b98a00;
+    --series-5: #008d9d;
+    --series-6: #cd1819;
+    --series-7: #ffbefc;
+    --series-8: #9e6bfe;
+    --series-9: #cf54ce;
+    --series-link: #71ffa8;
+    --bg: #13181b;
+    --card: #22262a;
+    --surface: #2a2f32;
+    --text: #e1e2e5;
+    --muted: #a0a3a6;
+  }
+  :root[data-palette="only-yesterday-1991-light"] {
+    --series-1: #0077a6;
+    --series-2: #b05529;
+    --series-3: #9b67fa;
+    --series-4: #b58700;
+    --series-5: #009bab;
+    --series-6: #a30008;
+    --series-7: #00572d;
+    --series-8: #672abc;
+    --series-9: #930b94;
+    --series-link: #770078;
+    --bg: #f5fbff;
+    --card: #ebf1f6;
+    --surface: #e4ebef;
+    --text: #333336;
+    --muted: #636568;
+  }
+  :root[data-palette="pom-poko-1994"] {
+    --series-1: #00b6fc;
+    --series-2: #ff9f4f;
+    --series-3: #c73600;
+    --series-4: #8742d1;
+    --series-5: #00e0f7;
+    --series-6: #ed458a;
+    --series-7: #007a4b;
+    --series-8: #a966f7;
+    --series-9: #e57c00;
+    --series-link: #ffd98b;
+    --bg: #13191a;
+    --card: #212728;
+    --surface: #292f30;
+    --text: #e1e3e3;
+    --muted: #9fa4a5;
+  }
+  :root[data-palette="pom-poko-1994-light"] {
+    --series-1: #0077a7;
+    --series-2: #aa5a00;
+    --series-3: #6002a2;
+    --series-4: #b58700;
+    --series-5: #009bab;
+    --series-6: #d02572;
+    --series-7: #00603a;
+    --series-8: #9f5ced;
+    --series-9: #7c4100;
+    --series-link: #6f1a00;
+    --bg: #f3fcfd;
+    --card: #eaf2f3;
+    --surface: #e3ebec;
+    --text: #323434;
+    --muted: #626667;
+  }
+  :root[data-palette="ponyo-2008"] {
+    --series-1: #00d3f4;
+    --series-2: #b48300;
+    --series-3: #8782ff;
+    --series-4: #a82fae;
+    --series-5: #ffc484;
+    --series-6: #ff8577;
+    --series-7: #007653;
+    --series-8: #6d5ff0;
+    --series-9: #bf48c5;
+    --series-link: #5fffc1;
+    --bg: #15181c;
+    --card: #23262a;
+    --surface: #2b2e33;
+    --text: #e2e2e6;
+    --muted: #a2a3a7;
+  }
+  :root[data-palette="ponyo-2008-light"] {
+    --series-1: #007a8f;
+    --series-2: #b48300;
+    --series-3: #482bbc;
+    --series-4: #975d00;
+    --series-5: #900006;
+    --series-6: #00a273;
+    --series-7: #786cfe;
+    --series-8: #bc45c1;
+    --series-9: #006c4b;
+    --series-link: #65006a;
+    --bg: #f7faff;
+    --card: #ecf0f6;
+    --surface: #e6eaf0;
+    --text: #333337;
+    --muted: #656569;
+  }
+  :root[data-palette="porco-rosso-1992"] {
+    --series-1: #00c2fb;
+    --series-2: #efa836;
+    --series-3: #c23500;
+    --series-4: #8443d3;
+    --series-5: #b98a00;
+    --series-6: #0094a4;
+    --series-7: #ed458a;
+    --series-8: #a86bfd;
+    --series-9: #ff815f;
+    --series-link: #00ffa2;
+    --bg: #121918;
+    --card: #212726;
+    --surface: #292f2f;
+    --text: #e0e3e2;
+    --muted: #9fa4a3;
+  }
+  :root[data-palette="porco-rosso-1992-light"] {
+    --series-1: #00789d;
+    --series-2: #996500;
+    --series-3: #5d05a4;
+    --series-4: #b58700;
+    --series-5: #009eaf;
+    --series-6: #c91a6d;
+    --series-7: #00603a;
+    --series-8: #995bec;
+    --series-9: #9c2900;
+    --series-link: #6f1a00;
+    --bg: #f3fdfb;
+    --card: #eaf2f1;
+    --surface: #e3ebeb;
+    --text: #323434;
+    --muted: #626666;
+  }
+  :root[data-palette="princess-mononoke-1997"] {
+    --series-1: #59b758;
+    --series-2: #de66e3;
+    --series-3: #c23500;
+    --series-4: #006cb4;
+    --series-5: #bdb7ff;
+    --series-6: #00e3c4;
+    --series-7: #ffbf86;
+    --series-8: #7f61f3;
+    --series-9: #ec460e;
+    --series-link: #e8e300;
+    --bg: #14181c;
+    --card: #22262a;
+    --surface: #2b2f33;
+    --text: #e2e2e5;
+    --muted: #a1a3a7;
+  }
+  :root[data-palette="princess-mononoke-1997-light"] {
+    --series-1: #1b8020;
+    --series-2: #a82fae;
+    --series-3: #004575;
+    --series-4: #9078ff;
+    --series-5: #009983;
+    --series-6: #959100;
+    --series-7: #794300;
+    --series-8: #7453e5;
+    --series-9: #cc3800;
+    --series-link: #6f1a00;
+    --bg: #f6fbff;
+    --card: #ebf1f6;
+    --surface: #e5eaef;
+    --text: #343336;
+    --muted: #646569;
+  }
+  :root[data-palette="site"] {
+    --series-1: #24cb71;
+    --series-2: #8a2cb7;
+    --series-3: #c91304;
+    --series-4: #e870ed;
+    --series-5: #008a7e;
+    --series-6: #cc7200;
+    --series-7: #79ddff;
+    --series-8: #af55df;
+    --series-9: #007137;
+    --series-link: #fbda00;
+    --bg: #000000;
+    --card: #1e1e1e;
+    --surface: #292929;
+    --text: #e2e2e2;
+    --muted: #9a9a96;
+  }
+  :root[data-palette="the-red-turtle-2016"] {
+    --series-1: #fcaa00;
+    --series-2: #50c1f8;
+    --series-3: #d72824;
+    --series-4: #8e3fcc;
+    --series-5: #00e4fb;
+    --series-6: #dd57c9;
+    --series-7: #00ad72;
+    --series-8: #be76ff;
+    --series-9: #b1299f;
+    --series-link: #ffda74;
+    --bg: #131919;
+    --card: #212728;
+    --surface: #292f30;
+    --text: #e0e3e3;
+    --muted: #9fa4a4;
+  }
+  :root[data-palette="the-red-turtle-2016-light"] {
+    --series-1: #986500;
+    --series-2: #0077a4;
+    --series-3: #860005;
+    --series-4: #6d12a7;
+    --series-5: #af8a00;
+    --series-6: #009bab;
+    --series-7: #006641;
+    --series-8: #a053e1;
+    --series-9: #8c007e;
+    --series-link: #6a005f;
+    --bg: #f4fcfc;
+    --card: #eaf2f3;
+    --surface: #e3ebec;
+    --text: #323435;
+    --muted: #626667;
+  }
+  :root[data-palette="the-tale-of-the-princess-kaguya-2013"] {
+    --series-1: #57b759;
+    --series-2: #c36dfa;
+    --series-3: #006abe;
+    --series-4: #ff8ae5;
+    --series-5: #c23500;
+    --series-6: #dbd000;
+    --series-7: #d45e00;
+    --series-8: #b3279c;
+    --series-9: #79b9ff;
+    --series-link: #00fdfc;
+    --bg: #1c170f;
+    --card: #2b251d;
+    --surface: #342d25;
+    --text: #eae1d9;
+    --muted: #aaa198;
+  }
+  :root[data-palette="the-tale-of-the-princess-kaguya-2013-light"] {
+    --series-1: #168021;
+    --series-2: #7e21b0;
+    --series-3: #0890ff;
+    --series-4: #8a2300;
+    --series-5: #989000;
+    --series-6: #00908f;
+    --series-7: #b95200;
+    --series-8: #e056c5;
+    --series-9: #004885;
+    --series-link: #6b005c;
+    --bg: #fff9f0;
+    --card: #f7efe4;
+    --surface: #f1e8dd;
+    --text: #39322c;
+    --muted: #6c635b;
+  }
+  :root[data-palette="the-wind-rises-2013"] {
+    --series-1: #7eb33a;
+    --series-2: #ff82cf;
+    --series-3: #bc6bfa;
+    --series-4: #006cb4;
+    --series-5: #837100;
+    --series-6: #009c86;
+    --series-7: #e63745;
+    --series-8: #71bbff;
+    --series-9: #a351de;
+    --series-link: #ffc488;
+    --bg: #191810;
+    --card: #28261d;
+    --surface: #302e25;
+    --text: #e7e2d9;
+    --muted: #a7a399;
+  }
+  :root[data-palette="the-wind-rises-2013-light"] {
+    --series-1: #4f7b00;
+    --series-2: #e852b4;
+    --series-3: #0091ee;
+    --series-4: #a28c00;
+    --series-5: #008e7a;
+    --series-6: #7a4800;
+    --series-7: #770016;
+    --series-8: #005b99;
+    --series-9: #9441cd;
+    --series-link: #5c008a;
+    --bg: #fcfbef;
+    --card: #f3f0e4;
+    --surface: #eceade;
+    --text: #37332c;
+    --muted: #69655c;
+  }
+  :root[data-palette="when-marnie-was-there-2014"] {
+    --series-1: #69b54c;
+    --series-2: #ff93f6;
+    --series-3: #006abe;
+    --series-4: #bc71ff;
+    --series-5: #c23500;
+    --series-6: #00959e;
+    --series-7: #d86100;
+    --series-8: #ad2ca7;
+    --series-9: #a659e8;
+    --series-link: #ffda74;
+    --bg: #141914;
+    --card: #222722;
+    --surface: #2b2f2a;
+    --text: #e2e3dd;
+    --muted: #a1a49e;
+  }
+  :root[data-palette="when-marnie-was-there-2014-light"] {
+    --series-1: #347f09;
+    --series-2: #0890ff;
+    --series-3: #7925b5;
+    --series-4: #8a2300;
+    --series-5: #af8a00;
+    --series-6: #008e97;
+    --series-7: #bd5400;
+    --series-8: #d556ce;
+    --series-9: #5d0092;
+    --series-link: #680064;
+    --bg: #f5fcf5;
+    --card: #ebf2eb;
+    --surface: #e6ebe5;
+    --text: #333430;
+    --muted: #646661;
+  }
+  .layout { grid-template-columns: minmax(320px, auto) minmax(0, 1fr); }
+  /* The squares' colours by name, so a framed page can hand them to the host's palette (FRAMED
+     in _page.py) — its first three series, in order — where the page on its own is lime, cyan
+     and pink. */
+  :root {
+    --kind-added: var(--lime); --kind-mixed: var(--cyan); --kind-removed: var(--pink);
+    --kind-full: var(--paper);
+  }
+  /* Framed, the squares are painted as the connectome's are — the palette's topic hues at half
+     strength, no outline — but three slots along, so an added square is not read as the
+     connectome's first topic. The whole-content square takes its neutral grey, since paper on
+     paper with no outline would be no square at all. */
+  :root.embedded {
+    --kind-added: var(--series-4); --kind-mixed: var(--series-5); --kind-removed: var(--series-6);
+    --kind-full: var(--series-rest);
+  }
+  .embedded rect.cell { fill-opacity: 0.5; }
+  .embedded .legend i { opacity: 0.5 !important; }
+  /* Framed, the legend is drawn as Plot draws the connectome's under it: bare 15px swatches, the
+     name in the system face at 10px, capitalised, starting under the first square (alignLegend). */
+  .embedded .legend { font: 10px system-ui, sans-serif; gap: 0 10px; min-height: 33px;
+                      align-items: center; text-transform: capitalize; }
+  .embedded .legend span { gap: 5.5px; }
+  /* Framed, the controls sit over the chart on one line, the views and then the box taking the
+     rest, from the first square to the chart's right edge (alignLegend); a phone wraps the box. */
+  .embedded .controls { flex-direction: row; flex-wrap: wrap; align-items: stretch;
+                        padding: 0 0 4px; box-sizing: border-box; }
+  /* 12px, so the prompt it holds is whole beside the chips over a chart this narrow. */
+  .embedded .controls input[type=search] { flex: 1 1 220px; min-width: 0; font-size: 12px; }
+  /* The page's chips are lowercase by rule; in the post, capitalised like the legends. */
+  .embedded .chip { text-transform: capitalize; }
+  /* Framed, a hunk is drawn as the connectome's ends are (connection_waffle.py): the name and
+     day in bold, the box under. Less the caret, since this one never folds; placed by
+     alignDetail. */
+  .embedded .end { margin-top: 18px; padding-top: 16px; }
+  .embedded .end .who { display: block; font-size: 12px; font-weight: 700; margin-bottom: 3px;
+                        overflow-wrap: anywhere; }
+  .embedded .end .who > span { display: block; }
+  /* And the axes in Plot's type, as the connectome's: 11px, regular, tabular figures. */
+  .embedded .axis, .embedded .axis.week {
+    font: 11px system-ui, sans-serif; font-variant-numeric: tabular-nums;
+  }
+  .embedded .legend i { width: 15px; height: 15px; border: 0; }
+  /* The picked hunk's outline is the connectome's ring: five wide, in the gap (see outlinePath),
+     square-capped so the separate sides close their corners as the ring's rect does. */
+  .embedded .edge { stroke-width: 0; stroke-linecap: square; }
+  /* No outline under the pointer: an outline means picked, as on the connectome's squares. */
+  .embedded .piece:hover .edge { stroke-width: 0; }
+  .embedded .piece.on .edge { stroke-width: 5; }
+  .embedded .seam, .embedded #unit { display: none; }
+  /* And the hunk panel is the note and its diff: no label over it, no badge row under the name. */
+  .embedded .panel:has(#detail) > h2, .embedded #detail .facts { display: none; }
+  /* Framed, the page is the chart and the note a click opens. The roll of every note touched is
+     three screens of filenames under it, which in a post is a wall rather than a figure. */
+  .embedded #notes-panel { display: none; }
+  /* And the hunk sits beside the chart as soon as there is room for both. */
+  /* The column is capped at the chart: left to `auto`, the legend's one long line took it wide
+     and squeezed the hunk. A phone frame is narrower than the chart, which then scales down. */
+  .embedded #waffle { max-width: 100%; height: auto; }
+  @media (min-width: 960px) {
+    .embedded .layout {
+      grid-template-columns: calc(var(--chart-w, 550px) + 32px) minmax(340px, 1fr);
+    }
+  }
+  @media (max-width: 1100px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+  .chart { padding: 16px; overflow-x: auto; }
+  .chart svg { display: block; }
+  .piece { cursor: pointer; }
+  /* The squares of one hunk tile a single region, so their shared edges must land on the same
+     pixel; without this a fused piece shows anti-aliased hairlines at fractional zoom. */
+  .cell { shape-rendering: crispEdges; }
+  .edge { fill: none; stroke: var(--ink); stroke-width: 1.5; pointer-events: none; }
+  .seam { fill: none; stroke: var(--ink); stroke-width: 1; stroke-opacity: 0.18;
+          pointer-events: none; }
+  .piece:hover .edge { stroke-width: 3; }
+  .piece.on .edge { stroke-width: 4; }
+  .axis { font: 11px ui-monospace, Menlo, monospace; fill: var(--ink); }
+  .axis.week { font-size: 12px; font-weight: 700; }
+  /* The week-by-week roll of what was touched, under the chart and across both columns. */
+  #notes-panel { grid-column: 1 / -1; }
+  .notes { padding: 4px 16px 16px; }
+  .notes h3 {
+    font-size: 13px; text-transform: uppercase; letter-spacing: 1px;
+    margin: 20px 0 8px; padding-bottom: 5px; border-bottom: 3px solid var(--ink);
+  }
+  .notes h3:first-child { margin-top: 8px; }
+  .notes ul { margin: 0; padding-left: 22px; }
+  .notes li { padding: 1px 0; overflow-wrap: anywhere; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; padding: 0 16px 14px; font-size: 12px; }
+  .legend span { display: flex; align-items: center; gap: 6px; }
+  .legend i { width: 14px; height: 14px; border: 2px solid var(--ink); display: block; }
+  .unit { padding: 0 16px 14px; font-size: 12px; max-width: 80ch; }
+
+  .badge.added { background: var(--lime); }
+  .badge.mixed { background: var(--cyan); }
+  .badge.removed { background: var(--pink); }
+  .badge.full { background: var(--paper); }
+
+  .hunk { border: 3px solid var(--ink); margin-top: 14px; background: var(--card); }
+  .hunk pre {
+    margin: 0; padding: 12px; max-height: 62vh; overflow: auto; background: var(--card);
+    font: 13px/1.55 ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  .hunk code { display: block; white-space: pre; }
+  .hunk code > span { display: block; padding: 0 6px; margin: 0 -6px; }
+  .hunk .ln-h { color: #8250df; background: #f3eefd; font-weight: 700; }
+  .hunk .ln-a { color: #116329; background: #e6ffec; }
+  .hunk .ln-d { color: #a40e26; background: #ffebe9; }
+  .hunk .ln-c { color: #57606a; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Hunks</h1>
+  <div class="meta">113 hunks · 53,029 chars · 32 notes · 4 weeks · 10-24 → 11-13</div>
+</header>
+
+<div class="layout">
+  <section class="panel">
+    <h2 id="count">one square is one hunk</h2>
+    <div class="chart"><svg id="waffle"></svg></div>
+    <div class="legend" id="legend"></div>
+    <div class="unit" id="unit"></div>
+    <div class="controls">
+      <div class="chips" id="views" title="swap the views  ( v )">
+        <button class="chip" type="button" data-view="hunks">hunks</button>
+        <button class="chip" type="button" data-view="chars">characters</button>
+      </div>
+      <input type="search" id="q" placeholder="dim every square but one note  ( / )" autocomplete="off">
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Hunk</h2>
+    <div class="detail" id="detail">
+      <div class="empty">Click a square to read the hunk it stands for.</div>
+    </div>
+  </section>
+
+  <section class="panel" id="notes-panel">
+    <h2>Notes edited</h2>
+    <div class="notes" id="notes"></div>
+  </section>
+</div>
+
+<script type="application/json" id="data">{"weeks": [{"week": "10-24", "weekday": "Saturday", "hunks": [{"note": "fencing-kit-dad-jacket.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# kit — dad's jacket\n\nhis, from the storage unit at roskilde. he was 11 cm taller and broader across the chest, so the sleeves go past the heel of my hand and the shoulder sits wrong.\n\nit still smells like his office, which is a building he has not been in for eleven months and i have not been in for three.\n\n**10-20** — the mask is loose and the jacket is too big and the blade is the right weight, which is the only one of the three that matters and is also the only one i did not choose.", "id": "10-24/0", "ord": 0, "week": "10-24", "squares": 1}, {"note": "horatio-what-we-know.md", "head": "@@ -1,3 +1,18 @@", "add": 15, "dele": 0, "text": " # horatio — what we know\n \n running list. h keeps asking me to separate what we know from what we think and this is me doing that so he stops asking.\n+\n+**know**\n+- there is a second person on the roof at 02:11 on 11-18, for thirteen seconds\n+- marcellus kept the file and nobody asked him for it\n+- the inquest saw one still and not the forty seconds\n+\n+**think**\n+- somebody did not want the forty seconds in the bundle\n+- bernardo knows something he is not saying\n+\n+**sworn 10-22**: marcellus rang at midnight while h was here and asked us both, on speaker, to say we would not tell anyone where the file came from. he asked three times, which is a strange number for a security guard, and we said it three times.\n+\n+told h after he hung up: if i start behaving oddly in the building over the next weeks it is on purpose, and he is not to ask me about it in front of anyone. he said \"how will i tell the difference\". i said he would not need to.\n+\n+**agreed 10-22**: we say nothing to anyone, including ophelia, until we know who the shoulder belongs to. h's condition, not mine. i agreed to it in the flat at about one in the morning and i have kept it, which surprises me.", "kind": "added", "chars": 999, "id": "10-24/1", "ord": 1, "week": "10-24", "squares": 5}, {"note": "nordhavn-lease-petra-lund.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# nordhavn lease — petra lund\n\nflat 4b, off strandgade. moved in last spring after i stopped being able to sleep at roskilde.\n\nlease ends sat 12-05. rent 11,400 a month. petra wants an answer by sat 11-14 so she can advertise it if the answer is no.\n\n**10-19** — she left a note under the door rather than emailing, which is petra. \"no rush but i do need to know. renewal is another year at +4%.\" so 11,856.\n\nreasons to stay: it is quiet, it is twenty minutes to the tower on the bike, and i can be in it without thinking about anybody.\nreasons to go: none that i can write down, which is not the same as none.\n\ndecide by 11-14.", "id": "10-24/2", "ord": 2, "week": "10-24", "squares": 1}, {"note": "roskilde-house-empty.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# roskilde — the house\n\nempty since the spring. sigrid kept the keys until she left and then handed them over like they might bite.\n\ncannot be in it for more than an hour. have tried four times and the longest was fifty minutes.\n\n**10-17** — an hour, then left. the fencing kit is in the upstairs hall closet. the plot at the churchyard is 380 a quarter out of the estate account and somebody mows it and i have never met them.\n\nmum asks the lawyer why it has not been listed. she asks the lawyer rather than me.", "id": "10-24/3", "ord": 3, "week": "10-24", "squares": 1}, {"note": "yorick-comms-quotes.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# yorick — still quoted\n\nhead of comms for nineteen years, dead eleven. still quoted at me in meetings by people who never met him.\n\n**10-21** — the film archive is mostly his material. every line of it sounds like a press release because every line of it was one.\n\nhe used to let me sit under the desk during the quarterly. i was seven. he did the voices.", "id": "10-24/4", "ord": 4, "week": "10-24", "squares": 1}, {"note": "ophelia-contact-log.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# ophelia — contact log\n\nstarted this six weeks ago because i kept losing track of what i had actually said to her and what i had only drafted. that should have told me something.\n\n**10-22** — she walked me to the bike after work. laertes flew back to lisbon this afternoon, and before he went he told her to be careful with me: that i am not free to mean what i say, because of whose son i am in that building, and she should not read too much into any of it. she laughed telling me. i did not, and she noticed that i did not, and then i did not tell her about the forty seconds, which is the first thing i have ever decided not to tell her.", "id": "10-24/5", "ord": 5, "week": "10-24", "squares": 1}, {"note": "polonius-chief-of-staff.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# polonius — chief of staff\n\ntalks for a living. has never once in four years given me a straight answer to a question i asked in a corridor.\n\n**10-22** — saw him walk laertes to the lift at three with a list. i caught the last three items going past: do not lend anybody at norvik anything, do not borrow from them either, and \"be true to yourself\", which from polonius is a fox recommending chickens. laertes nodded at every item like a man being read his own terms and conditions. flight at five.", "id": "10-24/6", "ord": 6, "week": "10-24", "squares": 1}, {"note": "kronborg-roof-access-codes.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# kronborg — roof access, codes\n\nthe hatch locks from the inside. key with the day shift. electronic lock added five months before he died.\n\nwho could open that door on 11-18:\n\n- francisco (day key)\n- bernardo (on shift)\n- marcellus (on shift)\n- facilities, whoever was carrying the master that month\n- anyone who was told the code and wrote it down\n\ncode changes monthly. last change before that night was 11-17. so the code was one day old, which is the safest a code ever is, which is the part that bothers me.\n\npolonius signed off the install. claudius was not chief executive yet but he was in the building most days. sigrid would know who asked for the lock and why — she was still in the office then. #access", "id": "10-24/7", "ord": 7, "week": "10-24", "squares": 1}, {"note": "marcellus-shift-logs.md", "head": "@@ -1,3 +1,15 @@", "add": 12, "dele": 0, "text": " # marcellus — shift logs\n \n rota, as of the new year. francisco days, hands to bernardo 18:00. bernardo to marcellus at midnight. marcellus to francisco at 06:00.\n+\n+**10-21** — asked him for the night of 11-18. he had it ready, which means he had had it ready for eleven months.\n+\n+- 23:58 marcellus signs on\n+- 02:07 bernardo logs the east stairwell, floor 8\n+- 02:11 roof door\n+- 02:14 marcellus at the ninth floor landing, nothing noted\n+- 03:02 the alarm, external\n+\n+bernardo at 02:07 on floor 8 means bernardo had four minutes to get to the roof and be a shoulder in a frame. marcellus does not think it is him and marcellus is the one who reads people for a living.\n+\n+putting his phone away at ursa he said: \"something in that building has been wrong for a year, and everybody on nights knows it.\"", "kind": "added", "chars": 620, "id": "10-24/8", "ord": 8, "week": "10-24", "squares": 3}, {"note": "mum-drafts-unsent.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# mum — drafts, unsent\n\nkeeping them here instead of in the messages app so that i stop nearly sending them at two in the morning.\n\n**draft, 10-20**\n> i know you think eleven months is long enough. it is not long enough. it is not a unit of anything.\n> the flowers from the funeral were still in the hall at roskilde when you got married. i know because i was the one who threw them out.\n\n**draft, 10-22**\n> did he ever tell you why the roof door got a lock on it five months before\n\nnot sent. neither of them. she said closure once on the phone on 10-08 and i have been drafting at her ever since.", "id": "10-24/9", "ord": 9, "week": "10-24", "squares": 1}, {"note": "nyholm-appointment.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# nyholm\n\ngp. first saw her three months ago about the sleep. she wrote things down and gave me a name i did not call.\n\n**10-23** — rang the surgery. next appointment is 11-18, 09:30. took it. 11-18.\n\ndid not say anything about that on the phone. the receptionist was reading from a screen.", "id": "10-24/10", "ord": 10, "week": "10-24", "squares": 1}, {"note": "claudius-chief-executive.md", "head": "@@ -1,3 +1,11 @@", "add": 8, "dele": 0, "text": " # claudius — chief executive\n \n appointed three weeks after. married mum three months later. the sequence is a fact and everyone treats saying it as an accusation.\n+\n+**10-19** — he makes decisions the way a man does when the decision was made before the meeting. i used to think that was competence. i have started timing it.\n+\n+the board minutes from the month he died are in the company drive and i have read the appointment item four times. the wording of the resolution is dated the 18th. the announcement went out on the 17th.\n+\n+**10-20** — in the lift, on the way up, he asked me to stay. \"dont go back to wittenberg. the company needs one of us in it who isnt me.\" mum rang an hour later and said the same sentence, word for word, *one of us in it*, which is how i know who wrote it.\n+\n+at the wedding in june he raised a glass to dad before he raised one to her, and everyone said how gracious. he toasts every occasion as though the occasion were his.", "kind": "added", "chars": 783, "id": "10-24/11", "ord": 11, "week": "10-24", "squares": 4}, {"note": "estate-account-probate.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# estate account / probate\n\nstill in dad's name. still paying things. cornelius says that is normal until probate closes and probate has not closed in eleven months.\n\n**10-19** — cornelius at 09:40. probate still open. \"not unusual at eleven months\" when there is a company holding in the estate.\n\nstanding orders still going out of it:\n1. house insurance, roskilde — 1,140 / quarter\n2. plot maintenance, roskilde churchyard — 380 / quarter\n3. something at 212 / month to a firm i do not recognise and neither does cornelius\n\nnumber 3 is the only interesting line in the whole account and i have asked about it twice.", "id": "10-24/12", "ord": 12, "week": "10-24", "squares": 1}, {"note": "wittenberg-withdrawal-form.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# wittenberg — withdrawal form\n\nnever formally withdrew. came back for the funeral and did not go back. the department has been patient in the way institutions are patient, which is to say by sending the same email four times.\n\n**10-23** — deadline to withdraw without a fee is **12-15**. after that the enrolment rolls and the fee rolls with it.\n\ntuition refund goes to the estate account, which is still in dad's name, which means it becomes a probate question instead of a form. asked cornelius whether it has to.\n\ntwo options and i keep pretending there are more:\n- withdraw, and the year is over\n- do nothing, and the year rolls, and the fee is 18,400", "id": "10-24/13", "ord": 13, "week": "10-24", "squares": 1}, {"note": "ines-abril-emails.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# ines abril — emails\n\nfreelance. has been writing about the company since before the inquest. six emails since the autumn, all of them polite, none of them answered.\n\n**10-22** — seventh email. pasted, because the wording matters:\n\n> Hello again — I'm told the anniversary film is going ahead for the anniversary itself. That's a natural moment for the piece I've been trying to write, and I'd rather write it with you than around you. No agenda, no ambush. — Ines\n\n\"than around you\" is the part that is doing the work.\n\nshe has been following up with marcellus and bernardo, which means she knows there is a roof in this, which means reynaldo has heard, which means polonius has.", "id": "10-24/14", "ord": 14, "week": "10-24", "squares": 1}, {"note": "laertes-lisbon-office.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# laertes — lisbon office\n\nruns the lisbon side. home twice a year. fenced at wittenberg, better than me, and knows it in the way that does not need saying.\n\n**10-21** — in town for the board week. at the ten o'clock in person, supplier contracts, addressed the whole thing to claudius and not to the room. the tone was different. i noticed the tone and then spent the rest of the meeting deciding whether i had invented the tone. flies back to lisbon thursday.", "id": "10-24/15", "ord": 15, "week": "10-24", "squares": 1}, {"note": "journal.md", "head": "@@ -1,4 +1,22 @@", "add": 18, "dele": 0, "text": " # journal\n+\n+**10-23** — claudius in the lift at nine, on my way out to bispebjerg, smiling the good smile, the one for the board. a man can smile at you every morning in a lift and still be the shoulder in the frame. i am writing that down because i want to remember it, and i am afraid that if i see the smile enough mornings i will stop being able to.\n+\n+remember. that is the whole of the instruction, and nobody gave it to me. it is just what forty seconds says if you watch it enough times.\n+\n+**10-22** — horatio watched it with me at the flat, twice, then a third time with the sound off because the sound is just wind. he did not say much. what he said was \"we should know who that is before we say anything to anyone\", and i agreed, and then we sat there for a while not saying anything to anyone. the second figure is at 02:11:18 and gone by 02:11:31. thirteen seconds. shoulder, part of an arm, then the frame is empty and it stays empty for the rest of it.\n+\n+i have watched it enough times now that i can tell you what the pigeons do.\n+\n+**10-21** — marcellus asked me to come to ursa before his shift ended. 06:20, he was already at the back table with his coat on. he put his phone on the table face up and said \"this is from that night\" and i said i know what it is and he said \"no you dont\". forty seconds. 02:11. i have seen the still the inquest used. i had not seen the forty seconds.\n+\n+he said he pulled it the week after and kept it because nobody asked him for it. that is the part i keep turning over. nobody asked him for it.\n+\n+am furious in a way that has nowhere to go and comes out as being late for things. was twenty minutes late to the eleven o'clock and could not have told you why.\n+\n+**10-20** — sigrid brought three boxes down from roskilde, left them in the hall, one marked *personal* in her handwriting which is her way of apologising. dad's laptop is in that one. i have not opened any of them. they are by the window.\n+\n+she stayed eleven minutes. asked how mum was. i said fine. she said \"and you\" and i said fine and she looked at me the way she used to look at dad when he said he would be home by seven.\n \n **10-14** — eleven months on friday. sigrid emailed to ask if i wanted dad's boxes before the house gets listed and i have not replied. the ring says i slept 7h. i was awake from three.", "kind": "added", "chars": 2105, "id": "10-24/16", "ord": 16, "week": "10-24", "squares": 11}, {"note": "bispebjerg-records-request.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# bispebjerg — records request\n\nwhat i actually want out of the file: witness statements, the coroner's working notes, the timeline as it was reconstructed, and whatever was submitted as access evidence.\n\nwhat i have: the finding, and one still frame.\n\n**10-23** — records office 10:15. they will not release to me direct even as next of kin while the estate is in probate. has to come through counsel, on the estate's letterhead, with the reference from the original file.\n\nreference is KB-4417/B. wrote it on my hand like a student.\n\nso: cornelius, not voltemand. voltemand has been to norvik three times since the new year and i would rather he did not know what i am asking for.", "id": "10-24/17", "ord": 17, "week": "10-24", "squares": 1}, {"note": "roof-footage-0211.md", "head": "@@ -3,3 +3,15 @@ # roof footage — 02:11", "add": 12, "dele": 0, "text": " what the inquest used: one still frame, timestamped 02:11, roof door open. that is the whole of what i have seen of it and it is the whole of what mum has seen of it.\n \n marcellus was on nights that week. francisco hands to bernardo at 18:00, bernardo to marcellus at midnight.\n+\n+**10-21** — marcellus has the forty seconds. not the still. the forty seconds either side of it.\n+\n+what is actually in it:\n+- 02:11:04 roof door opens inward. nobody in frame.\n+- 02:11:18 second figure enters lower left. shoulder, part of an upper arm, dark coat.\n+- 02:11:31 gone. out of frame, not through the door.\n+- 02:11:31 to 02:11:44 empty roof. pigeons on the plant housing.\n+\n+thirteen seconds of a person who is not my father, on a roof he had no reason to be on, at an hour the door is locked from the inside.\n+\n+marcellus pulled the file the week after and kept it because nobody asked him for it. he has the raw on a drive at his flat in bispebjerg. he offered me a copy on 10-21 and i said no, which i have thought about every day since.", "kind": "added", "chars": 733, "id": "10-24/18", "ord": 18, "week": "10-24", "squares": 4}, {"note": "fencing-gothersgade-tuesdays.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# fencing — gothersgade, tuesdays\n\nhall on gothersgade. tuesdays and thursdays, 19:00. 180 a session or 320 the month, which only makes sense if you go more than twice.\n\nstarted again after the funeral. the reason was that it was tuesday and i had to be somewhere that was not roskilde.\n\n**10-20** — tuesday. went. footwork for an hour, then bouts with karin, who does not ask questions and does not miss a parry. shoulder held.\n\nthis is the only hour in the week where i am not doing the other thing.", "id": "10-24/19", "ord": 19, "week": "10-24", "squares": 1}, {"note": "anniversary-film-fen-co.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# anniversary film — fen & co\n\nfor the anniversary. one year. claudius commissioned it three months ago and told me about it two months ago.\n\ntobias fen directing. sigrid's interviews are the spine of it, plus archive from the old comms library — yorick's era, mostly, which means it is going to sound like a press release with music under it.\n\n**10-22** — tobias wants twenty minutes with me on camera. have not replied. the film is about dad and the first twenty years and i am in it whether i plan to be or not, so i may as well choose what i say.\n\nscreening is set for 11-18 itself. company only, ninth floor.", "id": "10-24/20", "ord": 20, "week": "10-24", "squares": 1}, {"note": "dad-laptop-sigrid-boxes.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# dad's laptop — sigrid's boxes\n\nsigrid holt. nineteen years as his assistant, redundancy three weeks after. she packed his office herself and kept the laptop because \"it didnt feel like the rest\".\n\n**10-20** — three boxes, left in the hall, eleven minutes. one marked *personal* in her handwriting, which is how sigrid apologises.\n\nthe laptop is in that one. i have not opened the box, let alone the laptop. they are by the window and i walk past them about forty times a day.", "id": "10-24/21", "ord": 21, "week": "10-24", "squares": 1}, {"note": "sleep-ring-score-log.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# sleep ring score log\n\nstarted 10-01. horatio's idea — if im going to be certain im not sleeping i may as well be certain with a number.\n\nthe number and the night are not the same thing. writing both.\n\n| date | ring says | i say |\n|---|---|---|\n| 10-01 | 7.2 | fine |\n| 10-08 | 7.4 | four then awake |\n| 10-12 | 6.9 | four then awake |\n| 10-20 | 6.66, midsleep 03:38 | four then awake |\n| 10-21 | 6.93, latency 18 | maybe three. the night after the forty seconds |\n| 10-22 | 7.75 | horatio here till half one, so at least that is honest |\n| 10-23 | 7.00 | four then awake |\n\nthe ring has said seven for three weeks. i have said four for three weeks. one of us is wrong and the ring is the one with the sensor.", "id": "10-24/22", "ord": 22, "week": "10-24", "squares": 1}, {"note": "log.md", "head": "@@ -7,3 +7,10 @@ # log", "add": 7, "dele": 0, "text": " 10-08: 7.4h. tower all day. mum called, 4 min, said closure once.\n 10-12: 6.9h. awake 03:10–05:00. ursa 06:05. skipped dinner.\n 10-14: 7.0h. eleven months fri. did not reply to sigrid.\n+10-17: 7.95h, score 91. best in weeks. roskilde, one hour, left.\n+10-18: 8.85h, score 95. sunday. nothing.\n+10-19: 7.24h. cornelius 09:40, probate still open, \"not unusual at eleven months\".\n+10-20: 6.66h, midsleep 03:38. sigrid, three boxes, 11 min. did not open them.\n+10-21: 6.93h, latency 18, midsleep 04:44. marcellus at ursa 06:20. saw the forty seconds. late to the 11:00 by twenty min. ate nothing till nine pm.\n+10-22: 7.75h. horatio at the flat till half one. watched it 3x. marcellus rang at midnight, on speaker. laertes flew back to lisbon.\n+10-23: 7.00h. bispebjerg 10:15 — wont release to me direct, has to go via counsel. gothersgade cancelled, went home.", "kind": "added", "chars": 659, "id": "10-24/23", "ord": 23, "week": "10-24", "squares": 3}], "notes": ["fencing-kit-dad-jacket.md", "horatio-what-we-know.md", "nordhavn-lease-petra-lund.md", "roskilde-house-empty.md", "yorick-comms-quotes.md", "ophelia-contact-log.md", "polonius-chief-of-staff.md", "kronborg-roof-access-codes.md", "marcellus-shift-logs.md", "mum-drafts-unsent.md", "nyholm-appointment.md", "claudius-chief-executive.md", "estate-account-probate.md", "wittenberg-withdrawal-form.md", "ines-abril-emails.md", "laertes-lisbon-office.md", "journal.md", "bispebjerg-records-request.md", "roof-footage-0211.md", "fencing-gothersgade-tuesdays.md", "anniversary-film-fen-co.md", "dad-laptop-sigrid-boxes.md", "sleep-ring-score-log.md", "log.md"]}, {"week": "11-01", "weekday": "Sunday", "hunks": [{"note": "fencing-gothersgade-tuesdays.md", "head": "@@ -7,3 +7,7 @@ # fencing — gothersgade, tuesdays", "add": 4, "dele": 0, "text": " **10-20** — tuesday. went. footwork for an hour, then bouts with karin, who does not ask questions and does not miss a parry. shoulder held.\n \n this is the only hour in the week where i am not doing the other thing.\n+\n+**10-27** — went. fenced badly and on purpose, in the same way i was late on purpose, which i did not realise until karin said \"youre not here\" between bouts and i said no, fair.\n+\n+**10-29** — did not go. tobias at two, then stood in a corridor for four seconds and decided something, then went home.", "kind": "added", "chars": 297, "id": "11-01/0", "ord": 0, "week": "11-01", "squares": 1}, {"note": "log.md", "head": "@@ -9,8 +9,15 @@ # log", "add": 8, "dele": 1, "text": " 10-14: 7.0h. eleven months fri. did not reply to sigrid.\n 10-17: 7.95h, score 91. best in weeks. roskilde, one hour, left.\n 10-18: 8.85h, score 95. sunday. nothing.\n-10-19: 7.24h. cornelius 09:40, probate still open, \"not unusual at eleven months\".\n+10-19: 7.24h. cornelius 09:40, probate still open, \"not unusual at eleven months\". asked about the 212 standing order. second time.\n 10-20: 6.66h, midsleep 03:38. sigrid, three boxes, 11 min. did not open them.\n 10-21: 6.93h, latency 18, midsleep 04:44. marcellus at ursa 06:20. saw the forty seconds. late to the 11:00 by twenty min. ate nothing till nine pm.\n 10-22: 7.75h. horatio at the flat till half one. watched it 3x. marcellus rang at midnight, on speaker. laertes flew back to lisbon.\n 10-23: 7.00h. bispebjerg 10:15 — wont release to me direct, has to go via counsel. gothersgade cancelled, went home.\n+10-24: 6.71h. sat in the flat. did not open the boxes.\n+10-25: 6.61h, score 81. worst of the month. awake 02:40 on.\n+10-26: 7.22h. r&g in reception 08:40. lanyards already printed.\n+10-27: 7.59h. late on purpose to the 10:00. gothersgade 19:00, went, fenced badly.\n+10-28: 7.46h, latency 4. ursa 07:30 — said \"you never are\" to ophelia. paid for her coffee. worst thing i have said to anyone this year.\n+10-29: 6.85h. tobias 14:00, asked for archive. said yes. gothersgade 19:00, did not go.\n+10-30: 7.35h. petra: reynaldo has been asking her what hours i keep. claudius in the lift quoted my december message to ophelia.", "kind": "mixed", "chars": 822, "id": "11-01/1", "ord": 1, "week": "11-01", "squares": 4}, {"note": "roof-footage-0211.md", "head": "@@ -15,3 +15,9 @@ # roof footage — 02:11", "add": 6, "dele": 0, "text": " thirteen seconds of a person who is not my father, on a roof he had no reason to be on, at an hour the door is locked from the inside.\n \n marcellus pulled the file the week after and kept it because nobody asked him for it. he has the raw on a drive at his flat in bispebjerg. he offered me a copy on 10-21 and i said no, which i have thought about every day since.\n+\n+**10-29** — tobias wants forty to sixty seconds of building archive under the middle section of the film. i have forty seconds of building archive.\n+\n+not telling horatio until it is cut. he will say the right thing about it and i do not want to hear the right thing yet. #film\n+\n+**10-31** — a shoulder is not a face. i have built three weeks on thirteen seconds of somebody's coat, and a coat could be anybody's. before i do anything that cannot be undone i want better than the coat. i want to see his face when he sees it.", "kind": "added", "chars": 518, "id": "11-01/2", "ord": 2, "week": "11-01", "squares": 3}, {"note": "inquest-bundle-gaps.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# inquest bundle — gaps\n\nwhat the bundle contains against what should be in it. keeping this as two lists so i stop arguing with myself about it.\n\n**10-30** — cornelius sent the index on friday.\n\n**in it**: admission record · pathology summary · marcellus's initial statement · bernardo's follow-up · francisco's handover log from 18:00 · one still frame from the roof camera, timestamped 02:11 · the duty roster for that night\n\n**not in it**: the forty seconds either side of the still · the panel access log for the roof hatch · any statement from anybody in the building above the sixth floor · the maintenance record for the lock installed five months before", "id": "11-01/3", "ord": 3, "week": "11-01", "squares": 1}, {"note": "journal.md", "head": "@@ -1,4 +1,22 @@", "add": 18, "dele": 0, "text": " # journal\n+\n+**10-31** — saturday. had the phone in my hand to ring ophelia and put it down again.\n+\n+yesterday on tobias's monitor sigrid cried at the end of her interview, properly, for a man who signed her pay slips. i have not cried once. not at the funeral, not at the forty seconds. i said *coward* out loud in the flat this afternoon, to nobody, and it was embarrassing and it was also accurate. the film is either the answer to that or a more elaborate way of not doing anything, and from in here i genuinely cannot tell which.\n+\n+**10-29** — decided about the film today, in about four seconds, standing in the corridor on nine. tobias wants archive for the middle section. i have forty seconds of archive. i can put it in the cut and sit in the room and watch claudius watch it.\n+\n+felt something close to joy for about four hours. then felt like a coward for being that pleased with a plan that is still only a plan. i keep asking myself why i have not simply gone to the police with it, and the honest answer is that i do not have an answer i believe. the plan is better than the answer. that is the kind of sentence i would once have made fun of somebody for writing down.\n+\n+**10-28** — was cruel to ophelia at ursa and i am writing down exactly what i said because i want it on the record against me. she asked whether i was going to the offsite and i said \"you can tell your father i havent decided\". she said \"i wasnt asking for him\" and i said \"you never are\". then i left. i paid for her coffee on the way out, which is the most contemptible part of it.\n+\n+reynaldo has been asking about me in nordhavn. petra told me, not because she is on anyone's side but because she thought it was odd — a man asking the landlord what hours her tenant keeps.\n+\n+**10-27** — started being difficult on purpose to see who reports it. late to the ten o'clock, oblique in the eleven, cheerful at claudius in a way that is worse than rude. by four rosencrantz had asked horatio whether i was sleeping. so: eleven minutes and two floors, it turns out, is how long it takes.\n+\n+i am better at this than i expected and that bothers me.\n+\n+**10-26** — rosencrantz and guildenstern in reception at 08:40 with lanyards already printed. \"strategic review\". nobody commissioned a strategic review. guildenstern is always three steps behind and says the thing rosencrantz said, slower, as though he thought of it.\n \n **10-23** — claudius in the lift at nine, on my way out to bispebjerg, smiling the good smile, the one for the board. a man can smile at you every morning in a lift and still be the shoulder in the frame. i am writing that down because i want to remember it, and i am afraid that if i see the smile enough mornings i will stop being able to.", "kind": "added", "chars": 2361, "id": "11-01/4", "ord": 4, "week": "11-01", "squares": 12}, {"note": "dad-laptop-sigrid-boxes.md", "head": "@@ -4,4 +4,8 @@ # dad's laptop — sigrid's boxes", "add": 5, "dele": 1, "text": " \n **10-20** — three boxes, left in the hall, eleven minutes. one marked *personal* in her handwriting, which is how sigrid apologises.\n \n-the laptop is in that one. i have not opened the box, let alone the laptop. they are by the window and i walk past them about forty times a day.\n+the laptop is in that one. i have not opened the box, let alone the laptop. they are by the window. eight days now.\n+\n+**10-28** — asked her about the roof lock instead of about the boxes, which tells you something. she typed the covering note herself six months before he died; justification on the form was \"insurance\"; request came through polonius's office. nineteen years and she says nobody ever asked to lock that door before.\n+\n+she asked whether i had opened the box. i said not yet. she said \"theres no hurry, but there is a difference between not yet and no\", which is going to sit with me for a while.", "kind": "mixed", "chars": 749, "id": "11-01/5", "ord": 5, "week": "11-01", "squares": 4}, {"note": "ines-abril-emails.md", "head": "@@ -6,6 +6,10 @@ # ines abril — emails", "add": 5, "dele": 1, "text": " \n > Hello again — I'm told the anniversary film is going ahead for the anniversary itself. That's a natural moment for the piece I've been trying to write, and I'd rather write it with you than around you. No agenda, no ambush. — Ines\n \n-\"than around you\" is the part that is doing the work.\n+\"than around you\" is the part that is doing the work, and she knew it when she typed it.\n \n she has been following up with marcellus and bernardo, which means she knows there is a roof in this, which means reynaldo has heard, which means polonius has.\n+\n+**10-30** — three more, thursday and friday. guildenstern has talked to her; i can tell because two of her questions are phrased in his order.\n+\n+not answering. not because there is nothing there but because i am not the person who gets to tell it yet.", "kind": "mixed", "chars": 389, "id": "11-01/6", "ord": 6, "week": "11-01", "squares": 2}, {"note": "wittenberg-withdrawal-form.md", "head": "@@ -9,3 +9,9 @@ # wittenberg — withdrawal form", "add": 6, "dele": 0, "text": " two options and i keep pretending there are more:\n - withdraw, and the year is over\n - do nothing, and the year rolls, and the fee is 18,400\n+\n+still two options on 10-29. the paperwork around them has changed; they have not.\n+\n+**10-29** — cornelius says the refund can come to me directly if i sign the release; it does not have to sit in the estate. he has already written to the registrar. one less thing in dad's name.\n+\n+so the paperwork problem is solved and the actual problem is untouched, which is about right for this month.", "kind": "added", "chars": 383, "id": "11-01/7", "ord": 7, "week": "11-01", "squares": 2}, {"note": "polonius-chief-of-staff.md", "head": "@@ -3,3 +3,11 @@ # polonius — chief of staff", "add": 8, "dele": 0, "text": " talks for a living. has never once in four years given me a straight answer to a question i asked in a corridor.\n \n **10-22** — saw him walk laertes to the lift at three with a list. i caught the last three items going past: do not lend anybody at norvik anything, do not borrow from them either, and \"be true to yourself\", which from polonius is a fox recommending chickens. laertes nodded at every item like a man being read his own terms and conditions. flight at five.\n+\n+**10-28** — he has decided the problem is ophelia, and has told at least three people so, because reynaldo is asking my landlord what hours i keep and reynaldo only moves when polonius points him.\n+\n+the theory is tidy and it is wrong and it is easier than the true one, which is why it will win in that building.\n+\n+he sent accommodation and dietary requirements for an offsite that is in one room for one afternoon.\n+\n+**10-30** — he has a message i sent ophelia in december, and he has shown it to claudius. i know because claudius quoted it back to me in the lift this morning, smiling — \"doubt everything else, never doubt that\" — which i wrote at two in the morning and would not have shown my own mother. [[ophelia-contact-log]]", "kind": "added", "chars": 723, "id": "11-01/8", "ord": 8, "week": "11-01", "squares": 4}, {"note": "horatio-what-we-know.md", "head": "@@ -10,9 +10,16 @@ # horatio — what we know", "add": 7, "dele": 0, "text": " **think**\n - somebody did not want the forty seconds in the bundle\n - bernardo knows something he is not saying\n+- the lock, five months before, was not about insurance\n \n **sworn 10-22**: marcellus rang at midnight while h was here and asked us both, on speaker, to say we would not tell anyone where the file came from. he asked three times, which is a strange number for a security guard, and we said it three times.\n \n told h after he hung up: if i start behaving oddly in the building over the next weeks it is on purpose, and he is not to ask me about it in front of anyone. he said \"how will i tell the difference\". i said he would not need to.\n \n **agreed 10-22**: we say nothing to anyone, including ophelia, until we know who the shoulder belongs to. h's condition, not mine. i agreed to it in the flat at about one in the morning and i have kept it, which surprises me.\n+\n+**know** (added 10-27)\n+- rosencrantz asked h whether i was sleeping, within four hours of me being difficult on purpose\n+- r&g are engaged as \"strategic review\" with no requesting director on the paperwork\n+\n+h asked me on 10-27 what the plan actually was and i said i was finding out who reports what to whom. he said \"thats a method, not a plan.\" he was right and i said something unkind about postdocs.", "kind": "added", "chars": 453, "id": "11-01/9", "ord": 9, "week": "11-01", "squares": 2}, {"note": "estate-account-probate.md", "head": "@@ -9,4 +9,6 @@ # estate account / probate", "add": 3, "dele": 1, "text": " 2. plot maintenance, roskilde churchyard — 380 / quarter\n 3. something at 212 / month to a firm i do not recognise and neither does cornelius\n \n-number 3 is the only interesting line in the whole account and i have asked about it twice.\n+number 3 is the only interesting line in the whole account and i have now asked about it three times.\n+\n+**10-26** — asked cornelius again about the 212. he says he will pull the mandate. he has said that before. not his fault, it is voltemand's file and voltemand is the one who has to release it. #probate", "kind": "mixed", "chars": 394, "id": "11-01/10", "ord": 10, "week": "11-01", "squares": 2}, {"note": "anniversary-film-fen-co.md", "head": "@@ -7,3 +7,15 @@ # anniversary film — fen & co", "add": 12, "dele": 0, "text": " **10-22** — tobias wants twenty minutes with me on camera. have not replied. the film is about dad and the first twenty years and i am in it whether i plan to be or not, so i may as well choose what i say.\n \n screening is set for 11-18 itself. company only, ninth floor.\n+\n+**10-28** — crew in the building. three of them, small kit, tobias apologising to everyone in the lifts.\n+\n+**10-29** — tobias at 14:00 about the middle section. he wants forty to sixty seconds of building archive to run under sigrid's voiceover, \"something with the tower in it, doesnt need to be pretty, needs to be real.\"\n+\n+i said i would find him something.\n+\n+i said it and then i stood in the corridor on nine for about four seconds and understood what i had just agreed to do. #film\n+\n+**10-30** — watched sigrid's interview on tobias's monitor. four minutes about him, and at the end she cries, properly, on camera, for a man who signed her pay slips. i have not cried once. what is he to her, that she can do that in four minutes and i cannot do it in eleven months.\n+\n+tobias is cutting the middle from yorick's old tapes. there is one of yorick rehearsing dad's launch speech in dad's voice, and for about three seconds i thought it was dad. [[yorick-comms-quotes]]", "kind": "added", "chars": 957, "id": "11-01/11", "ord": 11, "week": "11-01", "squares": 5}, {"note": "ophelia-contact-log.md", "head": "@@ -3,3 +3,16 @@ # ophelia — contact log", "add": 13, "dele": 0, "text": " started this six weeks ago because i kept losing track of what i had actually said to her and what i had only drafted. that should have told me something.\n \n **10-22** — she walked me to the bike after work. laertes flew back to lisbon this afternoon, and before he went he told her to be careful with me: that i am not free to mean what i say, because of whose son i am in that building, and she should not read too much into any of it. she laughed telling me. i did not, and she noticed that i did not, and then i did not tell her about the forty seconds, which is the first thing i have ever decided not to tell her.\n+\n+**10-28** — ursa, about 07:30. verbatim, because i want it on the record against me:\n+\n+> her: are you coming to the offsite\n+> me: you can tell your father i havent decided\n+> her: i wasnt asking for him\n+> me: you never are\n+\n+then i left. i paid for her coffee on the way out, which is the worst part and i am not sure i can explain why.\n+\n+her father spent the week telling people the problem was her. i knew that when i said it. that is not a defence, it is the opposite of one.\n+\n+**10-30** — she texted at 23:40. her father asked her for the message i sent her in december and she gave it to him, because he asked, and she is sorry. so that is how claudius came to be quoting it at me in the lift this morning. i did not answer the text.", "kind": "added", "chars": 722, "id": "11-01/12", "ord": 12, "week": "11-01", "squares": 4}, {"note": "bispebjerg-records-request.md", "head": "@@ -9,3 +9,7 @@ # bispebjerg — records request", "add": 4, "dele": 0, "text": " reference is KB-4417/B. wrote it on my hand like a student.\n \n so: cornelius, not voltemand. voltemand has been to norvik three times since the new year and i would rather he did not know what i am asking for.\n+\n+**10-29** — sent cornelius the authorisation. he says two to four weeks, and that he needs exact dates and the reference, both of which i now have.\n+\n+he asked, carefully, whether there was a reason i wanted them now rather than in the spring. i said the anniversary film. he said \"ah\", which covered it and did not believe it.", "kind": "added", "chars": 323, "id": "11-01/13", "ord": 13, "week": "11-01", "squares": 2}, {"note": "who-asked-what-when.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# who asked what, when\n\nstarted 10-27. the method is: be difficult on purpose, then write down who hears about it and how fast.\n\n| when | who asked | who they asked | about |\n|---|---|---|---|\n| 10-27 12:10 | rosencrantz | horatio | whether i am sleeping |\n| 10-28 am | reynaldo | petra lund | what hours i keep, whether i have people over |\n| 10-29 | guildenstern | osric | whether i have seen the inquest papers |\n| 10-30 | polonius | ophelia | me |\n| 10-30 | claudius | me, in the lift | nothing. quoted my december message to ophelia back at me |\n\neleven minutes and two floors from being oblique in a meeting to rosencrantz asking horatio a question about my sleep.\n\nnobody has asked me anything.", "id": "11-01/14", "ord": 14, "week": "11-01", "squares": 1}, {"note": "sleep-ring-score-log.md", "head": "@@ -7,11 +7,17 @@ # sleep ring score log", "add": 7, "dele": 1, "text": " | date | ring says | i say |\n |---|---|---|\n | 10-01 | 7.2 | fine |\n-| 10-08 | 7.4 | four then awake |\n | 10-12 | 6.9 | four then awake |\n | 10-20 | 6.66, midsleep 03:38 | four then awake |\n | 10-21 | 6.93, latency 18 | maybe three. the night after the forty seconds |\n | 10-22 | 7.75 | horatio here till half one, so at least that is honest |\n | 10-23 | 7.00 | four then awake |\n+| 10-24 | 6.71 | four |\n+| 10-25 | 6.61, score 81 — worst of the month | four, and the worst of them |\n+| 10-28 | 7.46, latency 4 | went out like a light. the day i decided about the film |\n \n the ring has said seven for three weeks. i have said four for three weeks. one of us is wrong and the ring is the one with the sensor.\n+\n+taking it off to see whether it resets is not a diagnostic procedure. stop doing it.\n+\n+it counts the hours. it does not count the dreams, which are the part that is wrong.", "kind": "mixed", "chars": 386, "id": "11-01/15", "ord": 15, "week": "11-01", "squares": 2}, {"note": "marcellus-shift-logs.md", "head": "@@ -13,3 +13,7 @@ # marcellus — shift logs", "add": 4, "dele": 0, "text": " bernardo at 02:07 on floor 8 means bernardo had four minutes to get to the roof and be a shoulder in a frame. marcellus does not think it is him and marcellus is the one who reads people for a living.\n \n putting his phone away at ursa he said: \"something in that building has been wrong for a year, and everybody on nights knows it.\"\n+\n+**10-27** — bernardo will not go back up alone. marcellus asked him straight and got \"no\", and nothing after the no.\n+\n+horatio's line about it: \"people dont refuse work unless the work itself is wrong.\" which sounded better at the time than it does written down, but i have not been able to put it down either.", "kind": "added", "chars": 307, "id": "11-01/16", "ord": 16, "week": "11-01", "squares": 2}, {"note": "mum-drafts-unsent.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# mum — drafts, unsent\n\nkeeping them here instead of in the messages app so that i stop nearly sending them at two in the morning.\n\n**draft, 10-20**\n> i know you think eleven months is long enough. it is not long enough. it is not a unit of anything.\n> the flowers from the funeral were still in the hall at roskilde when you got married. i know because i was the one who threw them out.\n\n**draft, 10-22**\n> did he ever tell you why the roof door got a lock on it five months before\n\nnot sent. neither of them. she said closure once on the phone on 10-08 and i have been drafting at her ever since.\n\n**draft, 10-27**\n> i am not unwell. i am accurate. those look the same from where you are sitting and i can see that.\n\nnot sent.", "id": "11-01/17", "ord": 17, "week": "11-01", "squares": 1}, {"note": "kronborg-roof-access-codes.md", "head": "@@ -13,3 +13,7 @@ # kronborg — roof access, codes", "add": 4, "dele": 0, "text": " code changes monthly. last change before that night was 11-17. so the code was one day old, which is the safest a code ever is, which is the part that bothers me.\n \n polonius signed off the install. claudius was not chief executive yet but he was in the building most days. sigrid would know who asked for the lock and why — she was still in the office then. #access\n+\n+**10-28** — asked sigrid. she says the lock request came through polonius's office six months before he died and the justification on the form was \"insurance\". she typed the covering note herself. she does not remember anyone asking for the roof to be locked before that and she was there nineteen years.\n+\n+so: a door nobody used gets a lock five months before somebody goes off it.", "kind": "added", "chars": 379, "id": "11-01/18", "ord": 18, "week": "11-01", "squares": 2}, {"note": "voltemand-norvik-billing.md", "head": "@@ -1,3 +1,11 @@", "add": 8, "dele": 0, "text": " # voltemand — norvik, billing\n \n outside counsel. cornelius is in-house. when i was a child i thought they were the same firm.\n+\n+**10-28** — three trips to norvik since the new year: 09-30, 10-14, 10-28. osric says the car service booking did not come from corp dev either time. \"not us.\"\n+\n+asked voltemand directly on 10-29. 09-30 was \"a client meeting\", no further detail. 10-28 he deferred — \"depends on probate timing\", which is not an answer to a question about norvik.\n+\n+cornelius, when i mentioned it: \"hes not billing us for those days.\" which is the actual problem. #norvik\n+\n+**10-30** — voltemand reported back to the board on norvik. claudius sent him in january to get fortinbras to stop picking off our suppliers, and the news is that fortinbras will stand off, and would in return like \"data-room access for a possible partnership\". the board said yes in eleven minutes. nobody asked what a competitor wants with our supplier pricing.", "kind": "added", "chars": 810, "id": "11-01/19", "ord": 19, "week": "11-01", "squares": 4}, {"note": "rosencrantz-guildenstern-review.md", "head": "@@ -1 +1,11 @@", "add": 10, "dele": 0, "text": " # rosencrantz & guildenstern — \"strategic review\"\n+\n+**10-26** — reception at 08:40, lanyards already printed, which means somebody in facilities had their names last week.\n+\n+engagement is booked as \"strategic review\". no requesting director on the paperwork. osric says it went through the chief executive's office directly, and then said \"i shouldnt have said that\", which is the most useful thing osric has ever done.\n+\n+knew them at wittenberg. guildenstern is always three steps behind and repeats what rosencrantz said, slower, as though he has just thought of it.\n+\n+**10-27** — was oblique at them on purpose all morning. by four rosencrantz had asked horatio whether i was sleeping.\n+\n+**10-29** — lunch, their idea. r said the building has felt like a prison all week. i said then it is one. g said, a beat later, that it only feels that way because i want more than it. i said i could live in a cupboard and call it a kingdom, if it were not for the dreams. neither of them had a line for that.", "kind": "added", "chars": 937, "id": "11-01/20", "ord": 20, "week": "11-01", "squares": 5}, {"note": "offsite-running-order.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# offsite — running order\n\nninth floor, not the coast. claudius's version of a retreat is a room with the blinds down.\n\n**10-26** — polonius sent accommodation and dietary requirements at 18:47 for an event that is in one building and lasts one afternoon. i have not responded.\n\nosric is making a spreadsheet about it. osric is always making a spreadsheet about it.", "id": "11-01/21", "ord": 21, "week": "11-01", "squares": 1}, {"note": "nordhavn-lease-petra-lund.md", "head": "@@ -9,4 +9,10 @@ # nordhavn lease — petra lund", "add": 7, "dele": 1, "text": " reasons to stay: it is quiet, it is twenty minutes to the tower on the bike, and i can be in it without thinking about anybody.\n reasons to go: none that i can write down, which is not the same as none.\n \n-decide by 11-14.\n+decide by 11-14. twenty-six days.\n+\n+**10-30** — petra stopped me by the bins. a man came round on wednesday asking what hours i keep and whether i have people over. said he was \"doing a reference\". she told him to email the agency and then told me, because she thought it was odd, which it is.\n+\n+reynaldo does not do references. reynaldo does this. #reynaldo\n+\n+still have not answered her about the lease. sixteen days.", "kind": "mixed", "chars": 426, "id": "11-01/22", "ord": 22, "week": "11-01", "squares": 2}], "notes": ["fencing-gothersgade-tuesdays.md", "log.md", "roof-footage-0211.md", "inquest-bundle-gaps.md", "journal.md", "dad-laptop-sigrid-boxes.md", "ines-abril-emails.md", "wittenberg-withdrawal-form.md", "polonius-chief-of-staff.md", "horatio-what-we-know.md", "estate-account-probate.md", "anniversary-film-fen-co.md", "ophelia-contact-log.md", "bispebjerg-records-request.md", "who-asked-what-when.md", "sleep-ring-score-log.md", "marcellus-shift-logs.md", "mum-drafts-unsent.md", "kronborg-roof-access-codes.md", "voltemand-norvik-billing.md", "rosencrantz-guildenstern-review.md", "offsite-running-order.md", "nordhavn-lease-petra-lund.md"]}, {"week": "11-06", "weekday": "Friday", "hunks": [{"note": "wittenberg-withdrawal-form.md", "head": "@@ -6,12 +6,6 @@ # wittenberg — withdrawal form", "add": 0, "dele": 6, "text": " \n tuition refund goes to the estate account, which is still in dad's name, which means it becomes a probate question instead of a form. asked cornelius whether it has to.\n \n-two options and i keep pretending there are more:\n-- withdraw, and the year is over\n-- do nothing, and the year rolls, and the fee is 18,400\n-\n-still two options on 10-29. the paperwork around them has changed; they have not.\n-\n **10-29** — cornelius says the refund can come to me directly if i sign the release; it does not have to sit in the estate. he has already written to the registrar. one less thing in dad's name.\n \n so the paperwork problem is solved and the actual problem is untouched, which is about right for this month.", "kind": "removed", "chars": 217, "id": "11-06/0", "ord": 0, "week": "11-06", "squares": 1}, {"note": "offsite-running-order.md", "head": "@@ -5,3 +5,13 @@ # offsite — running order", "add": 10, "dele": 0, "text": " **10-26** — polonius sent accommodation and dietary requirements at 18:47 for an event that is in one building and lasts one afternoon. i have not responded.\n \n osric is making a spreadsheet about it. osric is always making a spreadsheet about it.\n+\n+**11-04** — final running order, from osric, 4th version:\n+\n+- 14:00 claudius, \"the road ahead\"\n+- 15:10 lisbon, laertes dialling in\n+- 16:00 break\n+- 16:40 the film\n+- 17:20 close, drinks on nine — claudius to raise a glass to \"the founder\"\n+\n+the film is at 16:40 and the archive section runs at 06:20 into it, so the forty seconds land at 16:46. i have read this running order four times and that is the only line in it i can see.", "kind": "added", "chars": 417, "id": "11-06/1", "ord": 1, "week": "11-06", "squares": 2}, {"note": "mum-drafts-unsent.md", "head": "@@ -2,16 +2,20 @@ # mum — drafts, unsent", "add": 9, "dele": 5, "text": " \n keeping them here instead of in the messages app so that i stop nearly sending them at two in the morning.\n \n-**draft, 10-20**\n-> i know you think eleven months is long enough. it is not long enough. it is not a unit of anything.\n-> the flowers from the funeral were still in the hall at roskilde when you got married. i know because i was the one who threw them out.\n-\n **draft, 10-22**\n > did he ever tell you why the roof door got a lock on it five months before\n \n-not sent. neither of them. she said closure once on the phone on 10-08 and i have been drafting at her ever since.\n+not sent. she said closure once on the phone on 10-08 and i have been drafting at her ever since.\n \n **draft, 10-27**\n > i am not unwell. i am accurate. those look the same from where you are sitting and i can see that.\n \n not sent.\n+\n+**11-05** — said it all out loud instead, in her office, at half five, and it came out worse than any of the drafts.\n+\n+what i actually said: \"you married the man who was on the roof.\"\n+\n+i cannot prove that. i should not have said it in that order. she said dad's name twice and i talked over her both times. then she said \"stop, you are making me look at things i cannot stop seeing\", and \"what do you want me to do\", and i said: not tonight. do not go home to him tonight. one night.\n+\n+then there was the chair in the next room, and neither of us has said anything to the other since.", "kind": "mixed", "chars": 1040, "id": "11-06/2", "ord": 2, "week": "11-06", "squares": 5}, {"note": "rosencrantz-guildenstern-review.md", "head": "@@ -9,3 +9,7 @@ # rosencrantz & guildenstern — \"strategic review\"", "add": 4, "dele": 0, "text": " **10-27** — was oblique at them on purpose all morning. by four rosencrantz had asked horatio whether i was sleeping.\n \n **10-29** — lunch, their idea. r said the building has felt like a prison all week. i said then it is one. g said, a beat later, that it only feels that way because i want more than it. i said i could live in a cupboard and call it a kingdom, if it were not for the dreams. neither of them had a line for that.\n+\n+**11-03** — r asked me at the coffee point how the film was coming and whether there was archive in it. i said there was a lot of archive in it. he said \"anything interesting\" in the voice of a man reading the second line of a script.\n+\n+**11-05** — after the film, in the corridor, g said mum wanted to see me, and then \"we just want to understand whats wrong, as friends.\" i took the ring off and handed it to him and asked him to tell me how i slept last night. he turned it over twice. \"it doesnt work like that.\" no. and yet you think you can get it out of me with a lanyard and a lunch.", "kind": "added", "chars": 588, "id": "11-06/3", "ord": 3, "week": "11-06", "squares": 3}, {"note": "sleep-ring-score-log.md", "head": "@@ -15,9 +15,15 @@ # sleep ring score log", "add": 6, "dele": 0, "text": " | 10-24 | 6.71 | four |\n | 10-25 | 6.61, score 81 — worst of the month | four, and the worst of them |\n | 10-28 | 7.46, latency 4 | went out like a light. the day i decided about the film |\n+| 11-02 | 7.02 | cut locked. fine. |\n+| 11-04 | 7.41, latency 17 | the night before. lay there working out whether it is better to sit through ten more years of that building quietly, or to do the thing tomorrow and live with whatever comes after it. nobody who has done the second has told me how they slept |\n+| 11-05 | 7.83, score 89 | the screening, mum's office, polonius. i was awake for all of it. |\n+| 11-06 | 8.19, score 89 — best of the month | i wrote the journal entry at two in the morning |\n \n the ring has said seven for three weeks. i have said four for three weeks. one of us is wrong and the ring is the one with the sensor.\n \n taking it off to see whether it resets is not a diagnostic procedure. stop doing it.\n \n it counts the hours. it does not count the dreams, which are the part that is wrong.\n+\n+11-05 and 11-06 are the two best scores i have had since i started wearing this thing. that is not a comment on 11-05 and 11-06. whatever this measures, it does not measure that.", "kind": "added", "chars": 676, "id": "11-06/4", "ord": 4, "week": "11-06", "squares": 3}, {"note": "kronborg-roof-access-codes.md", "head": "@@ -17,3 +17,7 @@ # kronborg — roof access, codes", "add": 4, "dele": 0, "text": " **10-28** — asked sigrid. she says the lock request came through polonius's office six months before he died and the justification on the form was \"insurance\". she typed the covering note herself. she does not remember anyone asking for the roof to be locked before that and she was there nineteen years.\n \n so: a door nobody used gets a lock five months before somebody goes off it.\n+\n+**11-04** — cornelius says the access log for 11-18 is not in the bundle. it was never requested, because the death was not treated as one where access mattered.\n+\n+it still exists. it is on the panel, not on paper, and the panel keeps twenty-four months. which gives me twenty-four months from that night and then it does not exist any more. [[inquest-bundle-gaps]]", "kind": "added", "chars": 362, "id": "11-06/5", "ord": 5, "week": "11-06", "squares": 2}, {"note": "horatio-what-we-know.md", "head": "@@ -8,9 +8,10 @@ # horatio — what we know", "add": 2, "dele": 1, "text": " - the inquest saw one still and not the forty seconds\n \n **think**\n-- somebody did not want the forty seconds in the bundle\n - bernardo knows something he is not saying\n - the lock, five months before, was not about insurance\n+\n+moved up from *think* to *know* on 11-04: the panel access log for the roof hatch was never requested for the bundle. that is not a theory now, cornelius checked the index.\n \n **sworn 10-22**: marcellus rang at midnight while h was here and asked us both, on speaker, to say we would not tell anyone where the file came from. he asked three times, which is a strange number for a security guard, and we said it three times.", "kind": "mixed", "chars": 227, "id": "11-06/6", "ord": 6, "week": "11-06", "squares": 1}, {"note": "horatio-what-we-know.md", "head": "@@ -23,3 +24,11 @@ # horatio — what we know", "add": 8, "dele": 0, "text": " - r&g are engaged as \"strategic review\" with no requesting director on the paperwork\n \n h asked me on 10-27 what the plan actually was and i said i was finding out who reports what to whom. he said \"thats a method, not a plan.\" he was right and i said something unkind about postdocs.\n+\n+**know** (added 11-06)\n+- claudius left the room at 16:47, ten seconds into the archive section\n+- polonius went over the ninth floor rail at 18:05\n+\n+asked h on wednesday to watch claudius during the film and not the screen, and to tell me what he saw before i told him what i saw. he had the glass at the same second i did.\n+\n+h came to the flat at eleven on friday night without being asked. did not ask me what happened in mum's office. made tea and sat there. i told him about the file going to tobias and he said \"i wish youd told me on 10-29\", and i said i know, and that was the whole of the argument we were both expecting to have.", "kind": "added", "chars": 628, "id": "11-06/7", "ord": 7, "week": "11-06", "squares": 3}, {"note": "polonius-chief-of-staff.md", "head": "@@ -6,8 +6,12 @@ # polonius — chief of staff", "add": 5, "dele": 1, "text": " \n **10-28** — he has decided the problem is ophelia, and has told at least three people so, because reynaldo is asking my landlord what hours i keep and reynaldo only moves when polonius points him.\n \n-the theory is tidy and it is wrong and it is easier than the true one, which is why it will win in that building.\n+the theory is tidy and it is wrong and it is easier than the true one, which is why it won.\n \n he sent accommodation and dietary requirements for an offsite that is in one room for one afternoon.\n \n **10-30** — he has a message i sent ophelia in december, and he has shown it to claudius. i know because claudius quoted it back to me in the lift this morning, smiling — \"doubt everything else, never doubt that\" — which i wrote at two in the morning and would not have shown my own mother. [[ophelia-contact-log]]\n+\n+**11-06** — the room next to mum's office has a door that does not shut properly. everyone on nine knows that. he knew it better than anyone; he is the one who had the lock on the roof hatch put in for \"insurance\".\n+\n+i heard the chair at 18:04. francisco logged the alarm at 18:05.", "kind": "mixed", "chars": 482, "id": "11-06/8", "ord": 8, "week": "11-06", "squares": 2}, {"note": "estate-account-probate.md", "head": "@@ -7,8 +7,12 @@ # estate account / probate", "add": 5, "dele": 1, "text": " standing orders still going out of it:\n 1. house insurance, roskilde — 1,140 / quarter\n 2. plot maintenance, roskilde churchyard — 380 / quarter\n-3. something at 212 / month to a firm i do not recognise and neither does cornelius\n+3. 212 / month, mandate set up four months before he died, payee on the mandate is an initialism and not a company\n \n number 3 is the only interesting line in the whole account and i have now asked about it three times.\n \n **10-26** — asked cornelius again about the 212. he says he will pull the mandate. he has said that before. not his fault, it is voltemand's file and voltemand is the one who has to release it. #probate\n+\n+**11-06** — cornelius at 11:20, mostly about thursday, but he brought the account up himself at the end which means it is bothering him too. the 212 mandate was set up four months before he died and the payee name on the mandate is an initialism, not a company.\n+\n+that is one month after the roof lock went in. i have written that sentence down and i am not going to do anything with it this week. [[kronborg-roof-access-codes]]", "kind": "mixed", "chars": 622, "id": "11-06/9", "ord": 9, "week": "11-06", "squares": 3}, {"note": "inquest-bundle-gaps.md", "head": "@@ -7,3 +7,5 @@ # inquest bundle — gaps", "add": 2, "dele": 0, "text": " **in it**: admission record · pathology summary · marcellus's initial statement · bernardo's follow-up · francisco's handover log from 18:00 · one still frame from the roof camera, timestamped 02:11 · the duty roster for that night\n \n **not in it**: the forty seconds either side of the still · the panel access log for the roof hatch · any statement from anybody in the building above the sixth floor · the maintenance record for the lock installed five months before\n+\n+**11-04** — checked the index against the finding. the finding says \"no evidence of the presence of any other person\". that is true of the bundle. it is not true of the night. those are different sentences and only one of them was read out.", "kind": "added", "chars": 240, "id": "11-06/10", "ord": 10, "week": "11-06", "squares": 1}, {"note": "roskilde-house-empty.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# roskilde — the house\n\nempty since the spring. sigrid kept the keys until she left and then handed them over like they might bite.\n\ncannot be in it for more than an hour. five attempts now and the longest was fifty minutes.\n\n**10-17** — an hour, then left. the fencing kit is in the upstairs hall closet. the plot at the churchyard is 380 a quarter out of the estate account and somebody mows it and i have never met them.", "id": "11-06/11", "ord": 11, "week": "11-06", "squares": 1}, {"note": "ophelia-contact-log.md", "head": "@@ -16,3 +16,9 @@ # ophelia — contact log", "add": 6, "dele": 0, "text": " her father spent the week telling people the problem was her. i knew that when i said it. that is not a defence, it is the opposite of one.\n \n **10-30** — she texted at 23:40. her father asked her for the message i sent her in december and she gave it to him, because he asked, and she is sorry. so that is how claudius came to be quoting it at me in the lift this morning. i did not answer the text.\n+\n+**11-04** — she came to my desk at ten with a paper bag: the book, the scarf, the two letters. \"you gave me these.\" her father and claudius were at the end of the corridor by the lifts, both looking at their phones, neither of them scrolling. i told her to go to lisbon. go to your brother, get out of this building, it will eat you. i said it louder than i needed to because i wanted the end of the corridor to hear it, and then i saw her face and understood that i had said it to her and not to them.\n+\n+**11-05** — did not call her from the corridor on nine. i had my phone in my hand for a different reason.\n+\n+**11-06** — her father. i have not called her. i cannot work out whether calling would be for her.", "kind": "added", "chars": 705, "id": "11-06/12", "ord": 12, "week": "11-06", "squares": 4}, {"note": "fencing-kit-dad-jacket.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# kit — dad's jacket\n\nhis, from the storage unit at roskilde. he was 11 cm taller and broader across the chest, so the sleeves go past the heel of my hand and the shoulder sits wrong.\n\nit still smells like his office, which is a building he has not been in for eleven months and i have not been in for three.\n\n**10-20** — the mask is loose and the jacket is too big and the blade is the right weight, which is the only one of the three that matters and is also the only one i did not choose.\n\n**11-03** — took a hit on the left shoulder i should not have taken. the jacket moved and i did not. karin said \"youre wearing a tent\" and then did not make a joke out of it, which is why i like karin.\n\nthe hall rents a jacket for 40. i have not rented the jacket for 40.", "id": "11-06/13", "ord": 13, "week": "11-06", "squares": 1}, {"note": "marcellus-shift-logs.md", "head": "@@ -17,3 +17,5 @@ # marcellus — shift logs", "add": 2, "dele": 0, "text": " **10-27** — bernardo will not go back up alone. marcellus asked him straight and got \"no\", and nothing after the no.\n \n horatio's line about it: \"people dont refuse work unless the work itself is wrong.\" which sounded better at the time than it does written down, but i have not been able to put it down either.\n+\n+**11-05** — francisco logged the alarm on nine at 18:05. that is the duty log, not my memory, and my memory is worth less than the duty log this week.", "kind": "added", "chars": 150, "id": "11-06/14", "ord": 14, "week": "11-06", "squares": 1}, {"note": "claudius-chief-executive.md", "head": "@@ -9,3 +9,11 @@ # claudius — chief executive", "add": 8, "dele": 0, "text": " **10-20** — in the lift, on the way up, he asked me to stay. \"dont go back to wittenberg. the company needs one of us in it who isnt me.\" mum rang an hour later and said the same sentence, word for word, *one of us in it*, which is how i know who wrote it.\n \n at the wedding in june he raised a glass to dad before he raised one to her, and everyone said how gracious. he toasts every occasion as though the occasion were his.\n+\n+**11-02** — he moved the screening forward to the offsite himself. \"the board are all in the room anyway.\" nobody asked him to.\n+\n+**11-05** — nine seconds of the archive section and he put his glass down without looking for the table. out at 16:47 through the back with the lights still down. osric four seconds behind him.\n+\n+whatever i thought i was going to feel watching that, i felt nothing like it. i was calm.\n+\n+**11-05, 17:25** — on the way along to mum's office, past his. door open, lights off, him at the desk with his head in his hands and his phone face down. he did not look up. i could have gone in and said it to him there, alone, and i did not, because alone is exactly where he would want it said. i want it said somewhere it counts.", "kind": "added", "chars": 741, "id": "11-06/15", "ord": 15, "week": "11-06", "squares": 4}, {"note": "log.md", "head": "@@ -21,3 +21,8 @@ # log", "add": 5, "dele": 0, "text": " 10-28: 7.46h, latency 4. ursa 07:30 — said \"you never are\" to ophelia. paid for her coffee. worst thing i have said to anyone this year.\n 10-29: 6.85h. tobias 14:00, asked for archive. said yes. gothersgade 19:00, did not go.\n 10-30: 7.35h. petra: reynaldo has been asking her what hours i keep. claudius in the lift quoted my december message to ophelia.\n+11-02: 7.02h. gave tobias the file 09:50. cut locked 16:12.\n+11-03: 7.72h. nothing.\n+11-04: 7.41h, latency 17. read the running order four times.\n+11-05: 7.83h, score 89. offsite, nine. screening 16:40. claudius out at 16:47. mum's office 17:30. 18:05. did not eat after breakfast.\n+11-06: 8.19h, score 89. best score of the month. wrote the journal at 02:00. cornelius 11:20. gertrude did not call.", "kind": "added", "chars": 391, "id": "11-06/16", "ord": 16, "week": "11-06", "squares": 2}, {"note": "anniversary-film-fen-co.md", "head": "@@ -6,7 +6,7 @@ # anniversary film — fen & co", "add": 1, "dele": 1, "text": " \n **10-22** — tobias wants twenty minutes with me on camera. have not replied. the film is about dad and the first twenty years and i am in it whether i plan to be or not, so i may as well choose what i say.\n \n-screening is set for 11-18 itself. company only, ninth floor.\n+~~screening is set for 11-18 itself, company only, ninth floor~~ — moved. see 11-02.\n \n **10-28** — crew in the building. three of them, small kit, tobias apologising to everyone in the lifts.", "kind": "mixed", "chars": 145, "id": "11-06/17", "ord": 17, "week": "11-06", "squares": 1}, {"note": "anniversary-film-fen-co.md", "head": "@@ -19,3 +19,9 @@ # anniversary film — fen & co", "add": 6, "dele": 0, "text": " **10-30** — watched sigrid's interview on tobias's monitor. four minutes about him, and at the end she cries, properly, on camera, for a man who signed her pay slips. i have not cried once. what is he to her, that she can do that in four minutes and i cannot do it in eleven months.\n \n tobias is cutting the middle from yorick's old tapes. there is one of yorick rehearsing dad's launch speech in dad's voice, and for about three seconds i thought it was dad. [[yorick-comms-quotes]]\n+\n+**11-02** — sent tobias the file at 09:50. told him: archive from the building, 02:11 timestamp, use it under the middle. he did not ask what it was of.\n+\n+cut locked 16:12 monday. claudius moved the screening forward to the offsite on **thursday 11-05**, ninth floor, 16:40, because \"the board are all in the room anyway.\"\n+\n+he moved it forward himself. i want that written down somewhere that is not my memory.", "kind": "added", "chars": 405, "id": "11-06/18", "ord": 18, "week": "11-06", "squares": 2}, {"note": "journal.md", "head": "@@ -1,4 +1,22 @@", "add": 18, "dele": 0, "text": " # journal\n+\n+**11-06** — writing this at two in the morning on 11-06, so it is friday, so it has been about thirty hours.\n+\n+the screening was 16:40 on the ninth floor. the archive section runs at 06:20 into the cut. i watched claudius rather than the screen. he was fine for nine seconds. at the tenth he put his glass down on the table beside him without looking at where the table was, and then at 16:47 he stood up and went out through the back and the lights were still down. osric went after him about four seconds later, which tells you osric's job.\n+\n+i was calm. that is the part i keep coming back to and it is not the part i expected to keep coming back to. not triumphant, not frightened. calm, the way you are calm when a long arithmetic finally comes out.\n+\n+then mum's office at about half five, and i said the things i have been saving since the wedding, and they came out worse than i had them saved. i said \"you married the man who was on the roof\" which i cannot prove and should not have said in that order. she said my father's name twice and i talked over her both times.\n+\n+polonius was in the room next door with the door open enough. i heard the chair. i went out into the corridor and he was already at the rail and then he was not, and i have gone over the four seconds between those two facts about two hundred times and i still cannot put anything in the middle of them.\n+\n+18:05. the duty log will say 18:05 because francisco logged the alarm.\n+\n+i did not mean it. i am also not sorry in the way a person is supposed to be sorry. both of those are true at once and i cannot put either of them down because admitting one looks like lying about the other.\n+\n+by this evening it is being handled as an accident. that is the second time this company has used that word about a man going off a high thing, and i appear to be the only person in the building who has counted.\n+\n+**11-02** — gave tobias the file. told him it was archive from the building, 02:11 timestamp, use it under the middle section. he did not ask what it was of. crews do not, apparently. cut locked at 16:12 on monday.\n \n **10-31** — saturday. had the phone in my hand to ring ophelia and put it down again.", "kind": "added", "chars": 2072, "id": "11-06/19", "ord": 19, "week": "11-06", "squares": 10}, {"note": "stairwell-nine-timeline.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# stairwell nine — timeline\n\nmade from the duty log and the running order, not from memory, because my memory of thursday is four seconds long and the middle of it is missing.\n\n- 16:40 film starts, ninth floor\n- 16:47 claudius leaves through the back. lights still down. osric follows at about 16:47\n- 17:12 drinks set up, most of the room moves along the corridor\n- 17:25 past claudius's office on the way along. door open, lights off, him at the desk. did not go in\n- 17:30 mum's office. door shut. polonius in the room adjoining, door ajar — i did not know that at 17:30, i knew it at 18:04\n- 18:04 i hear the chair\n- 18:05 francisco logs the alarm on nine\n\nwhat is not in this list is anything between 18:04 and 18:05, and that is the part people will ask about, and i do not have it.", "id": "11-06/20", "ord": 20, "week": "11-06", "squares": 1}, {"note": "who-asked-what-when.md", "head": "@@ -12,4 +12,9 @@ # who asked what, when", "add": 6, "dele": 1, "text": " \n eleven minutes and two floors from being oblique in a meeting to rosencrantz asking horatio a question about my sleep.\n \n-nobody has asked me anything.\n+nobody has asked me anything directly. seven weeks.\n+\n+| 11-03 | rosencrantz | me | whether there is archive in the film |\n+| 11-04 | osric | tobias | the running order, four times |\n+\n+r asked it in the voice of a man reading the second line of a script.", "kind": "mixed", "chars": 274, "id": "11-06/21", "ord": 21, "week": "11-06", "squares": 1}, {"note": "fencing-gothersgade-tuesdays.md", "head": "@@ -6,8 +6,12 @@ # fencing — gothersgade, tuesdays", "add": 5, "dele": 1, "text": " \n **10-20** — tuesday. went. footwork for an hour, then bouts with karin, who does not ask questions and does not miss a parry. shoulder held.\n \n-this is the only hour in the week where i am not doing the other thing.\n+this is the only hour in the week where i am not doing the other thing. was.\n \n **10-27** — went. fenced badly and on purpose, in the same way i was late on purpose, which i did not realise until karin said \"youre not here\" between bouts and i said no, fair.\n \n **10-29** — did not go. tobias at two, then stood in a corridor for four seconds and decided something, then went home.\n+\n+**11-03** — went. best hour of the month by a long way.\n+\n+**11-05** — the offsite. no.", "kind": "mixed", "chars": 230, "id": "11-06/22", "ord": 22, "week": "11-06", "squares": 1}, {"note": "ines-abril-emails.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# ines abril — emails\n\nfreelance. has been writing about the company since before the inquest. six emails since the autumn, all of them polite, none of them answered.\n\nshe has been following up with marcellus and bernardo, which means she knows there is a roof in this, which means reynaldo has heard, which means polonius has.\n\n**10-30** — three more, thursday and friday. guildenstern has talked to her; i can tell because two of her questions are phrased in his order.\n\nnot answering. not because there is nothing there but because i am not the person who gets to tell it yet.", "id": "11-06/23", "ord": 23, "week": "11-06", "squares": 1}, {"note": "roof-footage-0211.md", "head": "@@ -21,3 +21,9 @@ # roof footage — 02:11", "add": 6, "dele": 0, "text": " not telling horatio until it is cut. he will say the right thing about it and i do not want to hear the right thing yet. #film\n \n **10-31** — a shoulder is not a face. i have built three weeks on thirteen seconds of somebody's coat, and a coat could be anybody's. before i do anything that cannot be undone i want better than the coat. i want to see his face when he sees it.\n+\n+**11-02** — handed it over at 09:50. told tobias it was archive from the building with an 02:11 timestamp, use it under the middle. he did not ask what it was of. cut locked 16:12.\n+\n+**11-05** — it played at 06:20 into the cut, so 16:46 by the clock. claudius was fine for nine seconds. at the tenth he put his glass down without looking for the table. out through the back at 16:47 with the lights still down.\n+\n+so now two people in this building know what is on it and one of them is the person i needed to find out about.", "kind": "added", "chars": 518, "id": "11-06/24", "ord": 24, "week": "11-06", "squares": 3}, {"note": "yorick-comms-quotes.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# yorick — still quoted\n\nhead of comms for nineteen years, dead eleven.\n\nhe used to let me sit under the desk during the quarterly. i was seven. he did the voices.", "id": "11-06/25", "ord": 25, "week": "11-06", "squares": 1}, {"note": "nordhavn-lease-petra-lund.md", "head": "@@ -16,3 +16,7 @@ # nordhavn lease — petra lund", "add": 4, "dele": 0, "text": " reynaldo does not do references. reynaldo does this. #reynaldo\n \n still have not answered her about the lease. sixteen days.\n+\n+**11-06** — nine days. have not answered her.\n+\n+she put a second note under the door on thursday while i was at the offsite. it says \"whenever youre ready\" which is worse than a deadline.", "kind": "added", "chars": 184, "id": "11-06/26", "ord": 26, "week": "11-06", "squares": 1}, {"note": "voltemand-norvik-billing.md", "head": "@@ -2,10 +2,14 @@ # voltemand — norvik, billing", "add": 5, "dele": 1, "text": " \n outside counsel. cornelius is in-house. when i was a child i thought they were the same firm.\n \n-**10-28** — three trips to norvik since the new year: 09-30, 10-14, 10-28. osric says the car service booking did not come from corp dev either time. \"not us.\"\n+**10-28** — four trips to norvik since the new year: 09-30, 10-14, 10-28, 11-03. osric says the car service booking did not come from corp dev either time. \"not us.\"\n \n asked voltemand directly on 10-29. 09-30 was \"a client meeting\", no further detail. 10-28 he deferred — \"depends on probate timing\", which is not an answer to a question about norvik.\n \n cornelius, when i mentioned it: \"hes not billing us for those days.\" which is the actual problem. #norvik\n \n **10-30** — voltemand reported back to the board on norvik. claudius sent him in january to get fortinbras to stop picking off our suppliers, and the news is that fortinbras will stand off, and would in return like \"data-room access for a possible partnership\". the board said yes in eleven minutes. nobody asked what a competitor wants with our supplier pricing.\n+\n+**11-04** — checked the portal. voltemand's last invoice to the estate is dated 10-23. nothing since, and he has been to norvik twice since.\n+\n+so either he is doing work we are not paying for, or he is doing work for somebody else and using our car service to get there.", "kind": "mixed", "chars": 591, "id": "11-06/27", "ord": 27, "week": "11-06", "squares": 3}, {"note": "nyholm-appointment.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# nyholm\n\ngp. first saw her three months ago about the sleep. she wrote things down and gave me a name i did not call.\n\n**10-23** — rang the surgery. next appointment is 11-18, 09:30. took it. 11-18.\n\ndid not say anything about that on the phone. the receptionist was reading from a screen.\n\n**11-06** — still 11-18 at 09:30. have tried to cancel it twice this week and both times put the phone down before it rang, which i suppose is the answer.\n\nthings to actually say, because i will not say them otherwise:\n- awake at three, most nights, and the ring says seven hours\n- stopped eating without noticing\n- flat underneath the anger", "id": "11-06/28", "ord": 28, "week": "11-06", "squares": 1}], "notes": ["wittenberg-withdrawal-form.md", "offsite-running-order.md", "mum-drafts-unsent.md", "rosencrantz-guildenstern-review.md", "sleep-ring-score-log.md", "kronborg-roof-access-codes.md", "horatio-what-we-know.md", "polonius-chief-of-staff.md", "estate-account-probate.md", "inquest-bundle-gaps.md", "roskilde-house-empty.md", "ophelia-contact-log.md", "fencing-kit-dad-jacket.md", "marcellus-shift-logs.md", "claudius-chief-executive.md", "log.md", "anniversary-film-fen-co.md", "journal.md", "stairwell-nine-timeline.md", "who-asked-what-when.md", "fencing-gothersgade-tuesdays.md", "ines-abril-emails.md", "roof-footage-0211.md", "yorick-comms-quotes.md", "nordhavn-lease-petra-lund.md", "voltemand-norvik-billing.md", "nyholm-appointment.md"]}, {"week": "11-13", "weekday": "Friday", "hunks": [{"note": "fencing-kit-dad-jacket.md", "head": "@@ -8,4 +8,8 @@ # kit — dad's jacket", "add": 5, "dele": 1, "text": " \n **11-03** — took a hit on the left shoulder i should not have taken. the jacket moved and i did not. karin said \"youre wearing a tent\" and then did not make a joke out of it, which is why i like karin.\n \n-the hall rents a jacket for 40. i have not rented the jacket for 40.\n+the hall rents a jacket for 40.\n+\n+**11-13** — if i am going on tuesday i am going in a jacket that fits. rent the hall's.\n+\n+that sentence took eleven months and it is about a coat. #kit", "kind": "mixed", "chars": 247, "id": "11-13/0", "ord": 0, "week": "11-13", "squares": 1}, {"note": "polonius-chief-of-staff.md", "head": "@@ -6,8 +6,6 @@ # polonius — chief of staff", "add": 0, "dele": 2, "text": " \n **10-28** — he has decided the problem is ophelia, and has told at least three people so, because reynaldo is asking my landlord what hours i keep and reynaldo only moves when polonius points him.\n \n-the theory is tidy and it is wrong and it is easier than the true one, which is why it won.\n-\n he sent accommodation and dietary requirements for an offsite that is in one room for one afternoon.\n \n **10-30** — he has a message i sent ophelia in december, and he has shown it to claudius. i know because claudius quoted it back to me in the lift this morning, smiling — \"doubt everything else, never doubt that\" — which i wrote at two in the morning and would not have shown my own mother. [[ophelia-contact-log]]", "kind": "removed", "chars": 91, "id": "11-13/1", "ord": 1, "week": "11-13", "squares": 1}, {"note": "kronborg-roof-access-codes.md", "head": "@@ -14,10 +14,6 @@ # kronborg — roof access, codes", "add": 0, "dele": 4, "text": " \n polonius signed off the install. claudius was not chief executive yet but he was in the building most days. sigrid would know who asked for the lock and why — she was still in the office then. #access\n \n-**10-28** — asked sigrid. she says the lock request came through polonius's office six months before he died and the justification on the form was \"insurance\". she typed the covering note herself. she does not remember anyone asking for the roof to be locked before that and she was there nineteen years.\n-\n-so: a door nobody used gets a lock five months before somebody goes off it.\n-\n **11-04** — cornelius says the access log for 11-18 is not in the bundle. it was never requested, because the death was not treated as one where access mattered.\n \n it still exists. it is on the panel, not on paper, and the panel keeps twenty-four months. which gives me twenty-four months from that night and then it does not exist any more. [[inquest-bundle-gaps]]", "kind": "removed", "chars": 379, "id": "11-13/2", "ord": 2, "week": "11-13", "squares": 2}, {"note": "roskilde-house-empty.md", "head": "@@ -5,3 +5,11 @@ # roskilde — the house", "add": 8, "dele": 0, "text": " cannot be in it for more than an hour. five attempts now and the longest was fifty minutes.\n \n **10-17** — an hour, then left. the fencing kit is in the upstairs hall closet. the plot at the churchyard is 380 a quarter out of the estate account and somebody mows it and i have never met them.\n+\n+**11-07** — drove out on saturday, sat in the car in the lane for about twenty minutes, did not go in, drove back. that is the fifth time and the first time i have written it down honestly.\n+\n+**11-12** — the water below the house. that is where they found her.\n+\n+i am not going to be able to go back there now and i am going to have to go back there on monday.\n+\n+**11-13** — the man who mows dad's plot rang. first time i have heard his voice in a year of paying him. he is digging on saturday for monday, at the water end, and wanted to know whether the family minded the old hedge coming out. i said i was not family. he said \"youre the son\", and then that he has done that churchyard since the year i was born, and that yorick is three rows over from dad — \"the comms man, used to do the voices at the harvest supper.\"", "kind": "added", "chars": 812, "id": "11-13/3", "ord": 3, "week": "11-13", "squares": 4}, {"note": "voltemand-norvik-billing.md", "head": "@@ -13,3 +13,11 @@ # voltemand — norvik, billing", "add": 8, "dele": 0, "text": " **11-04** — checked the portal. voltemand's last invoice to the estate is dated 10-23. nothing since, and he has been to norvik twice since.\n \n so either he is doing work we are not paying for, or he is doing work for somebody else and using our car service to get there.\n+\n+**11-10** — read his instructions in the lisbon shared file, in lisbon, twice.\n+\n+two pages. my name is in the second paragraph of both. the second page is about what is to happen to my access if the review \"identifies a governance concern\", and it is dated 11-06, which is the day after the screening.\n+\n+he has been to norvik three times and billed us nothing and written two pages about me, and cornelius is the one who noticed the billing first. take the records timeline off voltemand and give it to cornelius. [[bispebjerg-records-request]]\n+\n+norvik closed two more of our suppliers on 11-10, and priced both out of the data room the board opened for them on 10-30 on voltemand's word.", "kind": "added", "chars": 680, "id": "11-13/4", "ord": 4, "week": "11-13", "squares": 3}, {"note": "yorick-comms-quotes.md", "head": "(current content — no diff)", "add": 0, "dele": 0, "chars": 0, "kind": "full", "text": "# yorick — still quoted\n\nhead of comms for nineteen years, dead eleven.\n\nhe used to let me sit under the desk during the quarterly. i was seven. he did the voices.\n\n**11-13** — buried at roskilde, three rows over from dad. the man who mows the plot told me on the phone. i have paid for that churchyard every quarter by standing order and never once walked three rows. [[roskilde-house-empty]]", "id": "11-13/5", "ord": 5, "week": "11-13", "squares": 1}, {"note": "lisbon-booking-voltemand-file.md", "head": "@@ -1 +1,15 @@", "add": 14, "dele": 0, "text": " # lisbon — booking, and what was in the file\n+\n+**11-08** — itinerary from osric at 17:14 on a sunday. a fortnight, not the four days i was told. hotel to 11-20. rosencrantz and guildenstern on the same booking reference.\n+\n+claudius framed it as the norvik integration work. laertes is already down there. mum said, on the phone before all this, that it would \"do me good to be out of the building\", which is the kind of thing somebody says when they have been given the sentence to say.\n+\n+**11-10** — the shared file has voltemand's instructions in it. i do not think anybody meant me to have the folder, i think somebody shared the parent.\n+\n+read it twice. the second time with the board minutes from the month he died open beside it, and that is when you can see the shape: the resolution dated the 18th, the announcement on the 17th. he does it the same way every time.\n+\n+then i did the only thing i have done this month without deliberating first. forwarded both pages, with r&g's engagement letter — the one with no requesting director on it — to cornelius and to the chair of the audit committee, from my own account, at ten past eleven at night, subject line *strategic review — for the file*. whatever review was being written about me, the first question it gets asked now is who commissioned the reviewers.\n+\n+**11-11** — came home on the 19:40, alone, told nobody. r&g still booked to 11-20.\n+\n+what i felt was not shock. it was the flat relief of being handed proof of a thing i had stopped needing proof of.", "kind": "added", "chars": 1453, "id": "11-13/6", "ord": 6, "week": "11-13", "squares": 7}, {"note": "rosencrantz-guildenstern-review.md", "head": "@@ -13,3 +13,9 @@ # rosencrantz & guildenstern — \"strategic review\"", "add": 6, "dele": 0, "text": " **11-03** — r asked me at the coffee point how the film was coming and whether there was archive in it. i said there was a lot of archive in it. he said \"anything interesting\" in the voice of a man reading the second line of a script.\n \n **11-05** — after the film, in the corridor, g said mum wanted to see me, and then \"we just want to understand whats wrong, as friends.\" i took the ring off and handed it to him and asked him to tell me how i slept last night. he turned it over twice. \"it doesnt work like that.\" no. and yet you think you can get it out of me with a lanyard and a lunch.\n+\n+**11-09** — same flight, same hotel, booked by the same assistant on the same reference. neither of them mentioned it until we were at the gate.\n+\n+**11-11** — came back on the 19:40 without telling them. their booking runs to 11-20. they are still down there, being paid to be down there, which means somebody wanted me down there until 11-20.\n+\n+**11-12** — cornelius: the audit chair has suspended the strategic review \"pending clarification of its commissioning\", and their lanyards went off at noon. they are still in lisbon, booked to 11-20, and they found out from the hotel wifi. i sent the pages. i do not feel about it what i expected to feel, which is anything. [[lisbon-booking-voltemand-file]]", "kind": "added", "chars": 698, "id": "11-13/7", "ord": 7, "week": "11-13", "squares": 3}, {"note": "ophelia-contact-log.md", "head": "@@ -1,6 +1,6 @@", "add": 1, "dele": 1, "text": " # ophelia — contact log\n \n-started this six weeks ago because i kept losing track of what i had actually said to her and what i had only drafted. that should have told me something.\n+started this six weeks ago because i kept losing track of what i had actually said to her and what i had only drafted. that should have told me something and it did not.\n \n **10-22** — she walked me to the bike after work. laertes flew back to lisbon this afternoon, and before he went he told her to be careful with me: that i am not free to mean what i say, because of whose son i am in that building, and she should not read too much into any of it. she laughed telling me. i did not, and she noticed that i did not, and then i did not tell her about the forty seconds, which is the first thing i have ever decided not to tell her.", "kind": "mixed", "chars": 323, "id": "11-13/8", "ord": 8, "week": "11-13", "squares": 2}, {"note": "ophelia-contact-log.md", "head": "@@ -22,3 +22,17 @@ # ophelia — contact log", "add": 14, "dele": 0, "text": " **11-05** — did not call her from the corridor on nine. i had my phone in my hand for a different reason.\n \n **11-06** — her father. i have not called her. i cannot work out whether calling would be for her.\n+\n+**11-10** — marcellus, by text, 22:10, while i was in lisbon: she was on nine after hours on monday, laying flowers along the stair rail where her father went over, one stem at every upright, and singing something, not loudly. rosemary, he thinks, and something purple. francisco walked her down to a taxi. i read it in a hotel room and did not call. [[marcellus-shift-logs]]\n+\n+**11-12** —\n+\n+the times i could have called and did not:\n+- 10-28, after ursa\n+- 10-31\n+- 11-05, from the corridor, phone already in my hand\n+- 11-09, from the airport\n+- 11-10, from the hotel, after marcellus's text\n+- 11-11, from the 19:40\n+\n+that is the list. that is all this file is now.", "kind": "added", "chars": 648, "id": "11-13/9", "ord": 9, "week": "11-13", "squares": 3}, {"note": "anniversary-film-fen-co.md", "head": "@@ -25,3 +25,9 @@ # anniversary film — fen & co", "add": 6, "dele": 0, "text": " cut locked 16:12 monday. claudius moved the screening forward to the offsite on **thursday 11-05**, ninth floor, 16:40, because \"the board are all in the room anyway.\"\n \n he moved it forward himself. i want that written down somewhere that is not my memory.\n+\n+**11-10** — the screening happened and then everything else happened and nobody has said a word about the film since.\n+\n+tobias emailed from lisbon time, which means he does not know: \"great room on thursday, everyone very moved, can we talk about the public cut.\" i have not replied.\n+\n+the public cut was meant to go out on the anniversary. the anniversary is wednesday. no one has mentioned it. [[claudius-chief-executive]]", "kind": "added", "chars": 418, "id": "11-13/10", "ord": 10, "week": "11-13", "squares": 2}, {"note": "horatio-what-we-know.md", "head": "@@ -17,7 +17,9 @@ # horatio — what we know", "add": 3, "dele": 1, "text": " \n told h after he hung up: if i start behaving oddly in the building over the next weeks it is on purpose, and he is not to ask me about it in front of anyone. he said \"how will i tell the difference\". i said he would not need to.\n \n-**agreed 10-22**: we say nothing to anyone, including ophelia, until we know who the shoulder belongs to. h's condition, not mine. i agreed to it in the flat at about one in the morning and i have kept it, which surprises me.\n+**agreed 10-22**: we say nothing to anyone, including ophelia, until we know who the shoulder belongs to. h's condition, not mine.\n+\n+i kept that agreement for twenty-two days and then put it in a film, which is not what either of us meant by *say nothing*, and h has not once said so.\n \n **know** (added 10-27)\n - rosencrantz asked h whether i was sleeping, within four hours of me being difficult on purpose", "kind": "mixed", "chars": 506, "id": "11-13/11", "ord": 11, "week": "11-13", "squares": 3}, {"note": "horatio-what-we-know.md", "head": "@@ -32,3 +34,13 @@ # horatio — what we know", "add": 10, "dele": 0, "text": " asked h on wednesday to watch claudius during the film and not the screen, and to tell me what he saw before i told him what i saw. he had the glass at the same second i did.\n \n h came to the flat at eleven on friday night without being asked. did not ask me what happened in mum's office. made tea and sat there. i told him about the file going to tobias and he said \"i wish youd told me on 10-29\", and i said i know, and that was the whole of the argument we were both expecting to have.\n+\n+**know** (added 11-13)\n+- voltemand's instructions in the lisbon file name me in the second paragraph\n+- laertes has been in claudius's office twice since thursday\n+- osric asked me to a bout on tuesday on laertes's behalf\n+- the strategic review is suspended pending clarification of who commissioned it, 11-12. i sent the pages that got it suspended\n+\n+h is the only person i have told about the message. he did not tell me not to go. what he said was \"then take your own bottle and let me come and watch\", which is horatio in one line. he is coming on tuesday — ursa at six, then the hall, and he will stand by the wall looking like he would rather be anywhere else.\n+\n+he has all of this file now, the footage timestamps, and cornelius's number. i told him that on thursday, in case. he said \"dont\", and then, after a while, \"all right\".", "kind": "added", "chars": 825, "id": "11-13/12", "ord": 12, "week": "11-13", "squares": 4}, {"note": "inquest-bundle-gaps.md", "head": "@@ -6,6 +6,16 @@ # inquest bundle — gaps", "add": 11, "dele": 1, "text": " \n **in it**: admission record · pathology summary · marcellus's initial statement · bernardo's follow-up · francisco's handover log from 18:00 · one still frame from the roof camera, timestamped 02:11 · the duty roster for that night\n \n-**not in it**: the forty seconds either side of the still · the panel access log for the roof hatch · any statement from anybody in the building above the sixth floor · the maintenance record for the lock installed five months before\n+**not in it**: the forty seconds either side of the still · the panel access log for the roof hatch (expires twenty-four months after that night) · any statement from anybody in the building above the sixth floor · the maintenance record for the lock installed five months before\n \n **11-04** — checked the index against the finding. the finding says \"no evidence of the presence of any other person\". that is true of the bundle. it is not true of the night. those are different sentences and only one of them was read out.\n+\n+**11-11** — the review is listed for 11-26. four gaps and fourteen days.\n+\n+order to ask for them in, because cornelius says asking for everything at once is how you get nothing:\n+1. the panel access log — it expires twenty-four months after that night and nothing else does\n+2. the forty seconds — marcellus, if he will say he has it\n+3. the lock maintenance record\n+4. statements above the sixth\n+\n+number 2 is the one i cannot control and it is also the only one that shows a person. [[roof-footage-0211]]", "kind": "mixed", "chars": 1004, "id": "11-13/13", "ord": 13, "week": "11-13", "squares": 5}, {"note": "marcellus-shift-logs.md", "head": "@@ -10,7 +10,7 @@ # marcellus — shift logs", "add": 1, "dele": 1, "text": " - 02:14 marcellus at the ninth floor landing, nothing noted\n - 03:02 the alarm, external\n \n-bernardo at 02:07 on floor 8 means bernardo had four minutes to get to the roof and be a shoulder in a frame. marcellus does not think it is him and marcellus is the one who reads people for a living.\n+bernardo at 02:07 on floor 8 means bernardo had four minutes to get to the roof and be a shoulder in a frame. marcellus does not think it is him. after this week i am inclined to agree with him and for a worse reason: bernardo is being asked questions, not answering them.\n \n putting his phone away at ursa he said: \"something in that building has been wrong for a year, and everybody on nights knows it.\"", "kind": "mixed", "chars": 472, "id": "11-13/14", "ord": 14, "week": "11-13", "squares": 2}, {"note": "marcellus-shift-logs.md", "head": "@@ -19,3 +19,11 @@ # marcellus — shift logs", "add": 8, "dele": 0, "text": " horatio's line about it: \"people dont refuse work unless the work itself is wrong.\" which sounded better at the time than it does written down, but i have not been able to put it down either.\n \n **11-05** — francisco logged the alarm on nine at 18:05. that is the duty log, not my memory, and my memory is worth less than the duty log this week.\n+\n+**11-12** — he called at 22:47 thursday and would not say it on the phone. ursa friday 06:15 before he signed off.\n+\n+bernardo asked him about the footage on wednesday. marcellus said he didnt know what bernardo meant. bernardo did not believe him and marcellus knows bernardo knows.\n+\n+he is on thursday and friday this week and then bernardo takes the full rotation. that was always the plan. it does not feel like the plan this week.\n+\n+he asked who i might tell. i said horatio. he nodded like he had already had the conversation in his head and i had said the line he wrote for me.", "kind": "added", "chars": 574, "id": "11-13/15", "ord": 15, "week": "11-13", "squares": 3}, {"note": "osric-match-message.md", "head": "@@ -1 +1,15 @@", "add": 14, "dele": 0, "text": " # osric — the message\n+\n+**11-13 11:52**, voice message, transcribed here because i want the wording:\n+\n+> \"hi — so, laertes asked me to ask you, he wondered about tuesday, at the hall, seven? nothing formal, just a bout. he'll bring his own kit over from lisbon. and claudius says he'll come and watch, and bring something to toast whoever wins — he's put money on you, actually, ha. he said you'd know the time. let me know.\"\n+\n+*he said you'd know the time.* tuesday at seven is the time i have been there every tuesday since the funeral. nobody has to invent anything. you leave the ordinary thing exactly where it is and let a man walk into it.\n+\n+osric has never asked me anything on his own account in four years.\n+\n+claudius has put money on me. that is the strangest sentence in it, and osric laughed at it himself, on the recording, and did not think to edit it out.\n+\n+i said yes at 12:04. twelve minutes.\n+\n+i am writing down that i said yes and that i knew, so that i cannot come back to this page afterwards and pretend that i did not.", "kind": "added", "chars": 1000, "id": "11-13/16", "ord": 16, "week": "11-13", "squares": 5}, {"note": "wittenberg-withdrawal-form.md", "head": "@@ -6,6 +6,14 @@ # wittenberg — withdrawal form", "add": 8, "dele": 0, "text": " \n tuition refund goes to the estate account, which is still in dad's name, which means it becomes a probate question instead of a form. asked cornelius whether it has to.\n \n+two options and i keep pretending there are more:\n+- withdraw, and the year is over\n+- do nothing, and the year rolls, and the fee is 18,400\n+\n **10-29** — cornelius says the refund can come to me directly if i sign the release; it does not have to sit in the estate. he has already written to the registrar. one less thing in dad's name.\n \n so the paperwork problem is solved and the actual problem is untouched, which is about right for this month.\n+\n+**11-13** — 12-15. thirty-two days.\n+\n+horatio's postdoc is at wittenberg. he has not once asked me when i am coming back, and i have decided that is tact rather than an answer he already knows.", "kind": "added", "chars": 326, "id": "11-13/17", "ord": 17, "week": "11-13", "squares": 2}, {"note": "laertes-lisbon-office.md", "head": "@@ -3,3 +3,11 @@ # laertes — lisbon office", "add": 8, "dele": 0, "text": " runs the lisbon side. home twice a year. fenced at wittenberg, better than me, and knows it in the way that does not need saying.\n \n **10-21** — in town for the board week. at the ten o'clock in person, supplier contracts, addressed the whole thing to claudius and not to the room. the tone was different. i noticed the tone and then spent the rest of the meeting deciding whether i had invented the tone. flies back to lisbon thursday.\n+\n+**11-12** — back. flew in thursday morning, before.\n+\n+in claudius's office twice since. the second time the door was shut and osric was outside it doing nothing in a way that was obviously doing something.\n+\n+i am not angry at him. i would be him. if somebody had done to my father what i think was done to mine, and then done to my sister whatever it is that has been done, i would be exactly where laertes is standing, and i would be less careful about it than he is being.\n+\n+**11-13** — osric, on his behalf. tuesday, gothersgade, seven. \"a friendly bout, nothing formal.\" [[osric-match-message]]", "kind": "added", "chars": 589, "id": "11-13/18", "ord": 18, "week": "11-13", "squares": 3}, {"note": "who-asked-what-when.md", "head": "@@ -18,3 +18,9 @@ # who asked what, when", "add": 6, "dele": 0, "text": " | 11-04 | osric | tobias | the running order, four times |\n \n r asked it in the voice of a man reading the second line of a script.\n+\n+| 11-09 | claudius | — | sent me to lisbon for a fortnight |\n+| 11-11 | laertes | claudius | twice, door shut |\n+| 11-13 | osric | me | tuesday, on laertes's behalf |\n+\n+the last row is the first time in seven weeks that anybody has asked me anything directly, and it is an invitation to a fencing hall.", "kind": "added", "chars": 295, "id": "11-13/19", "ord": 19, "week": "11-13", "squares": 1}, {"note": "journal.md", "head": "@@ -1,4 +1,30 @@", "add": 26, "dele": 0, "text": " # journal\n+\n+**11-13** — osric left a voice message at 11:52. laertes proposes tuesday, gothersgade, seven. \"a friendly bout, nothing formal, he asked me to ask you.\" osric has never in his life asked me anything on his own account.\n+\n+i laughed out loud in the street outside ursa, properly, for the first time in weeks, because it is such a *transparent* piece of work. tuesday is a fencing night. it has always been a fencing night. that is what makes it workable — nobody has to invent anything, you just leave the ordinary thing where it is and let a man walk into it.\n+\n+i said yes. i am writing down that i said yes, and that i knew, so that i cannot come back to this page later and pretend i did not.\n+\n+i am not angry at laertes. i would be laertes. that is the whole trouble with this week.\n+\n+**11-12** — ophelia.\n+\n+there is nothing to write here yet. there is a list and the list is of the times i could have called and did not: 10-28, after ursa. 10-31. 11-05, from the corridor on nine, when i had my phone in my hand for a different reason. 11-09 from the airport. 11-10 from the hotel in lisbon, after marcellus's text. 11-11 from the train.\n+\n+they found her at the water below roskilde. mum was the one who rang to tell me, the first time she has rung since 11-05. nobody will say the obvious thing out loud and i am not going to be the first, which is its own kind of cowardice and i know it.\n+\n+**11-11** — came back on the 19:40, alone, did not tell anyone i was coming. rosencrantz and guildenstern are still down there with a hotel booked to 11-20.\n+\n+read the file twice on tuesday. the second time with the dates laid against the board minutes from the month he died and that is when you can see it: the decision existed before the meeting that made it. voltemand's instructions run to two pages and my name is in the second paragraph of both.\n+\n+the thing i felt was not shock. it was the flat relief of being handed proof of something i had stopped needing proof of.\n+\n+**11-10** — norvik's deal team in the hotel bar, a table of eight, loud and pleased with themselves. fortinbras's people. they closed two more of our suppliers today, and one of them is a warehouse in setúbal that has lost money every year for a decade — they bought it because it was there to be bought and we were not paying attention. eight grown people celebrating a warehouse, and i have had forty seconds and a standing order nobody can name for three weeks and made a film.\n+\n+from tonight either what i think is worth doing something about, or it is not worth thinking.\n+\n+**11-09** — lisbon. claudius booked a fortnight, put r&g on the same flight, and had it in my calendar before he mentioned it. the itinerary came from osric at 17:14 sunday.\n \n **11-06** — writing this at two in the morning on 11-06, so it is friday, so it has been about thirty hours.", "kind": "added", "chars": 2692, "id": "11-13/20", "ord": 20, "week": "11-13", "squares": 13}, {"note": "sleep-ring-score-log.md", "head": "@@ -19,11 +19,18 @@ # sleep ring score log", "add": 8, "dele": 1, "text": " | 11-04 | 7.41, latency 17 | the night before. lay there working out whether it is better to sit through ten more years of that building quietly, or to do the thing tomorrow and live with whatever comes after it. nobody who has done the second has told me how they slept |\n | 11-05 | 7.83, score 89 | the screening, mum's office, polonius. i was awake for all of it. |\n | 11-06 | 8.19, score 89 — best of the month | i wrote the journal entry at two in the morning |\n+| 11-08 | 9.19, rhr 42 | slept like something switched off. the day before lisbon |\n+| 11-10 | 6.74, latency 24, hrv 52 | read voltemand's file twice. the 24 minutes is the file |\n+| 11-11 | 6.04, score 79 — worst night of the run | the 19:40 home. did not call ophelia from the train |\n+| 11-12 | 6.94 | — |\n+| 11-13 | 6.84 | osric's message. laughed in the street. then this. |\n \n-the ring has said seven for three weeks. i have said four for three weeks. one of us is wrong and the ring is the one with the sensor.\n+the ring has said seven every week since i started wearing it. i have said four every week since i started wearing it. one of us is wrong and the ring is the one with the sensor.\n \n taking it off to see whether it resets is not a diagnostic procedure. stop doing it.\n \n it counts the hours. it does not count the dreams, which are the part that is wrong.\n \n 11-05 and 11-06 are the two best scores i have had since i started wearing this thing. that is not a comment on 11-05 and 11-06. whatever this measures, it does not measure that.\n+\n+seven weeks of this and the honest summary is: the ring is right about the hours and wrong about the night, and i have stopped expecting it to tell me anything i can use. bring the table to nyholm on 11-18 and let her have the argument with it instead of me.", "kind": "mixed", "chars": 941, "id": "11-13/21", "ord": 21, "week": "11-13", "squares": 5}, {"note": "dad-laptop-sigrid-boxes.md", "head": "@@ -9,3 +9,9 @@ # dad's laptop — sigrid's boxes", "add": 6, "dele": 0, "text": " **10-28** — asked her about the roof lock instead of about the boxes, which tells you something. she typed the covering note herself six months before he died; justification on the form was \"insurance\"; request came through polonius's office. nineteen years and she says nobody ever asked to lock that door before.\n \n she asked whether i had opened the box. i said not yet. she said \"theres no hurry, but there is a difference between not yet and no\", which is going to sit with me for a while.\n+\n+**11-13** — still by the window.\n+\n+she offered to courier the probate files she kept copies of. one line back: *yes please send them.* that is the whole of what i have to do and it has been on this list since 10-20.\n+\n+she should have a copy of the film when it is locked. she is most of it.", "kind": "added", "chars": 284, "id": "11-13/22", "ord": 22, "week": "11-13", "squares": 1}, {"note": "log.md", "head": "@@ -24,5 +24,12 @@ # log", "add": 8, "dele": 1, "text": " 11-02: 7.02h. gave tobias the file 09:50. cut locked 16:12.\n 11-03: 7.72h. nothing.\n 11-04: 7.41h, latency 17. read the running order four times.\n-11-05: 7.83h, score 89. offsite, nine. screening 16:40. claudius out at 16:47. mum's office 17:30. 18:05. did not eat after breakfast.\n+11-05: 7.83h, score 89. offsite, nine. screening 16:40. claudius out at 16:47. mum's office 17:30. the chair at 18:04. alarm logged 18:05. did not eat after breakfast.\n 11-06: 8.19h, score 89. best score of the month. wrote the journal at 02:00. cornelius 11:20. gertrude did not call.\n+11-07: 6.96h. roskilde, did not go in. drove back.\n+11-08: 9.19h, rhr 42. slept eleven hours in two pieces. itinerary from osric 17:14.\n+11-09: 7.26h. lisbon 09:15 out. r&g on the same booking.\n+11-10: 6.74h, latency 24, hrv 52. read voltemand's file twice. second time against the board minutes from the month he died. forwarded both pages and r&g's engagement letter to cornelius and the audit chair, 23:10. norvik in the hotel bar.\n+11-11: 6.04h, score 79. the 19:40 home, alone. did not call ophelia from the train.\n+11-12: 6.94h. ophelia. mum rang 16:20 to tell me, nine minutes. no other lines for this day.\n+11-13: 6.84h. osric voice message 11:52 — tuesday, gothersgade, seven. said yes. laughed in the street first. rang karin 14:10. the man who mows dad's plot rang 15:30.", "kind": "mixed", "chars": 1071, "id": "11-13/23", "ord": 23, "week": "11-13", "squares": 5}, {"note": "roof-footage-0211.md", "head": "@@ -14,7 +14,7 @@ # roof footage — 02:11", "add": 1, "dele": 1, "text": " \n thirteen seconds of a person who is not my father, on a roof he had no reason to be on, at an hour the door is locked from the inside.\n \n-marcellus pulled the file the week after and kept it because nobody asked him for it. he has the raw on a drive at his flat in bispebjerg. he offered me a copy on 10-21 and i said no, which i have thought about every day since.\n+marcellus pulled the file the week after and kept it because nobody asked him for it. he has the raw on a drive at his flat in bispebjerg. he offered me a copy on 10-21 and i said no. that was the single worst decision i have made this year and it took me three weeks to see it.\n \n **10-29** — tobias wants forty to sixty seconds of building archive under the middle section of the film. i have forty seconds of building archive.", "kind": "mixed", "chars": 505, "id": "11-13/24", "ord": 24, "week": "11-13", "squares": 3}, {"note": "roof-footage-0211.md", "head": "@@ -27,3 +27,9 @@ # roof footage — 02:11", "add": 6, "dele": 0, "text": " **11-05** — it played at 06:20 into the cut, so 16:46 by the clock. claudius was fine for nine seconds. at the tenth he put his glass down without looking for the table. out through the back at 16:47 with the lights still down.\n \n so now two people in this building know what is on it and one of them is the person i needed to find out about.\n+\n+**11-12** — marcellus at ursa before his shift, 06:15, coat still on, coffee untouched. bernardo asked him about the footage on wednesday. not asked the way you ask. asked the way somebody asks when they have been told to ask.\n+\n+he says if anyone comes to him officially he is going to say the drive is corrupted and he could not retrieve it and he tried. i did not ask whether that was true or whether he was telling me in advance what he intends to say. it is both. [[marcellus-shift-logs]]\n+\n+the copy he offered me on 10-21 is still the copy i said no to.", "kind": "added", "chars": 552, "id": "11-13/25", "ord": 25, "week": "11-13", "squares": 3}, {"note": "nordhavn-lease-petra-lund.md", "head": "@@ -9,7 +9,7 @@ # nordhavn lease — petra lund", "add": 1, "dele": 1, "text": " reasons to stay: it is quiet, it is twenty minutes to the tower on the bike, and i can be in it without thinking about anybody.\n reasons to go: none that i can write down, which is not the same as none.\n \n-decide by 11-14. twenty-six days.\n+decide by 11-14. tomorrow.\n \n **10-30** — petra stopped me by the bins. a man came round on wednesday asking what hours i keep and whether i have people over. said he was \"doing a reference\". she told him to email the agency and then told me, because she thought it was odd, which it is.", "kind": "mixed", "chars": 59, "id": "11-13/26", "ord": 26, "week": "11-13", "squares": 1}, {"note": "nordhavn-lease-petra-lund.md", "head": "@@ -20,3 +20,9 @@ # nordhavn lease — petra lund", "add": 6, "dele": 0, "text": " **11-06** — nine days. have not answered her.\n \n she put a second note under the door on thursday while i was at the offsite. it says \"whenever youre ready\" which is worse than a deadline.\n+\n+**11-13** — one day. tomorrow.\n+\n+i am going to renew. writing that here so that tomorrow i only have to send the email and not also have the argument. the reason is not that i have decided anything about staying in copenhagen. the reason is that the lease is paperwork and i have been treating it as a verdict on who i am, and horatio pointed that out on 10-31 and i have been cross about it ever since, which is how you can tell.\n+\n+send it before ten. she has had it under the door twice.", "kind": "added", "chars": 483, "id": "11-13/27", "ord": 27, "week": "11-13", "squares": 2}, {"note": "claudius-chief-executive.md", "head": "@@ -4,7 +4,7 @@ # claudius — chief executive", "add": 1, "dele": 1, "text": " \n **10-19** — he makes decisions the way a man does when the decision was made before the meeting. i used to think that was competence. i have started timing it.\n \n-the board minutes from the month he died are in the company drive and i have read the appointment item four times. the wording of the resolution is dated the 18th. the announcement went out on the 17th.\n+the board minutes from the month he died are in the company drive and i have read the appointment item more times than is good for me. the wording of the resolution is dated the 18th. the announcement went out on the 17th.\n \n **10-20** — in the lift, on the way up, he asked me to stay. \"dont go back to wittenberg. the company needs one of us in it who isnt me.\" mum rang an hour later and said the same sentence, word for word, *one of us in it*, which is how i know who wrote it.", "kind": "mixed", "chars": 424, "id": "11-13/28", "ord": 28, "week": "11-13", "squares": 2}, {"note": "claudius-chief-executive.md", "head": "@@ -17,3 +17,9 @@ # claudius — chief executive", "add": 6, "dele": 0, "text": " whatever i thought i was going to feel watching that, i felt nothing like it. i was calm.\n \n **11-05, 17:25** — on the way along to mum's office, past his. door open, lights off, him at the desk with his head in his hands and his phone face down. he did not look up. i could have gone in and said it to him there, alone, and i did not, because alone is exactly where he would want it said. i want it said somewhere it counts.\n+\n+**11-09** — four days later i am on a plane to lisbon for a fortnight with rosencrantz and guildenstern on the same booking and voltemand's instructions in the shared file.\n+\n+the resolution was dated the 18th and the announcement went out on the 17th. he has done this before. he does it the same way each time: the thing is decided, then the room is arranged around it, then the room is told.\n+\n+**11-12** — laertes in his office twice. afterwards claudius walked him to the lift with a hand flat on his back, talking low — exactly the way polonius walked laertes to the same lift on 10-22, with a list. [[laertes-lisbon-office]]", "kind": "added", "chars": 623, "id": "11-13/29", "ord": 29, "week": "11-13", "squares": 3}, {"note": "bispebjerg-records-request.md", "head": "@@ -13,3 +13,9 @@ # bispebjerg — records request", "add": 6, "dele": 0, "text": " **10-29** — sent cornelius the authorisation. he says two to four weeks, and that he needs exact dates and the reference, both of which i now have.\n \n he asked, carefully, whether there was a reason i wanted them now rather than in the spring. i said the anniversary film. he said \"ah\", which covered it and did not believe it.\n+\n+**11-11** — request acknowledged. the coroner's office has listed a review of the file for **thursday 11-26** at bispebjerg. that is a date. that is the first actual date anybody has given me about any of this.\n+\n+fourteen days for the elsinore–norvik correspondence, which voltemand's office has to collect, and voltemand's office has had the request since 10-29. fourteen days from 10-29 is 11-12. it is 11-11.\n+\n+ask cornelius to take the timeline over. do not ask voltemand anything.", "kind": "added", "chars": 479, "id": "11-13/30", "ord": 30, "week": "11-13", "squares": 2}, {"note": "estate-account-probate.md", "head": "@@ -16,3 +16,7 @@ # estate account / probate", "add": 4, "dele": 0, "text": " **11-06** — cornelius at 11:20, mostly about thursday, but he brought the account up himself at the end which means it is bothering him too. the 212 mandate was set up four months before he died and the payee name on the mandate is an initialism, not a company.\n \n that is one month after the roof lock went in. i have written that sentence down and i am not going to do anything with it this week. [[kronborg-roof-access-codes]]\n+\n+**11-13** — leave it until after 11-26. cornelius said that and he is right: if i chase the mandate now it goes through voltemand, and voltemand is the man whose instructions i read in lisbon.\n+\n+three standing orders. two of them are a house and a grave. the third has been going out for fifteen months to somebody nobody can name.", "kind": "added", "chars": 328, "id": "11-13/31", "ord": 31, "week": "11-13", "squares": 2}, {"note": "stairwell-nine-timeline.md", "head": "@@ -11,3 +11,9 @@ # stairwell nine — timeline", "add": 6, "dele": 0, "text": " - 18:05 francisco logs the alarm on nine\n \n what is not in this list is anything between 18:04 and 18:05, and that is the part people will ask about, and i do not have it.\n+\n+**11-09** — it is being handled as an accident. the note that went round on friday said \"a tragic accident on company premises\" and nobody in the building has said the word twice out loud except me, here, in a file.\n+\n+that is the second time this company has used that word about a man going off a high thing. i appear to be the only person who has counted.\n+\n+cornelius says say nothing until asked and then say only the log. the log is 18:05. the log is not wrong.", "kind": "added", "chars": 459, "id": "11-13/32", "ord": 32, "week": "11-13", "squares": 2}, {"note": "ines-abril-emails.md", "head": "@@ -2,8 +2,14 @@ # ines abril — emails", "add": 7, "dele": 1, "text": " \n freelance. has been writing about the company since before the inquest. six emails since the autumn, all of them polite, none of them answered.\n \n-she has been following up with marcellus and bernardo, which means she knows there is a roof in this, which means reynaldo has heard, which means polonius has.\n+she has been following up with marcellus and bernardo, which means she knows there is a roof in this, which means reynaldo heard, which means polonius did.\n \n **10-30** — three more, thursday and friday. guildenstern has talked to her; i can tell because two of her questions are phrased in his order.\n \n not answering. not because there is nothing there but because i am not the person who gets to tell it yet.\n+\n+**11-13** — four more since 11-05, and the tone has changed. she is not asking about the anniversary now, she is asking about the ninth floor.\n+\n+> Two men, one building, thirteen months apart, both described as accidents. I'm going to write that sentence whether or not you talk to me. I'd rather you read it first.\n+\n+she is right that there is a story. she is right about the sentence. leave it until after 11-26 and let cornelius answer her.", "kind": "mixed", "chars": 751, "id": "11-13/33", "ord": 33, "week": "11-13", "squares": 4}, {"note": "nyholm-appointment.md", "head": "@@ -8,7 +8,15 @@ # nyholm", "add": 9, "dele": 1, "text": " \n **11-06** — still 11-18 at 09:30. have tried to cancel it twice this week and both times put the phone down before it rang, which i suppose is the answer.\n \n-things to actually say, because i will not say them otherwise:\n+things to actually say, because i will not say them otherwise, on a piece of paper so i can hand it over if i cannot get it out:\n - awake at three, most nights, and the ring says seven hours\n - stopped eating without noticing\n - flat underneath the anger\n+\n+**11-13** — surgery rang thursday and left a message so formal it sounded like bad news. probably the bloods. ring back before wednesday.\n+\n+add to the list:\n+- something happened with ophelia on 11-12\n+- i have agreed to something on tuesday that i believe is a setup and i am going anyway\n+\n+writing the second one down does not mean i am going to say it.", "kind": "mixed", "chars": 535, "id": "11-13/34", "ord": 34, "week": "11-13", "squares": 3}, {"note": "mum-drafts-unsent.md", "head": "@@ -19,3 +19,14 @@ # mum — drafts, unsent", "add": 11, "dele": 0, "text": " i cannot prove that. i should not have said it in that order. she said dad's name twice and i talked over her both times. then she said \"stop, you are making me look at things i cannot stop seeing\", and \"what do you want me to do\", and i said: not tonight. do not go home to him tonight. one night.\n \n then there was the chair in the next room, and neither of us has said anything to the other since.\n+\n+**draft, 11-12**\n+> im sorry about polonius. im sorry about ophelia. i am not sorry about 10-29 and i think you know which one of those three you want to talk about.\n+\n+not sent. will not be sent.\n+\n+an hour after i wrote that, she rang. the first time since 11-05, and it was to tell me about ophelia. she had it from the police liaison and she told it as though she had been standing on the bank: the willow at the end of the garden, the flowers ophelia had with her, how long her coat held her up on the water. she has never in her life described anything that carefully.\n+\n+then: laertes has asked whether we will come on tuesday, to the hall. claudius said yes for both of us. he wants to bring something to toast the two of you afterwards. i said nothing. she said \"are you there\" and i said yes.\n+\n+the funeral is monday and we will both be at it.", "kind": "added", "chars": 836, "id": "11-13/35", "ord": 35, "week": "11-13", "squares": 4}, {"note": "fencing-gothersgade-tuesdays.md", "head": "@@ -15,3 +15,12 @@ # fencing — gothersgade, tuesdays", "add": 9, "dele": 0, "text": " **11-03** — went. best hour of the month by a long way.\n \n **11-05** — the offsite. no.\n+\n+**11-10** — lisbon.\n+**11-12** — no.\n+\n+**tue 11-17, 19:00** — laertes. via osric. [[osric-match-message]]\n+\n+the hall is where it is. tuesday is when it is. i have been there every tuesday since the funeral and everyone who would want to know that does know it.\n+\n+karin, when i rang her: laertes rang the hall this morning, before osric rang me, to ask whether members can fence with their own blades. they can, with a button on the tip. she said he asked twice about the button. she said it the way karin says everything, flatly and once.", "kind": "added", "chars": 527, "id": "11-13/36", "ord": 36, "week": "11-13", "squares": 3}], "notes": ["fencing-kit-dad-jacket.md", "polonius-chief-of-staff.md", "kronborg-roof-access-codes.md", "roskilde-house-empty.md", "voltemand-norvik-billing.md", "yorick-comms-quotes.md", "lisbon-booking-voltemand-file.md", "rosencrantz-guildenstern-review.md", "ophelia-contact-log.md", "anniversary-film-fen-co.md", "horatio-what-we-know.md", "inquest-bundle-gaps.md", "marcellus-shift-logs.md", "osric-match-message.md", "wittenberg-withdrawal-form.md", "laertes-lisbon-office.md", "who-asked-what-when.md", "journal.md", "sleep-ring-score-log.md", "dad-laptop-sigrid-boxes.md", "log.md", "roof-footage-0211.md", "nordhavn-lease-petra-lund.md", "claudius-chief-executive.md", "bispebjerg-records-request.md", "estate-account-probate.md", "stairwell-nine-timeline.md", "ines-abril-emails.md", "nyholm-appointment.md", "mum-drafts-unsent.md", "fencing-gothersgade-tuesdays.md"]}], "cell": 16, "gap": 4, "perRow": 5, "kinds": {"added": {"fill": "var(--kind-added)", "hex": "#b6ff3c", "opacity": 1, "note": "lines only added"}, "mixed": {"fill": "var(--kind-mixed)", "hex": "#4de1ff", "opacity": 1, "note": "added and removed"}, "removed": {"fill": "var(--kind-removed)", "hex": "#ff6ec7", "opacity": 0.35, "note": "lines only removed"}, "full": {"fill": "var(--kind-full)", "hex": "#f4f1e4", "opacity": 1, "note": "whole note, no diff to hunk"}}, "charsPer": 200, "view": "hunks"}</script>
+<style>
+  .embedded { --shadow: none; }
+  .embedded header, .embedded #palette-row,
+  .embedded .layout > .panel:first-child > h2 { display: none; }
+  .embedded .layout { padding: 8px 0; }
+  .embedded .panel { border: 0; box-shadow: none; background: transparent; }
+  .embedded .panel > h2 { border-bottom: 0; }
+  /* The pressed chip is inked rather than lime: card and paper are a step apart on a pale
+     palette and nothing apart on a dark one. */
+  .embedded .chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+  .embedded .chip { box-shadow: none; }
+  .embedded .panel > h2, .embedded .sub,
+  .embedded .badge.added, .embedded .badge.mixed, .embedded .badge.removed,
+  .embedded .badge.full { background: var(--paper); box-shadow: none; }
+  /* The box's own border says it has focus; an outline on top of it was a second one. */
+  .embedded input[type=search]:focus, .embedded select:focus { outline: none; }
+  /* Framed, nothing scrolls: the frame is sized to the page (below). `.chart` was
+     `overflow-x: auto`, which makes the y axis scroll too, and a chart a pixel taller than its
+     box grew a scrollbar until a click made the page tall enough to hide it. */
+  .embedded, .embedded body { overflow: hidden; }
+  .embedded .chart { overflow: visible; }
+  /* Framed, every diff is the same box — a square as wide as its panel — and scrolls inside
+     it, so opening a hunk never changes the page's length by more than one square. Its lines
+     wrap, so the only way through a long one is down. */
+  .embedded .hunk {
+    width: 100%; aspect-ratio: 1; box-sizing: border-box;
+    display: flex; flex-direction: column;
+  }
+  .embedded .hunk pre { flex: 1; min-height: 0; max-height: none; overflow: auto; }
+  .embedded .hunk code { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .embedded input, .embedded select { color: var(--ink); }
+  .embedded:not([data-palette$="-light"]) { color-scheme: dark; }
+  .embedded:not([data-palette$="-light"]) .hunk .ln-h { color: #d2a8ff; background: #2b1f45; }
+  .embedded:not([data-palette$="-light"]) .hunk .ln-a { color: #aff5b4; background: #0f3a1d; }
+  .embedded:not([data-palette$="-light"]) .hunk .ln-d { color: #ffdcd7; background: #5a1219; }
+  .embedded:not([data-palette$="-light"]) .hunk .ln-c { color: var(--muted); }
+  .embedded:not([data-palette$="-light"]) :is(.badge.s1, .badge.s2, .badge.s3, .badge.s4, mark) {
+    color: #111111;
+  }
+</style>
+<script>
+(() => {
+  const frame = window.frameElement;
+  if (!frame) return;
+  const root = document.documentElement, host = parent.document.documentElement;
+  const names = new Set(["arrietty-2010", "arrietty-2010-light", "earwig-and-the-witch-2020", "earwig-and-the-witch-2020-light", "from-up-on-poppy-hill-2011", "from-up-on-poppy-hill-2011-light", "ghibli-master", "ghibli-master-light", "grave-of-the-fireflies-1988", "grave-of-the-fireflies-1988-light", "howl-s-moving-castle-2004", "howl-s-moving-castle-2004-light", "kiki-s-delivery-service-1989", "kiki-s-delivery-service-1989-light", "laputa-castle-in-the-sky-1986", "laputa-castle-in-the-sky-1986-light", "lupin-iii-the-castle-of-cagliostro-1979", "lupin-iii-the-castle-of-cagliostro-1979-light", "my-neighbor-totoro-1988", "my-neighbor-totoro-1988-light", "my-neighbors-the-yamadas-1999", "my-neighbors-the-yamadas-1999-light", "nausicaa-of-the-valley-of-the-wind-1984", "nausicaa-of-the-valley-of-the-wind-1984-light", "ocean-waves-1993", "ocean-waves-1993-light", "only-yesterday-1991", "only-yesterday-1991-light", "pom-poko-1994", "pom-poko-1994-light", "ponyo-2008", "ponyo-2008-light", "porco-rosso-1992", "porco-rosso-1992-light", "princess-mononoke-1997", "princess-mononoke-1997-light", "site", "the-red-turtle-2016", "the-red-turtle-2016-light", "the-tale-of-the-princess-kaguya-2013", "the-tale-of-the-princess-kaguya-2013-light", "the-wind-rises-2013", "the-wind-rises-2013-light", "when-marnie-was-there-2014", "when-marnie-was-there-2014-light"]);
+  root.classList.add("embedded");
+  const follow = () => {
+    const name = host.dataset.palette || "site";
+    root.dataset.palette = names.has(name) ? name : "ghibli-master-light";
+  };
+  follow();
+  new MutationObserver(follow).observe(host, { attributes: true, attributeFilter: ["data-palette"] });
+  // A frame has no height of its own to give. The page says, and says again when a click opens
+  // a panel or a redraw changes the chart.
+  // The body's scroll height as well as its box, so whatever a chart draws past the body's
+  // edge is inside the frame rather than clipped by it.
+  const fit = () => {
+    const body = document.body;
+    frame.style.height = Math.ceil(Math.max(body.getBoundingClientRect().height, body.scrollHeight)) + "px";
+  };
+  new ResizeObserver(fit).observe(document.body);
+})();
+</script>
+<script>
+const DATA = JSON.parse(document.getElementById("data").textContent);
+const { weeks, gap, perRow, kinds, charsPer } = DATA;
+let { cell } = DATA;
+// Framed by jaan.io (FRAMED in _page.py, which runs first so this can see the class), the chart
+// takes the geometry of the connectome under it in the post — the same width, the same margins,
+// WEEK_GAP empty columns between weeks — so the two read as one figure drawn twice.
+const embedded = document.documentElement.classList.contains("embedded");
+const WEEK_GAP = 1;   // connection_waffle.py's, framed (weekGap there)
+// A week's date as a reader says it, the way the connectome's axis prints it (`pretty` there).
+// Split rather than parsed through `Date`: a bare ISO day parses as UTC midnight, and west of
+// Greenwich that formats as the day before. A synthetic week is mm-dd, a real one yyyy-mm-dd.
+const MONTHS = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+const pretty = (iso) => {
+  const m = /^(?:[0-9]{4}-)?([0-9]{2})-([0-9]{2})$/.exec(iso ?? "");
+  return m ? `${MONTHS[+m[1] - 1]} ${+m[2]}` : (iso ?? "");
+};
+// Beside its panel, a square at 0.83 of the size it had filling that room with three empty columns
+// between weeks, and one column between them now: the chart is that much narrower (15% on its
+// last width), the panel taking the rest. Stacked, the frame's width. connection_waffle.py's
+// chartWidth is this, and must stay so.
+//
+// Sized from the frame's full width in the post (basisWidth), not the frame as it stands: where
+// the post pulls the frame's left edge in clear of its TOC rail, the panel beside the chart gives
+// up that width and the chart does not — unless the panel would drop under its 340, when the
+// chart gives way.
+const basisWidth = () => {
+  // iframe.wide in jaan.io's Prose.astro: the column's width or three quarters of the viewport,
+  // whichever is more. A page on its own has only itself to go by.
+  const host = window.frameElement;
+  return host ? Math.max(host.parentElement.clientWidth, 0.75 * parent.innerWidth) : innerWidth;
+};
+const chartWidth = () => {
+  if (innerWidth < 960) return Math.max(300, Math.min(900, innerWidth - 32));
+  const unit = 0.83 * (Math.min(900, basisWidth() - 392) - 64) / (weeks.length * (perRow + 3) - 3 + 0.8);
+  return Math.min(innerWidth - 392,
+                  Math.round(64 + unit * (weeks.length * (perRow + WEEK_GAP) - WEEK_GAP + 0.8)));
+};
+const svg = document.getElementById("waffle");
+const detailEl = document.getElementById("detail");
+const qEl = document.getElementById("q");
+const countEl = document.getElementById("count");
+const unitEl = document.getElementById("unit");
+const chips = [...document.querySelectorAll("#views .chip")];
+const NS = "http://www.w3.org/2000/svg";
+const NUM = new Intl.NumberFormat("en-US");
+
+function el(name, attrs) {
+  const n = document.createElementNS(NS, name);
+  for (const k in attrs) n.setAttribute(k, attrs[k]);
+  return n;
+}
+// textContent everywhere below: a note's name and a hunk's body are the user's own private
+// prose, and prose is not markup.
+function badge(text, cls) {
+  const s = document.createElement("span");
+  s.className = "badge " + (cls || "");
+  s.textContent = text;
+  return s;
+}
+// A tick in the characters view runs to tens of thousands, and the axis is a gutter wide.
+const short = n => n >= 1e6 ? n / 1e6 + "M" : n >= 1e3 ? n / 1e3 + "k" : String(n);
+
+// The two views. Everything about the chart is the same in both — the columns, the colours, the
+// click, the filter — except what one square stands for. So that is all a view is: how many
+// squares a hunk gets, what the axis counts, and how to say so out loud.
+const VIEWS = {
+  hunks: {
+    squares: () => 1,
+    order: hunks => hunks,
+    axis: rows => String(rows * perRow),
+    sub: w => w.hunks.length + " hunks",
+    count: "one square is one hunk",
+    label: "Hunks",
+    unit: "One square is one hunk, so a fixed typo and a rewritten page are the same size. "
+        + "Characters weighs them instead.",
+  },
+  chars: {
+    squares: h => h.squares,
+    // Biggest first, from the floor up — which puts the squares that stand for nothing, the
+    // whole-content notes with no diff to measure, in a cap at the top of the column. The axis
+    // then reads true against the coloured part of the column instead of through that padding.
+    order: hunks => [...hunks].sort((a, b) => b.chars - a.chars),
+    axis: rows => short(rows * perRow * charsPer),
+    sub: w => NUM.format(w.hunks.reduce((n, h) => n + h.chars, 0)) + " chars",
+    count: "one square is " + NUM.format(charsPer) + " characters",
+    label: "Characters",
+    unit: "One square is " + NUM.format(charsPer) + " characters added or removed — rounded, and "
+        + "never below one, so the smallest edit still has a square to click. One hunk's squares "
+        + "are fused into one piece and the gap is left to mean a boundary, so two big edits side "
+        + "by side read as two shapes rather than one; the faint seams inside a piece are still "
+        + "there to count. Biggest hunk at the floor. A whole-content note keeps its single "
+        + "square here, since there is no diff under it to measure; those are the neutral ones "
+        + "capping a column, above where the axis still counts.",
+  },
+};
+
+let view = DATA.view;
+let selected = null;   // the hunk being read on the right, not the square that was clicked
+let pieces = [];
+
+function draw() {
+  const V = VIEWS[view];
+  svg.textContent = "";
+  pieces = [];
+
+  // One entry per square, bottom-up in column order. A hunk appears as many times as it has
+  // squares and it is the same object every time, which is what lets one click light them all.
+  const columns = weeks.map(w => V.order(w.hunks).flatMap(h => Array(V.squares(h)).fill(h)));
+
+  // Framed, a square's pitch is whatever fits the width over the connectome's x units — the
+  // weeks' columns, WEEK_GAP between them and 0.4 of one either side, its xDomain exactly —
+  // with its margins. On its own page the chart keeps the fixed cell it was given.
+  const padL = 52, padR = 12, padT = 20, padB = 47;   // the y label above; day, date, tally below
+  const units = weeks.length * (perRow + WEEK_GAP) - WEEK_GAP + 0.8;
+  const pitch = embedded ? (chartWidth() - padL - padR) / units : cell + gap;
+  cell = pitch - gap;
+  const colW = perRow * pitch - gap;
+  const colGap = embedded ? WEEK_GAP * pitch + gap : 34;
+  const lead = embedded ? 0.4 * pitch : 0;
+  const tallest = Math.max(1, ...columns.map(c => Math.ceil(c.length / perRow)));
+  const plotH = tallest * pitch - gap;
+  const baseY = padT + plotH;
+  const width = embedded ? chartWidth() : padL + weeks.length * (colW + colGap) - colGap + 12;
+  const height = baseY + padB + (embedded ? gap : 0);
+  if (embedded) document.documentElement.style.setProperty("--chart-w", `${width}px`);
+
+  svg.setAttribute("width", width);
+  svg.setAttribute("height", height);
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+
+  // A row is `perRow` squares, so a tick every whole number of rows is a round count of whatever
+  // a square stands for. Every other row while the chart is short, and fewer once it is tall —
+  // the characters view stacks several times the rows the hunks view does.
+  const step = Math.max(2, Math.ceil(tallest / 10));
+  for (let rows = 0; rows <= tallest; rows += step) {
+    const y = baseY - rows * pitch;
+    // Framed, a tick and no gridline or floor, as Plot draws the connectome's axis under it: six
+    // pixels out from the plot's edge, the label three clear of it and centred on it.
+    if (embedded)
+      svg.appendChild(el("line", { x1: padL - 6, y1: y, x2: padL, y2: y,
+                                   stroke: "var(--ink)", "stroke-width": 1 }));
+    else
+      svg.appendChild(el("line", { x1: padL - 8, y1: y, x2: width, y2: y,
+                                   stroke: "var(--ink)", "stroke-width": rows ? 1 : 3,
+                                   "stroke-opacity": rows ? 0.15 : 1 }));
+    const t = el("text", { class: "axis", x: embedded ? padL - 9 : padL - 14,
+                           y: y + (embedded ? 3.5 : 4), "text-anchor": "end" });
+    t.textContent = V.axis(rows);
+    svg.appendChild(t);
+  }
+
+  // What the axis counts, over its top-left corner with an arrow, the way Plot labels the
+  // connectome's — so the one word changes with the toggle and nothing else does.
+  // Clear of the top tick, whose label is centred on a gridline a gap above padT.
+  const yLabel = el("text", { class: "axis ylabel", x: 4, y: padT - 12 });
+  yLabel.textContent = "\u2191 " + V.label;
+  svg.appendChild(yLabel);
+
+  weeks.forEach((w, i) => {
+    const x0 = padL + lead + i * (colW + colGap);
+    // The day of the week above the date. A session folder named `11-13` has no year in it and
+    // therefore no weekday anybody can derive, so the writer that dropped the year hands one
+    // over in `microlite.md`'s own header and `_hunks` carries it here. The same size as the
+    // date, so the two read as one label on two lines.
+    // Framed, the two lines sit where Plot sets the connectome's tick label — a baseline 19.3px
+    // under the floor, the next 1em below — and no tally under them.
+    const line1 = embedded ? 19.3 : 16, line2 = embedded ? 30.3 : 30;
+    if (w.weekday) {
+      const day = el("text", { class: "axis week", x: x0 + colW / 2, y: baseY + line1,
+                               "text-anchor": "middle" });
+      day.textContent = w.weekday;
+      svg.appendChild(day);
+    }
+    const label = el("text", { class: "axis week", x: x0 + colW / 2,
+                               y: baseY + (w.weekday ? line2 : embedded ? line1 : 18),
+                               "text-anchor": "middle" });
+    label.textContent = pretty(w.week);
+    svg.appendChild(label);
+    if (!embedded) {
+      const sub = el("text", { class: "axis", x: x0 + colW / 2, y: baseY + (w.weekday ? 43 : 31),
+                               "text-anchor": "middle" });
+      sub.textContent = V.sub(w);
+      svg.appendChild(sub);
+    }
+
+    // Bottom-up, wrapping at perRow — the column is the quantity, the way a waffle reads. A
+    // hunk's squares are consecutive in that order, which is what makes them a shape.
+    let n = 0;
+    for (const h of V.order(w.hunks)) {
+      const g = piece(w, h, x0, n, n + V.squares(h) - 1, baseY, pitch);
+      svg.appendChild(g);
+      pieces.push({ g, hunk: h, note: h.note.toLowerCase() });
+      n += V.squares(h);
+    }
+  });
+
+  outline();
+  dim();
+  alignLegend();
+}
+
+// Framed, the legend's first swatch starts where the first column's first square does, as the
+// connectome's does under it (align() there). Measured, so it holds if the chart scales down.
+function alignLegend() {
+  const legend = document.getElementById("legend"), swatch = legend.querySelector("i");
+  if (!embedded || !swatch) return;
+  legend.style.paddingLeft = "0px";
+  const first = Math.min(...[...svg.querySelectorAll("rect.cell")].map(r => r.getBoundingClientRect().left));
+  legend.style.paddingLeft = `${first - swatch.getBoundingClientRect().left}px`;
+  // The controls over the chart span the chart itself, edge to edge, as the connectome's caption
+  // does over its plot.
+  const controls = qEl.closest(".controls");
+  controls.style.paddingLeft = "0px";
+  controls.style.width = "";
+  const left = controls.getBoundingClientRect().left;
+  controls.style.paddingLeft = `${svg.getBoundingClientRect().left - left}px`;
+  controls.style.width = `${svg.getBoundingClientRect().right - left}px`;
+  alignDetail();
+}
+
+// Framed, and while the panel sits beside the chart: the hunk's name and day level with the
+// controls over the chart, middle to middle, and its box running from the top of the y axis to
+// the foot of the legend, so the hunk is exactly as tall as the chart it came from. Measured from
+// where each rests, every margin cleared first, so a second pass changes nothing. Stacked, the
+// box keeps its square.
+function alignDetail() {
+  const end = detailEl.querySelector(".end");
+  if (!embedded || !end) return;
+  const who = end.querySelector(".who"), box = end.querySelector(".hunk");
+  end.style.marginTop = box.style.marginTop = box.style.height = "";
+  box.style.aspectRatio = box.style.boxSizing = "";
+  if (detailEl.getBoundingClientRect().left < svg.getBoundingClientRect().right) return;
+  const q = qEl.getBoundingClientRect(), wr = who.getBoundingClientRect();
+  end.style.marginTop = `${parseFloat(getComputedStyle(end).marginTop)
+                           + (q.top + q.bottom) / 2 - (wr.top + wr.bottom) / 2}px`;
+  const top = svg.querySelector(".ylabel").getBoundingClientRect().top;
+  const bottom = Math.max(...[...document.querySelectorAll("#legend > span")]
+                               .map(s => s.getBoundingClientRect().bottom));
+  box.style.marginTop = `${parseFloat(getComputedStyle(box).marginTop)
+                           + top - box.getBoundingClientRect().top}px`;
+  box.style.aspectRatio = "auto";
+  box.style.boxSizing = "border-box";
+  box.style.height = `${bottom - top}px`;
+}
+
+// One hunk, drawn as one thing. A square keeps its place on the pitch grid and simply grows into
+// the gap on any side where the square next to it belongs to the same hunk — so the hunk tiles a
+// single region, and the gap is left to mean the one thing the eye already reads it as: a
+// boundary. Two large edits side by side used to be one undifferentiated block of colour.
+//
+// The outline is a path around that region rather than a border on each square, so it is the
+// piece that thickens when selected. Inside it the seams stay, faintly: a waffle is a thing you
+// count, and a hunk you cannot count the squares of is just a bar.
+function piece(w, h, x0, first, last, baseY, pitch) {
+  const g = el("g", { class: "piece" });
+  const mine = n => n >= first && n <= last;
+  const seam = [];
+
+  for (let n = first; n <= last; n++) {
+    const c = n % perRow, r = (n - c) / perRow;
+    // Grid neighbours, not merely the next hunk-square along: a piece that wraps at the end of
+    // a row is two blocks in the column, and drawing it as one would join them across the wrap.
+    const left = c > 0 && mine(n - 1);
+    const right = c < perRow - 1 && mine(n + 1);
+    const down = mine(n - perRow);
+    const up = mine(n + perRow);
+
+    const x = x0 + c * pitch, top = baseY - r * pitch - cell;
+    const x1 = x + cell + (right ? gap : 0);
+    const y0 = top - (up ? gap : 0), y1 = top + cell;
+    // The square and the gap to its right as one rect, the gap above it as another: the corner
+    // those two gaps share is filled only when all four squares round it are this hunk's. One
+    // rect up and right at once filled it with three, a tooth in the inner corner of an L.
+    const upRight = c < perRow - 1 && mine(n + perRow + 1);
+    const paint = { class: "cell", fill: kinds[h.kind].fill, "fill-opacity": kinds[h.kind].opacity };
+    g.appendChild(el("rect", { ...paint, x, y: top, width: x1 - x, height: y1 - top }));
+    if (up) g.appendChild(el("rect", { ...paint, x, y: y0, height: gap,
+                                       width: cell + (right && upRight ? gap : 0) }));
+
+    // Each internal boundary belongs to the square below it or to its left, so it is drawn once.
+    if (right) seam.push(`M${x1} ${y0}V${y1}`);
+    if (up) seam.push(`M${x} ${y0}H${x1}`);
+  }
+
+  if (seam.length) g.appendChild(el("path", { class: "seam", d: seam.join("") }));
+  g.appendChild(el("path", { class: "edge",
+                             d: outlinePath(first, last, x0, baseY, pitch, embedded ? gap / 2 : 0) }));
+  const tip = el("title");
+  tip.textContent = `${h.note}\n${h.kind} · +${h.add} −${h.dele}`
+                  + (h.chars ? ` · ${NUM.format(h.chars)} chars` : "");
+  g.appendChild(tip);
+  g.onclick = () => show(w, h);
+  return g;
+}
+
+// The outline of one piece, traced round the region its squares fill. The grid is taken at twice
+// the square's resolution — each square, and each gap beside one — so a gap the piece's rects
+// fill is inside it and a gap they leave is a notch, exactly as `piece` tiles them. Every side of
+// that boundary moves out by `o`, and each end with it: out past a corner that turns away from the
+// piece, back from one that turns into it, not at all where the side runs on into the next.
+//
+// On its own page `o` is 0 and this is the piece's own edge. Framed, it is half the gap, and
+// stroked five wide with square caps it is the connectome's ring (OUTLINE_WIDTH in
+// connection_waffle.py): a band centred in the gap around the hunk, so a picked hunk is outlined
+// alike in both charts.
+function outlinePath(first, last, x0, baseY, pitch, o) {
+  const sq = (c, r) => c >= 0 && c < perRow && r >= 0
+                       && r * perRow + c >= first && r * perRow + c <= last;
+  // `>>` floors negatives too, so the slots off the left edge read as empty.
+  const M = (i, j) => {
+    const c = i >> 1, r = j >> 1;
+    if (!(i & 1) && !(j & 1)) return sq(c, r);
+    if (!(j & 1)) return sq(c, r) && sq(c + 1, r);     // the gap right of a square
+    if (!(i & 1)) return sq(c, r) && sq(c, r + 1);     // the gap above one
+    return sq(c, r) && sq(c + 1, r) && sq(c, r + 1) && sq(c + 1, r + 1);   // a corner, among four
+  };
+  const xs = i => x0 + (i >> 1) * pitch + (i & 1 ? cell : 0);
+  const xe = i => i & 1 ? x0 + ((i >> 1) + 1) * pitch : xs(i) + cell;
+  const yb = j => baseY - (j >> 1) * pitch - (j & 1 ? cell : 0);
+  const yt = j => j & 1 ? baseY - ((j >> 1) + 1) * pitch : yb(j) - cell;
+  const end = (along, diag) => !along ? o : diag ? -o : 0;
+  const d = [];
+  const r0 = Math.floor(first / perRow), r1 = Math.floor(last / perRow);
+  for (let j = 2 * r0; j <= 2 * r1; j++) for (let i = 0; i < 2 * perRow - 1; i++) {
+    if (!M(i, j)) continue;
+    if (!M(i - 1, j)) d.push(`M${xs(i) - o} ${yt(j) - end(M(i, j + 1), M(i - 1, j + 1))}`
+                           + `V${yb(j) + end(M(i, j - 1), M(i - 1, j - 1))}`);
+    if (!M(i + 1, j)) d.push(`M${xe(i) + o} ${yt(j) - end(M(i, j + 1), M(i + 1, j + 1))}`
+                           + `V${yb(j) + end(M(i, j - 1), M(i + 1, j - 1))}`);
+    if (!M(i, j - 1)) d.push(`M${xs(i) - end(M(i - 1, j), M(i - 1, j - 1))} ${yb(j) + o}`
+                           + `H${xe(i) + end(M(i + 1, j), M(i + 1, j - 1))}`);
+    if (!M(i, j + 1)) d.push(`M${xs(i) - end(M(i - 1, j), M(i - 1, j + 1))} ${yt(j) - o}`
+                           + `H${xe(i) + end(M(i + 1, j), M(i + 1, j + 1))}`);
+  }
+  return d.join("");
+}
+
+// What is selected is a hunk and not a square: in the characters view a hunk owns a block of
+// them, and outlining one of that block would say the edit was smaller than it is.
+function outline() {
+  for (const p of pieces) p.g.classList.toggle("on", p.hunk === selected);
+  // Last in the drawing, so its outline lies over the squares beside it, as the connectome's
+  // ring lies over its neighbours.
+  const on = pieces.find(p => p.hunk === selected);
+  if (on) svg.appendChild(on.g);
+}
+
+function dim() {
+  const q = qEl.value.trim().toLowerCase();
+  for (const p of pieces) p.g.style.opacity = !q || p.note.includes(q) ? "" : "0.1";
+}
+
+function show(w, h) {
+  selected = h;
+  outline();
+  detailEl.textContent = "";
+  const box = hunkBox(h);
+  // Framed, the hunk is drawn as the connectome's ends are, so a hunk opened in either chart of
+  // the post looks the same: the caret, the note's name and its day in bold, the box open under
+  // them. On its own page, the name as a title and the facts as badges.
+  if (embedded) {
+    // Never folded here — the hunk is the whole of what a click asks for — so no caret.
+    const end = document.createElement("div");
+    end.className = "end";
+    const who = end.appendChild(document.createElement("span"));
+    who.className = "who";
+    for (const line of [h.note, [w.weekday, pretty(w.week)].filter(Boolean).join(" ")]) {
+      who.appendChild(document.createElement("span")).textContent = line;
+    }
+    end.appendChild(box);
+    detailEl.appendChild(end);
+    alignDetail();
+    return;
+  }
+  const title = document.createElement("h2");
+  title.className = "title";
+  title.textContent = h.note;
+  detailEl.appendChild(title);
+  const facts = document.createElement("div");
+  facts.className = "facts";
+  facts.appendChild(badge(w.week));
+  facts.appendChild(badge(h.kind, h.kind));
+  if (h.add || h.dele) facts.appendChild(badge(`+${h.add} −${h.dele}`));
+  if (h.chars) facts.appendChild(badge(`${NUM.format(h.chars)} chars`));
+  detailEl.appendChild(facts);
+  detailEl.appendChild(box);
+}
+
+// The diff, one span per line, coloured by what the line did.
+function hunkBox(h) {
+  const box = document.createElement("div");
+  box.className = "hunk";
+  const pre = document.createElement("pre");
+  const code = document.createElement("code");
+  code.className = "language-diff";
+  for (const line of [h.head, ...(h.text ? h.text.split("\n") : [])]) {
+    const span = document.createElement("span");
+    span.className = line.startsWith("@@") ? "ln-h"
+      : line.startsWith("+") ? "ln-a"
+      : line.startsWith("-") ? "ln-d"
+      : "ln-c";
+    span.textContent = line || " ";
+    code.appendChild(span);
+  }
+  pre.appendChild(code);
+  box.appendChild(pre);
+  return box;
+}
+
+for (const k in kinds) {
+  const s = document.createElement("span");
+  const i = document.createElement("i");
+  i.style.background = kinds[k].fill;
+  i.style.opacity = kinds[k].opacity;
+  s.appendChild(i);
+  // Framed, the name alone, as the connectome's legend under it has; the post says the rest.
+  s.appendChild(document.createTextNode(embedded ? k : `${k} — ${kinds[k].note}`));
+  document.getElementById("legend").appendChild(s);
+}
+alignLegend();
+
+// Redrawing from scratch rather than resizing what is there: a hunk's squares are one, then
+// several, so there is nothing to animate between and the chart is a few dozen rects anyway.
+// The selection survives because it is the hunk, and the filter because it re-reads the box.
+function setView(next) {
+  view = next;
+  for (const b of chips) b.setAttribute("aria-pressed", String(b.dataset.view === view));
+  countEl.textContent = VIEWS[view].count;
+  unitEl.textContent = VIEWS[view].unit;
+  draw();
+}
+for (const b of chips) b.onclick = () => setView(b.dataset.view);
+setView(view);
+// A frame is as wide as the post makes it, so a resize can move the chart's width.
+let drawnAt = chartWidth(), resizing;
+if (embedded) addEventListener("resize", () => {
+  clearTimeout(resizing);
+  resizing = setTimeout(() => { if (chartWidth() !== drawnAt) { drawnAt = chartWidth(); draw(); } }, 150);
+});
+
+// One plain list per week, stacked, each under its date.
+const notesEl = document.getElementById("notes");
+for (const w of weeks) {
+  const h = document.createElement("h3");
+  h.textContent = w.week;
+  notesEl.appendChild(h);
+  const ul = document.createElement("ul");
+  for (const note of w.notes) {
+    const li = document.createElement("li");
+    li.textContent = note;
+    ul.appendChild(li);
+  }
+  notesEl.appendChild(ul);
+}
+
+// The box finishes a note's name as it is typed — the finished part selected, so the next
+// keystroke replaces it — and Tab or Enter takes the rest. A deletion is never completed, or
+// backspacing over a suggestion would put it straight back.
+// The `/` shortcut is this page's own; framed in a post the key belongs to the post.
+// Framed, the controls move over the chart (laid out by alignLegend and EXTRA_STYLE).
+if (embedded) {
+  qEl.placeholder = "Select one note to view its snapshots";
+  svg.closest(".chart").before(qEl.closest(".controls"));
+  alignLegend();
+}
+const noteNames = [...new Set(weeks.flatMap(w => w.hunks.map(h => h.note)))].sort();
+qEl.addEventListener("input", ev => {
+  const typed = qEl.value;
+  if (typed && !ev.inputType?.startsWith("delete")) {
+    const hit = noteNames.find(n => n.toLowerCase().startsWith(typed.toLowerCase()));
+    if (hit && hit.length > typed.length) {
+      qEl.value = typed + hit.slice(typed.length);
+      qEl.setSelectionRange(typed.length, hit.length);
+    }
+  }
+  dim();
+});
+qEl.addEventListener("keydown", ev => {
+  if (ev.key !== "Tab" && ev.key !== "Enter") return;
+  const pending = qEl.selectionStart < qEl.selectionEnd && qEl.selectionEnd === qEl.value.length;
+  if (ev.key === "Enter" || pending) ev.preventDefault();
+  if (pending) qEl.setSelectionRange(qEl.value.length, qEl.value.length);
+  dim();
+});
+document.addEventListener("keydown", ev => {
+  if (document.activeElement === qEl) return;
+  if (ev.key === "/") { ev.preventDefault(); qEl.focus(); }
+  if (ev.key === "v") setView(view === "hunks" ? "chars" : "hunks");
+});
+</script>
+</body>
+</html>

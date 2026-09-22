@@ -1,0 +1,6 @@
+# Pages project config. No account id here on purpose — it is the one value that differs between
+# whoever runs this, and wrangler takes it from CLOUDFLARE_ACCOUNT_ID or from a single-account
+# token. `wrangler whoami` lists yours.
+name = "petrograph-synthetic"
+pages_build_output_dir = "public"
+compatibility_date = "2026-06-12"

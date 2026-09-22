@@ -1,0 +1,1017 @@
+{
+  "week": "11-13",
+  "generated": "2026-09-12T16:44:42+00:00",
+  "model": "claude-haiku-4-5-20251001",
+  "weeks": [
+    "10-24",
+    "11-01",
+    "11-06",
+    "11-13"
+  ],
+  "hunk_chars": [
+    900,
+    1400
+  ],
+  "sources": [
+    {
+      "id": "finances-11-13.md",
+      "text": "# Finances — last 7 days\n\n_11-05 to 11-13 · 20 transactions · categorized double-entry, straight from the ledger_\n\n## Where it went\n\n```text\nExpenses:Shopping:Online                            288.47\nExpenses:Food:Groceries                             115.96\nExpenses:Food:Restaurants                            72.50\nExpenses:Misc:PersonToPerson                         55.48\nExpenses:Food:Coffee                                 37.39\nExpenses:Transport:Transit                           33.02\nExpenses:Transport:Bikeshare                         21.74\nExpenses:Health:Pharmacy                             10.07\n\nspent                                               634.63\nearned                                                0.00\n```\n\n## Entries\n\n```beancount\n11-06 * \"Fen & Co\" \"\"\n  Liabilities:DK:Local:CreditCard               -10.22 USD\n  Expenses:Shopping:Online                       10.22 USD\n\n11-06 * \"Gothersgade Fencing Hall\" \"\"\n  Liabilities:DK:Local:CreditCard              -107.90 USD\n  Expenses:Shopping:Online                      107.90 USD\n\n11-06 * \"Ursa\" \"\"\n  Liabilities:DK:Local:CreditCard               -60.53 USD\n  Expenses:Food:Groceries                        60.53 USD\n\n11-06 * \"Ursa\" \"\"\n  Liabilities:DK:Local:CreditCard               -10.07 USD\n  Expenses:Health:Pharmacy                       10.07 USD\n\n11-06 * \"Wittenberg\" \"\"\n  Liabilities:DK:Local:CreditCard                -6.59 USD\n  Expenses:Food:Coffee                            6.59 USD\n\n11-07 * \"Bispebjerg\" \"\"\n  Liabilities:DK:Local:CreditCard               -47.63 USD\n  Expenses:Food:Restaurants                      47.63 USD\n\n11-07 * \"Strandgade\" \"\"\n  Liabilities:DK:Local:CreditCard               -25.46 USD\n  Expenses:Food:Groceries                        25.46 USD\n\n11-08 * \"Helsingør\" \"\"\n  Liabilities:DK:Local:CreditCard                -8.60 USD\n  Expenses:Food:Coffee                            8.60 USD\n\n11-08 * \"Helsingør\" \"\"\n  Liabilities:DK:Local:CreditCard               -55.48 USD\n  Expenses:Misc:PersonToPerson                   55.48 USD\n\n11-08 * \"Wittenberg\" \"\"\n  Liabilities:DK:Local:CreditCard               -21.74 USD\n  Expenses:Transport:Bikeshare                   21.74 USD\n\n11-09 * \"Norvik\" \"\"\n  Liabilities:DK:Local:CreditCard                -9.93 USD\n  Expenses:Transport:Transit                      9.93 USD\n\n11-10 * \"Roskilde\" \"\"\n  Liabilities:DK:Local:CreditCard               -23.09 USD\n  Expenses:Transport:Transit                     23.09 USD\n\n11-10 * \"Wittenberg\" \"\"\n  Liabilities:DK:Local:CreditCard                -7.39 USD\n  Expenses:Food:Coffee                            7.39 USD\n\n11-11 * \"Bispebjerg\" \"\"\n  Liabilities:DK:Local:CreditCard               -24.87 USD\n  Expenses:Food:Restaurants                      24.87 USD\n\n11-11 * \"Gothersgade Fencing Hall\" \"\"\n  Liabilities:DK:Local:CreditCard                -6.02 USD\n  Expenses:Food:Coffee                            6.02 USD\n\n11-11 * \"Nordhavn\" \"\"\n  Liabilities:DK:Local:CreditCard               -71.47 USD\n  Expenses:Shopping:Online                       71.47 USD\n\n11-11 * \"Wittenberg\" \"\"\n  Liabilities:DK:Local:CreditCard                -4.25 USD\n  Expenses:Food:Coffee                            4.25 USD\n\n11-12 * \"Gothersgade Fencing Hall\" \"\"\n  Liabilities:DK:Local:CreditCard                -4.54 USD\n  Expenses:Food:Coffee                            4.54 USD\n\n11-12 * \"Nordhavn\" \"\"\n  Liabilities:DK:Local:CreditCard               -98.88 USD\n  Expenses:Shopping:Online                       98.88 USD\n\n11-12 * \"Ursa\" \"\"\n  Liabilities:DK:Local:CreditCard               -29.97 USD\n  Expenses:Food:Groceries                        29.97 USD\n```\n"
+    },
+    {
+      "id": "oura-11-13.md",
+      "text": "# Oura metrics — last 7 days\n\n_generated 11/13, 10:15:16 AM · 7 days, against the previous 3 weeks (21 days with data, 10-17 … 11-06)_\n\n## Sleep\n\n_Stage percentages are of total sleep time, not time in bed._\n\n| Date | Sleep h | Eff % | Latency min | Deep % | REM % | Light % | Midsleep | Score |\n|---|---:|---:|---:|---:|---:|---:|---:|---:|\n| 11-07 | 6.96 | 95 | 10 | 22 | 18 | 60 | 02:01 | 85 |\n| 11-08 | 9.19 | 95 | 6 | 17 | 32 | 51 | 00:45 | 96 |\n| 11-09 | 7.26 | 95 | 9 | 18 | 31 | 50 | 04:05 | 87 |\n| 11-10 | 6.74 | 89 | 24 | 16 | 18 | 66 | 03:03 | 79 |\n| 11-11 | 6.04 | 87 | 7 | 14 | 29 | 57 | 03:22 | 79 |\n| 11-12 | 6.94 | 93 | 11 | 23 | 22 | 55 | 02:07 | 84 |\n| 11-13 | 6.84 | 91 | 10 | 23 | 23 | 54 | 02:22 | 83 |\n\n## Physiology and activity\n\n_HR and HRV are nocturnal. Activity CV is the coefficient of variation of the day's 1-minute MET series (full 24 h, sleep included) — a within-day variability scalar._\n\n| Date | Resting HR | Avg HR | HRV ms | Breath | Temp Δ°C | Act score | Active MET min | Act CV |\n|---|---:|---:|---:|---:|---:|---:|---:|---:|\n| 11-07 | 53 | 58 | 98 | 13.5 | 0.01 | 87 | 421 | 0.57 |\n| 11-08 | 42 | 44 | 96 | 13.8 | 0.02 | 78 | 466 | 0.88 |\n| 11-09 | 48 | 53 | 74 | 14.0 | 0.36 | 84 | 523 | 0.49 |\n| 11-10 | 51 | 56 | 52 | 14.0 | -0.20 | 88 | 639 | 0.51 |\n| 11-11 | 47 | 51 | 59 | 14.2 | -0.11 | 94 | 266 | 0.82 |\n| 11-12 | 50 | 55 | 72 | 13.7 | 0.12 | 93 | 541 | 0.54 |\n| 11-13 \\* | 49 | 54 | 73 | 13.1 | -0.02 | 85 | 457 | 0.57 |\n\n\\* Today — activity is still accumulating, so its activity columns are shown but excluded from the baselines below. The sleep row for the same date is complete.\n\n## Last 7 days vs the previous 3 weeks\n\n_Baseline is the previous 3 weeks — the days before this window, so nothing in the window helped set the mean it is judged against. Δ is the change in the metric's own unit; z is that change in baseline SDs, which is what makes metrics comparable to each other._\n\n| Metric | Unit | Week mean | Week SD | Baseline mean | Baseline SD | Δ | z |\n|---|---|---:|---:|---:|---:|---:|---:|\n| Total sleep | h | 7.14 | 0.91 | 7.46 | 0.88 | -0.33 | -0.37 |\n| Sleep efficiency | % | 92.14 | 3.01 | 91.40 | 2.73 | +0.74 | +0.27 |\n| Sleep latency | min | 11.12 | 5.50 | 9.33 | 5.31 | +1.79 | +0.34 |\n| Deep sleep | % | 18.90 | 3.32 | 21.59 | 4.77 | -2.70 | -0.57 |\n| REM sleep | % | 24.97 | 5.55 | 25.10 | 4.29 | -0.13 | -0.03 |\n| Light sleep | % | 56.14 | 5.10 | 53.31 | 7.80 | +2.83 | +0.36 |\n| Midsleep time | h | 14.53 | 1.00 | 14.52 | 0.84 | +0.01 | +0.02 |\n| Resting HR | bpm | 48.66 | 3.23 | 48.16 | 2.78 | +0.50 | +0.18 |\n| HRV (RMSSD) | ms | 75.01 | 15.87 | 77.89 | 18.59 | -2.88 | -0.16 |\n| Respiratory rate | /min | 13.76 | 0.35 | 13.75 | 0.39 | +0.00 | +0.01 |\n| Temperature deviation | °C | 0.03 | 0.17 | -0.00 | 0.24 | +0.03 | +0.13 |\n| Within-day activity CV | — | 0.63 | 0.14 | 0.69 | 0.09 | -0.06 | -0.65 |\n| Active MET minutes | min | 473.27 | 107.42 | 594.02 | 146.58 | -120.76 | -0.82 |\n\n## Sleep-duration variability (7-night rolling SD)\n\n_Night-to-night spread in how long sleep ran, rather than how long it ran on average. A week can hold its mean and still scatter, and the scatter is the part that is felt._\n\n| Date | Rolling SD h |\n|---|---:|\n| 10-23 | 0.85 |\n| 10-24 | 1.03 |\n| 10-25 | 1.00 |\n| 10-26 | 0.94 |\n| 10-27 | 1.03 |\n| 10-28 | 0.91 |\n| 10-29 | 0.91 |\n\n_The same rolling SD averaged 0.86 h across the previous 3 weeks._\n\n## Deviations beyond ±1.5 SD of baseline\n\n_Single days in this window, each against the mean and SD of the previous 3 weeks._\n\n| Date | Metric | Value | Baseline mean | z | Direction |\n|---|---|---:|---:|---:|---|\n| 11-10 | Sleep latency | 24.05 | 9.33 | +2.77 | above |\n| 11-11 | Active MET minutes | 265.80 | 594.02 | -2.24 | below |\n| 11-08 | Resting HR | 41.99 | 48.16 | -2.22 | below |\n| 11-08 | Within-day activity CV | 0.88 | 0.69 | +2.09 | above |\n| 11-08 | Midsleep time | 12.76 | 14.52 | -2.09 | below |\n| 11-09 | Within-day activity CV | 0.49 | 0.69 | -2.09 | below |\n| 11-08 | Total sleep | 9.19 | 7.46 | +1.95 | above |\n| 11-10 | Within-day activity CV | 0.51 | 0.69 | -1.91 | below |\n| 11-09 | Midsleep time | 16.08 | 14.52 | +1.84 | above |\n| 11-13 | Respiratory rate | 13.06 | 13.75 | -1.77 | below |\n| 11-11 | Sleep efficiency | 86.69 | 91.40 | -1.73 | below |\n| 11-07 | Resting HR | 52.88 | 48.16 | +1.70 | above |\n\n## How to read this\n\n- Everything here is measured against **the previous 3 weeks**, not against any stable reference. That is a real comparison period rather than the window judging itself, but it inherits whatever those weeks were.\n- A z of ±1 is one baseline day's worth of spread, so a *weekly mean* moving that far is a large shift — seven nights average most of the noise out. Read ±0.5 as visible and ±1 as pronounced.\n- Several signals moving together mean more than any one of them. Shorter sleep, a higher resting heart rate and a wider spread in bedtime say something in combination that none says alone.\n- Change from your own baseline matters; population norms mostly do not.\n- Stage percentages from a ring are trend indicators, not measurements.\n- This is a self-tracking summary and nothing more.\n"
+    }
+  ],
+  "connections": [
+    {
+      "sentence": "Deliberating protected you from consequences. Acting has them, and one of them sits in a minute you haven't written about anywhere.",
+      "strength": 5,
+      "from": "11-06/20",
+      "from_rationale": "The stairwell-nine-timeline note explicitly states 'what is not in this list is anything between 18:04 and 18:05, and that is the part people will ask about, and i do not have it.'",
+      "to": "11-13/32",
+      "to_rationale": "The 11-13 update to that note adds 'it is being handled as an accident' and notes that the writer is 'the only person who has counted' that this is the second time the company has used the word 'accident' about a man falling from height, situating the missing minute in a pattern of consequence.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "In ACT terms it is fusion with self-as-content: a story about who you are is doing the steering, and it steers toward a man who asked twice about the button.",
+      "strength": 5,
+      "from": "11-13/36",
+      "from_rationale": "The fencing-gothersgade-tuesdays note records that 'karin, when i rang her: laertes rang the hall this morning, before osric rang me, to ask whether members can fence with their own blades. they can, with a button on the tip. she said he asked twice about the button.'",
+      "to": "11-13/16",
+      "to_rationale": "The osric-match-message note contains the exact phrasing 'he said you'd know the time', using the ordinary Tuesday fencing session as cover for a confrontation, and claudius 'put money on you', creating a scenario where the writer's identity and commitments steer him toward the meeting.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "**Conscientiousness:** very high, and it comes out as documentation. You timestamp your own yes so you can't disown it later.",
+      "strength": 5,
+      "from": "11-13/16",
+      "from_rationale": "The osric-match-message note records the exact voice message at '11:52' and the writer's response at '12:04', with the note stating 'i am writing down that i said yes, and that i knew, so that i cannot come back to this page later and pretend i did not.'",
+      "to": "11-13/20",
+      "to_rationale": "The journal for 11-13 reinforces this: 'i am writing down that i said yes, and that i knew' and frames the documentation as a guard against future self-deception about the fencing hall meeting.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "two pages to the audit chair at 23:10, the 19:40 home alone, and a yes to Osric twelve minutes after he asked.",
+      "strength": 5,
+      "from": "11-13/16",
+      "from_rationale": "The osric-match-message note records the voice message at '11:52' on 11-13 and the writer's response at '12:04', with the message inviting the writer to the fencing hall 'tuesday, gothersgade, seven'.",
+      "to": "11-13/20",
+      "to_rationale": "The journal entry for 11-13 confirms 'i said yes' at 12:04 and records 'i laughed out loud in the street outside ursa, properly, for the first time in weeks, because it is such a *transparent* piece of work', establishing the timing and the immediate acceptance of the invitation.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "You wrote *i would be laertes*, and as perspective-taking that's the best thing in your notes.",
+      "strength": 5,
+      "from": "11-13/18",
+      "from_rationale": "The laertes-lisbon-office note for 11-13 states 'i am not angry at him. i would be laertes. that is the whole trouble with this week' and 'if somebody had done to my father what i think was done to mine, and then done to my sister whatever it is that has been done, i would be exactly where laertes is standing'.",
+      "to": "11-13/20",
+      "to_rationale": "The journal for 11-13 echoes this directly: 'i am not angry at laertes. i would be laertes. that is the whole trouble with this week', placing the emotional recognition at the core of the decision to accept the fencing invitation.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "The ring shows a body in better shape than the man wearing it.",
+      "strength": 5,
+      "from": "oura-11-13.md",
+      "from_rationale": "The Oura report shows sleep scores of 89 on 11-05 and 89 on 11-06, among the best of the month, with efficiency at 95% and resting HR within baseline.",
+      "to": "11-06/4",
+      "to_rationale": "The sleep-ring-score-log entry for 11-06 records '8.19, score 89 — best of the month' and notes 'i wrote the journal entry at two in the morning', indicating the writer was awake despite the ring's high score.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "On food: groceries come to 115.96, so food is being bought.",
+      "strength": 5,
+      "from": "finances-11-13.md",
+      "from_rationale": "The ledger for the week of 11-05 to 11-13 shows Expenses:Food:Groceries totaling 115.96 USD across multiple transactions.",
+      "to": "10-24/10",
+      "to_rationale": "The nyholm-appointment note records Nyholm's assessment that the writer 'stopped eating without noticing', establishing a concern about food intake that the ledger figures address.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "11-08: The ring report's 9.19 hours at a resting heart rate of 42 on 11-08 is the night your sleep log says you slept like something switched off, the day before Lisbon.",
+      "strength": 5,
+      "from": "oura-11-13.md",
+      "from_rationale": "The Oura report shows 11-08 with 9.19 h total sleep, resting HR 42 bpm, efficiency 95%, latency 6 min, midsleep 00:45, and score 96—all extreme values.",
+      "to": "11-13/21",
+      "to_rationale": "The sleep-ring-score-log for 11-13 entry dated 11-08 reads '9.19, rhr 42 | slept like something switched off. the day before lisbon', using identical figures and phrase from the letter's opening.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "The ring report's 7.26 hours and score of 87 on 11-09 are the night your log closes with lisbon 09:15 out, r&g on the same booking.",
+      "strength": 5,
+      "from": "oura-11-13.md",
+      "from_rationale": "The Oura metrics for 11-09 show 7.26 h sleep, score 87, efficiency 95%, with midsleep at 04:05.",
+      "to": "11-13/23",
+      "to_rationale": "The log entry for 11-09 records '7.26h. lisbon 09:15 out. r&g on the same booking', matching the sleep figure and timestamp exactly.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "24 minutes to fall asleep. You already named it: *the 24 minutes is the file.*",
+      "strength": 5,
+      "from": "oura-11-13.md",
+      "from_rationale": "The Oura report for 11-10 shows sleep latency of 24.05 minutes, flagged as +2.77 SD above baseline, the highest latency in the week.",
+      "to": "11-13/21",
+      "to_rationale": "The sleep-ring-score-log entry for 11-10 reads '6.74, latency 24, hrv 52 | read voltemand's file twice. the 24 minutes is the file', explicitly naming the latency figure as metaphor for the act of reading.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Paperwork is paperwork. This is defusion. The lease is a lease, and Horatio said so on 10-31.",
+      "strength": 5,
+      "from": "10-24/2",
+      "from_rationale": "The nordhavn-lease-petra-lund note dated 10-24 frames the lease renewal as a decision to be made by 11-14, with reasons listed for staying or leaving.",
+      "to": "11-13/27",
+      "to_rationale": "The 11-13 edit to the same note records the writer's decision on 11-13 to renew, explicitly stating: 'the reason is that the lease is paperwork and i have been treating it as a verdict on who i am, and horatio pointed that out on 10-31 and i have been cross about it ever since, which is how you can tell.'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Walk the three rows. This is contact with the present moment, and it's also overdue. You have paid for that churchyard every quarter and never walked three rows.",
+      "strength": 5,
+      "from": "11-13/5",
+      "from_rationale": "The yorick-comms-quotes note dated 11-13 records: 'buried at roskilde, three rows over from dad. the man who mows the plot told me on the phone. i have paid for that churchyard every quarter by standing order and never once walked three rows.'",
+      "to": "10-24/3",
+      "to_rationale": "The roskilde-house-empty note from 10-24 states 'the plot at the churchyard is 380 a quarter out of the estate account and somebody mows it and i have never met them', establishing the long-standing standing order and the writer's estrangement from the place.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "You have paid for that churchyard every quarter and never walked three rows.",
+      "strength": 5,
+      "from": "10-24/12",
+      "from_rationale": "The estate-account-probate note lists 'plot maintenance, roskilde churchyard — 380 / quarter' as one of three standing orders still going out of the estate account.",
+      "to": "11-13/5",
+      "to_rationale": "The 11-13 update to yorick-comms-quotes confirms 'buried at roskilde, three rows over from dad' and 'i have paid for that churchyard every quarter by standing order and never once walked three rows.'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Lisbon 09:15 out. R&G on the same booking.",
+      "strength": 5,
+      "from": "11-13/23",
+      "from_rationale": "The log entry for 11-13 dated 11-09 records: '11-09: 7.26h. lisbon 09:15 out. r&g on the same booking.'",
+      "to": "11-13/6",
+      "to_rationale": "The lisbon-booking-voltemand-file note for 11-13 records: '**11-08** — itinerary from osric at 17:14 on a sunday. a fortnight, not the four days i was told. hotel to 11-20. rosencrantz and guildenstern on the same booking reference.'",
+      "kind": "intra"
+    },
+    {
+      "sentence": "The worst night the ring recorded all month was the 19:40 home from Lisbon, the night you did not call Ophelia from the train.",
+      "strength": 5,
+      "from": "10-24/5",
+      "from_rationale": "The ophelia-contact-log hunk records the decision not to call Ophelia from the train on the night of 11-11, marking a break in communication the writer had never made before.",
+      "to": "oura-11-13.md",
+      "to_rationale": "The Oura report shows 11-11 with a sleep score of 79 and only 6.04 hours, the lowest sleep duration in the 7-day window, with efficiency at 87% against a baseline average of 91.4%.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "The man who mows your father's plot, the one the estate account's standing order has paid 380 a quarter for a year without your ever meeting him, is digging at the water end on Saturday for Monday.",
+      "strength": 5,
+      "from": "11-13/3",
+      "from_rationale": "The roskilde-house-empty hunk on 11-13 records the first direct conversation with the groundskeeper and reveals the plot location at the water end.",
+      "to": "10-24/12",
+      "to_rationale": "The estate-account-probate hunk documents the standing order of 380 per quarter for plot maintenance at roskilde churchyard, the only such service the estate has paid for that the writer has never directly engaged with.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Tobias cut the middle of the film from Yorick's old tapes, the ones where he rehearses your father's launch speech in your father's voice, and your Yorick note now says he is buried at Roskilde three rows over from your father.",
+      "strength": 5,
+      "from": "11-13/5",
+      "from_rationale": "The yorick-comms-quotes hunk on 11-13 reveals for the first time that Yorick is buried at Roskilde churchyard, three rows from the father's plot, and that this was learned from the groundskeeper on the phone.",
+      "to": "10-24/4",
+      "to_rationale": "The same hunk on 10-24 establishes Yorick as the long-dead head of comms whose archive material (mostly press releases and the launch speech rehearsal) forms the spine of the anniversary film that Tobias is directing.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Karin says Laertes rang the hall and asked twice about the button on his own blade, on the same morning your Laertes note records Osric asking on his behalf for Tuesday, Gothersgade, seven.",
+      "strength": 5,
+      "from": "11-13/22",
+      "from_rationale": "The fencing-gothersgade-tuesdays hunk on 11-13 records Karin saying that Laertes called the hall that morning asking twice specifically about the button on the blade tip, and that she told it flatly when asked.",
+      "to": "11-13/16",
+      "to_rationale": "The osric-match-message hunk on 11-13 contains the voice message Osric left at 11:52 the same day, which was Osric asking on Laertes's behalf to fence Tuesday at seven, claiming Laertes would bring his own kit from Lisbon.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Ophelia laid rosemary along the rail on nine, one stem at every upright, at the place your stairwell timeline marks with the alarm at 18:05.",
+      "strength": 5,
+      "from": "11-13/9",
+      "from_rationale": "The ophelia-contact-log hunk on 11-13 records Marcellus's text reporting that Ophelia was laying flowers (rosemary and something purple) along the stair rail on nine after hours on Monday, singing, and that Francisco walked her to a taxi.",
+      "to": "11-13/32",
+      "to_rationale": "The stairwell-nine-timeline hunk on 11-13 documents that Francisco logged the alarm on nine at 18:05 on 11-05, the moment when Polonius went over the rail, placing Ophelia's later memorial action at the exact location.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "The man who asked you in the lift to stay because the company needs one of us in it, and who toasted your father first at the wedding, is the man Osric's message says will come to the hall and bring something to toast whoever wins.",
+      "strength": 5,
+      "from": "10-24/11",
+      "from_rationale": "The claudius-chief-executive hunk on 10-24 records that Claudius asked the writer in the lift to stay, saying 'the company needs one of us in it who isnt me', and at the wedding raised a glass to the father before the mother.",
+      "to": "11-13/16",
+      "to_rationale": "The osric-match-message hunk on 11-13 contains the voice message in which Osric says Claudius 'will come and watch, and bring something to toast whoever wins — he's put money on you'.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Polonius walked Laertes to the lift with a list that ended with be true to yourself, and your Laertes note says that since he flew back he has been in Claudius's office twice, the second time with the door shut and Osric outside it.",
+      "strength": 5,
+      "from": "10-24/6",
+      "from_rationale": "The polonius-chief-of-staff hunk on 10-24 records the writer witnessing Polonius walk Laertes to the lift at three with a list including 'do not lend anybody at norvik anything, do not borrow from them either, and be true to yourself'.",
+      "to": "11-13/18",
+      "to_rationale": "The laertes-lisbon-office hunk on 11-13 records that after flying back on 11-12 'in claudius's office twice since. the second time the door was shut and osric was outside it doing nothing in a way that was obviously doing something.'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "the worst night the ring recorded all month was the 19:40 home from Lisbon, the night you did not call Ophelia from the train.",
+      "strength": 5,
+      "from": "oura-11-13.md",
+      "from_rationale": "The Oura report shows 11-11 with the lowest metrics of the week: 6.04 hours of sleep, 79 score, and 87% efficiency, the worst single night in the measurement period.",
+      "to": "11-13/9",
+      "to_rationale": "The ophelia-contact-log hunk on 11-13 lists the times the writer could have called Ophelia but did not, including '11-11, from the 19:40', the train journey home from Lisbon.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Your note says that sentence took eleven months to write and it's about a coat.",
+      "strength": 5,
+      "from": "10-24/0",
+      "from_rationale": "[10-24/0] establishes that the father's jacket has been in the upstairs hall closet at Roskilde since the funeral, and was last documented on 10-20.",
+      "to": "11-13/0",
+      "to_rationale": "[11-13/0] explicitly reflects on the decision: \"that sentence took eleven months and it is about a coat,\" connecting the eleven-month gap from the funeral to the current decision.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Nobody has mentioned the film since 11-05, and you don't have to be the first.",
+      "strength": 5,
+      "from": "11-06/18",
+      "from_rationale": "[11-06/18] records that the film was screened on Thursday 11-05 at the offsite, with Claudius leaving at 16:47, and the cut was locked on 11-02.",
+      "to": "11-13/10",
+      "to_rationale": "[11-13/10] documents that \"nobody has said a word about the film since\" the screening on 11-05, and notes that \"tobias emailed from lisbon time... i have not replied.\"",
+      "kind": "inter"
+    },
+    {
+      "sentence": "The ledger's 29.97 at Ursa on 11-12 is the morning your roof-footage note has Marcellus at the back table at 06:15, coat still on, coffee untouched, telling you Bernardo had asked about the footage.",
+      "strength": 5,
+      "from": "finances-11-13.md",
+      "from_rationale": "The ledger records a 29.97 USD transaction at Ursa on 11-12.",
+      "to": "11-06/24",
+      "to_rationale": "The 11-06 addition to roof-footage-0211.md states: '11-12 — marcellus at ursa before his shift, 06:15, coat still on, coffee untouched. bernardo asked him about the footage on wednesday.'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "This week you spent 634.63 and earned nothing. The large number in view is Wittenberg's 18,400, and it isn't due this week.",
+      "strength": 5,
+      "from": "finances-11-13.md",
+      "from_rationale": "The ledger summarizes 634.63 USD spent with zero income for the week of 11-05 to 11-13.",
+      "to": "11-06/0",
+      "to_rationale": "The 11-06 version of wittenberg-withdrawal-form.md notes: 'deadline to withdraw without a fee is 12-15. after that the enrolment rolls and the fee rolls with it... the fee is 18,400', establishing a looming financial decision separate from current spending.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "slept like something switched off. the day before lisbon.",
+      "strength": 5,
+      "from": "11-13/21",
+      "from_rationale": "The 11-13 update to sleep-ring-score-log.md notes for 11-08: '| 11-08 | 9.19, rhr 42 | slept like something switched off. the day before lisbon'.",
+      "to": "oura-11-13.md",
+      "to_rationale": "The Oura report for 11-08 shows 9.19 hours of sleep (z = +1.95, well above baseline), efficiency at 95%, and a resting heart rate of 42 bpm (z = -2.22, notably low), confirming deep, restorative sleep.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Say the 18:04 minute out loud to Nyholm, not in the vault.",
+      "strength": 5,
+      "from": "11-06/20",
+      "from_rationale": "[11-06/20] records the exact timestamp 18:04 as the moment the chair sound was heard, establishing it as a specific temporal marker in the sequence of events on the ninth floor.",
+      "to": "11-13/34",
+      "to_rationale": "[11-13/34] shows Nyholm as the GP the writer needs to speak to, and lists things \"to actually say\" because they will not otherwise be said—identifying her as the intended recipient of this particular disclosure.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "slept like something switched off. the day before lisbon",
+      "strength": 5,
+      "from": "11-13/21",
+      "from_rationale": "[11-13/21] records the 11-08 sleep score of 9.19 hours with rhr 42 as \"slept like something switched off. the day before lisbon.\"",
+      "to": "oura-11-13.md",
+      "to_rationale": "[oura-11-13.md] confirms 11-08 as 9.19 hours total sleep with resting HR of 41.99 bpm (z = -2.22, a 2 SD outlier below baseline)—the most extreme recovery day of the week, the day before departure.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "The six calls. The list is true, and it's incomplete. Grief after a suicide almost always writes a list like this, because *it was my failure* also means *it was preventable*, and a world where it was preventable is easier to bear than one where it wasn't.",
+      "strength": 5,
+      "from": "10-24/1",
+      "from_rationale": "10-24/1 (horatio-what-we-know) lists 'six calls you didn't make to someone who has since died'",
+      "to": "11-13/9",
+      "to_rationale": "11-13/9 (ophelia-contact-log) extends that list into the present week with the same mechanism: 'the times i could have called and did not: 10-28, after ursa. 10-31. 11-05, from the corridor, phone already in my hand. 11-09, from the airport. 11-10, from the hotel. 11-11, from the 19:40. That is the list. That is all this file is now.'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "The laugh outside Ursa. Treat it as evidence that you aren't only flat. Be careful about what set it off, though. It came from seeing through a plot. The trap is the first thing in weeks that has felt like it's *about* something, and a man who has been flat will walk a long way toward the only warm thing in the room.",
+      "strength": 5,
+      "from": "11-13/20",
+      "from_rationale": "11-13/20 (journal) records the laugh as a breakthrough of feeling: 'i laughed out loud in the street outside ursa, properly, for the first time in weeks, because it is such a *transparent* piece of work'",
+      "to": "11-13/16",
+      "to_rationale": "11-13/16 (osric-match-message) names what set the laugh off — the recognition that the bout is constructed: 'tuesday is a fencing night. it has always been a fencing night. that is what makes it workable — nobody has to invent anything, you just leave the ordinary thing where it is and let a man walk into it'",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Your stairwell note says *what is not in this list is anything between 18:04 and 18:05*, and your journal calls something 'the worst thing i have ever done'. Everything else in the vault has a timestamp. That minute has only a gap where the timestamp should be.",
+      "strength": 5,
+      "from": "11-06/20",
+      "from_rationale": "11-06/20 (stairwell-nine-timeline) documents the gap: '18:04 i hear the chair. 18:05 francisco logs the alarm on nine. what is not in this list is anything between 18:04 and 18:05, and that is the part people will ask about, and i do not have it'",
+      "to": "11-13/20",
+      "to_rationale": "11-13/20 (journal) restates the same gap one week later in the same terms: 'i have gone over the four seconds between those two facts about two hundred times and i still cannot put anything in the middle of them'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Conscientiousness: very high, and it comes out as documentation. You timestamp your own yes so you can't disown it later.",
+      "strength": 5,
+      "from": "11-13/16",
+      "from_rationale": "11-13/16 (osric-match-message) records: 'i said yes at 12:04. twelve minutes. i am writing down that i said yes and that i knew, so that i cannot come back to this page afterwards and pretend that i did not'",
+      "to": "11-13/20",
+      "to_rationale": "11-13/20 (journal) repeats the same act: 'osric left a voice message at 11:52... i said yes. i am writing down that i said yes, and that i knew, so that i cannot come back to this page later and pretend i did not'",
+      "kind": "intra"
+    },
+    {
+      "sentence": "The ring report's 7.26 hours and score of 87 on 11-09 are the night your log closes with lisbon 09:15 out, r&g on the same booking.",
+      "strength": 5,
+      "from": "oura-11-13.md",
+      "from_rationale": "The Oura report records 11-09 with 7.26 hours sleep and a score of 87.",
+      "to": "11-06/4",
+      "to_rationale": "The sleep-ring-score-log for 11-09 records '7.26h. lisbon 09:15 out. r&g on the same booking.'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Guildenstern turned your ring over twice and couldn't tell you how you slept, which is exactly what your own sleep log says about it: it counts the hours and not the dreams.",
+      "strength": 5,
+      "from": "10-24/22",
+      "from_rationale": "The sleep-ring-score-log shows a persistent mismatch: the ring reports seven hours for three weeks while the writer reports four hours for the same period, demonstrating that the device counts duration but misses the subjective experience.",
+      "to": "11-01/20",
+      "to_rationale": "The rosencrantz-guildenstern-review hunk records the moment when Guildenstern physically handles the ring and admits it cannot tell him how the writer slept — that it 'doesn't work like that'.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "The worst night the ring recorded all month was the 19:40 home from Lisbon, the night you did not call Ophelia from the train.",
+      "strength": 5,
+      "from": "10-24/2",
+      "from_rationale": "The ophelia-contact-log lists the times the writer could have called but did not, with 11-11 from the train marked as one of them, establishing that date as significant.",
+      "to": "oura-11-13.md",
+      "to_rationale": "The Oura metrics table shows 11-11 with a score of 79 and latency of 7 minutes, marked as the worst night of the run with only 6.04 hours of sleep and 87% efficiency.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Karin says Laertes rang the hall and asked twice about the button on his own blade, on the same morning your Laertes note records Osric asking on his behalf for Tuesday, Gothersgade, seven.",
+      "strength": 5,
+      "from": "11-13/36",
+      "from_rationale": "The fencing-gothersgade-tuesdays hunk records that Karin told the writer Laertes 'rang the hall this morning, before osric rang me, to ask whether members can fence with their own blades' and 'asked twice about the button.'",
+      "to": "11-13/16",
+      "to_rationale": "The osric-match-message hunk contains Osric's voice message at 11:52 on 11-13 asking on Laertes's behalf whether he will fence on Tuesday at seven, establishing the same morning and request.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Your mother rang to tell you, and described the willow and how long Ophelia's coat held her up on the water as though she had been standing on the bank.",
+      "strength": 5,
+      "from": "11-13/35",
+      "from_rationale": "The mum-drafts-unsent hunk records on 11-12 that mum 'rang...to tell me about ophelia' and 'described it as though she had been standing on the bank: the willow at the end of the garden, the flowers ophelia had with her, how long her coat held her up on the water.'",
+      "to": "10-24/2",
+      "to_rationale": "The ophelia-contact-log on 10-22 establishes Ophelia as a central figure, and on 11-04 and 11-06 records the writer telling her to go to Lisbon and then not calling her after 11-05.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Polonius walked Laertes to the lift with a list that ended with be true to yourself, and your Laertes note says that since he flew back he has been in Claudius's office twice, the second time with the door shut and Osric outside it.",
+      "strength": 5,
+      "from": "11-13/18",
+      "from_rationale": "The laertes-lisbon-office hunk records on 11-12 that Laertes 'flew in thursday morning, before' the screening and 'in claudius's office twice since. the second time the door was shut and osric was outside it doing nothing in a way that was obviously doing something.'",
+      "to": "10-24/6",
+      "to_rationale": "The polonius-chief-of-staff hunk records on 10-22 that the writer 'caught the last three items going past' Polonius walking Laertes to the lift, ending with 'be true to yourself.'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "You told Horatio in the first week that if you started behaving oddly it would be on purpose, and in the second you were late on purpose, oblique on purpose, and wrote that you were better at this than you expected and that it bothered you.",
+      "strength": 5,
+      "from": "10-24/1",
+      "from_rationale": "The horatio-what-we-know hunk records on 10-22 'if i start behaving oddly in the building over the next weeks it is on purpose' and that 'we say nothing to anyone, including ophelia, until we know who the shoulder belongs to.'",
+      "to": "11-01/14",
+      "to_rationale": "The who-asked-what-when hunk shows the method table starting 10-27: 'be difficult on purpose, then write down who hears about it and how fast' and documents that 'eleven minutes and two floors from being oblique in a meeting to rosencrantz asking horatio a question about my sleep.'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "The lift. Polonius walked Laertes to the lift with a list that ended with be true to yourself, and your Laertes note says that since he flew back he has been in Claudius's office twice, the second time with the door shut and Osric outside it.",
+      "strength": 5,
+      "from": "10-24/6",
+      "from_rationale": "The polonius-chief-of-staff hunk records seeing Polonius 'walk laertes to the lift at three with a list' that ended with 'be true to yourself', dated 10-22.",
+      "to": "11-13/18",
+      "to_rationale": "The laertes-lisbon-office hunk on 11-12 reports that after flying back 'in claudius's office twice since. the second time the door was shut and osric was outside it doing nothing in a way that was obviously doing something.'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Ophelia laid rosemary along the rail on nine, one stem at every upright, at the place your stairwell timeline marks with the alarm at 18:05.",
+      "strength": 5,
+      "from": "11-13/9",
+      "from_rationale": "The ophelia-contact-log hunk records on 11-10 that 'she was on nine after hours on monday, laying flowers along the stair rail where her father went over, one stem at every upright...rosemary, he thinks, and something purple.'",
+      "to": "11-06/20",
+      "to_rationale": "The stairwell-nine-timeline hunk shows '18:05 francisco logs the alarm on nine' and documents the timeline of that day, with 'what is not in this list is anything between 18:04 and 18:05.'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "slept like something switched off. the day before lisbon.",
+      "strength": 5,
+      "from": "11-01/15",
+      "from_rationale": "[11-01/15] records 11-08 as 'slept like something switched off' with 9.19 hours and a resting HR of 42, the lowest HR and highest sleep duration of the run.",
+      "to": "oura-11-13.md",
+      "to_rationale": "[oura-11-13.md] confirms 11-08 with 9.19 hours sleep, 95% efficiency, resting HR of 42 bpm (the lowest of the week), and activity CV of 0.88 (highest of the week), all deviations above ±1.5 SD from baseline.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "The ledger's 4.54 at Gothersgade Fencing Hall on 11-12 is a coffee in the hall on the day your Tuesdays fencing note gives a single word: no.",
+      "strength": 5,
+      "from": "finances-11-13.md",
+      "from_rationale": "The ledger records a transaction of 4.54 USD at Gothersgade Fencing Hall on 11-12, categorized as Food:Coffee.",
+      "to": "11-06/22",
+      "to_rationale": "The fencing-gothersgade-tuesdays note for 11-06 records that on 11-12 the entry is simply 'no', indicating the writer did not go to the hall that day.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Say the 18:04 minute out loud to Nyholm, not in the vault.",
+      "strength": 5,
+      "from": "11-06/20",
+      "from_rationale": "The stairwell-nine-timeline hunk records 18:04 as the moment the writer heard the chair, the precise time before the alarm was logged at 18:05, making it a specific factual detail tied to that minute.",
+      "to": "11-06/28",
+      "to_rationale": "The nyholm-appointment hunk records an appointment at 09:30 on 11-18 and notes the writer's difficulty cancelling it, establishing Nyholm as a specific person the writer will see and the 18:04 time as something the writer intends to tell her directly rather than document in the vault.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "The flatness is new, and it makes sense.",
+      "strength": 4,
+      "from": "11-06/4",
+      "from_rationale": "The sleep ring score log shows consistent 7+ hour readings across weeks, with the writer claiming to feel only four hours of actual sleep—a disconnect between measured and experienced.",
+      "to": "oura-11-13.md",
+      "to_rationale": "The Oura report for 11-07 to 11-13 shows deep sleep averaging 18.9% (down 2.70 points from the baseline of 21.59%), indicating compressed or unrefreshing sleep stages that could produce the flatness described despite adequate total sleep hours.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Your stairwell note says *what is not in this list is anything between 18:04 and 18:05*, and your journal calls something \"the worst thing i have ever done\".",
+      "strength": 4,
+      "from": "11-06/20",
+      "from_rationale": "The stairwell-nine-timeline contains the explicit gap: 'what is not in this list is anything between 18:04 and 18:05'.",
+      "to": "11-06/19",
+      "to_rationale": "The journal entry for 11-06 does not name what happened but frames the screening and its aftermath as a critical event, with 'i was calm' repeated and the detail that 'the middle of it is missing' from the writer's four-second memory of Thursday.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Grief after a suicide almost always writes a list like this, because *it was my failure* also means *it was preventable*, and a world where it was preventable is easier to bear than one where it wasn't.",
+      "strength": 4,
+      "from": "11-13/9",
+      "from_rationale": "The ophelia-contact-log for 11-13 contains the statement that Ophelia 'was on nine after hours on monday, laying flowers along the stair rail where her father went over' and the list of times the writer did not call, positioning the non-contact as part of the same grief pattern.",
+      "to": "11-13/3",
+      "to_rationale": "The roskilde-house-empty note for 11-13 reveals that the writer learned from the man who mows the churchyard plot that 'yorick [is] buried at roskilde, three rows over from dad' and adds 'the water below the house. that is where they found her'—establishing that Ophelia's death by water is the grief event the writer has been unable to address.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "You have half-answered this already: *i am not the kind of person who backs out, which i notice is a description of me rather than a thing i actually want.*",
+      "strength": 4,
+      "from": "10-24/1",
+      "from_rationale": "The horatio-what-we-know note from 10-24 establishes the agreement to stay silent and the recognition that staying is a self-narrative: 'we say nothing to anyone...i agreed to it in the flat at about one in the morning and i have kept it, which surprises me.'",
+      "to": "11-13/16",
+      "to_rationale": "The osric-match-message and the journal entries for 11-13 show the writer saying yes to the fencing meeting immediately, recognizing it as transparent ('such a *transparent* piece of work') but proceeding anyway because 'i am not the kind of person who backs out'—the exact self-description now being tested.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "When penance turns up dressed as integrity, it's still penance.",
+      "strength": 4,
+      "from": "11-06/7",
+      "from_rationale": "The horatio-what-we-know note for 11-06 states that laertes has been in claudius's office twice since Thursday, and the claudius-chief-executive note shows him walking laertes to the lift, establishing a pattern of coordinated action around the writer.",
+      "to": "11-13/36",
+      "to_rationale": "The fencing-gothersgade-tuesdays note for 11-13 records that laertes 'rang the hall this morning, before osric rang me, to ask whether members can fence with their own blades...he asked twice about the button', and the journal notes 'i would be laertes. that is the whole trouble with this week'—recognizing that accepting the fencing bout is penance disguised as standing one's ground.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Everything else in the vault has a timestamp. That minute has only a gap where the timestamp should be.",
+      "strength": 4,
+      "from": "11-06/20",
+      "from_rationale": "The stairwell-nine-timeline note explicitly documents 'what is not in this list is anything between 18:04 and 18:05' and lists all surrounding events with precise timestamps from the duty log.",
+      "to": "10-24/23",
+      "to_rationale": "The log note from 10-24 shows the writer's practice of recording every event with timestamps (e.g., '10-21: 6.93h, latency 18, midsleep 04:44. marcellus at ursa 06:20'), making the absence of a timestamp between 18:04 and 18:05 on 11-05 unique and conspicuous.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "A fencing hall isn't a court, and a blade without its button isn't a sentence.",
+      "strength": 4,
+      "from": "11-13/36",
+      "from_rationale": "The fencing-gothersgade-tuesdays note for 11-13 records that laertes 'rang the hall this morning, before osric rang me, to ask whether members can fence with their own blades. they can, with a button on the tip. she said he asked twice about the button.'",
+      "to": "11-13/16",
+      "to_rationale": "The osric-match-message note records the exact phrasing 'he'll bring his own kit over from lisbon' and 'he said you'd know the time', establishing that the bout is framed as a casual fencing match but constructed as a confrontation, with the button on the blade being the detail that makes it safe (a fencing bout rather than a duel).",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Active minutes fell by 120 a day (z −0.82), the clearest signal of the week.",
+      "strength": 4,
+      "from": "oura-11-13.md",
+      "from_rationale": "The Oura metrics show Active MET minutes averaged 473.27 across the week, down 120.76 from baseline mean of 594.02 with z of −0.82, the largest single shift in the report.",
+      "to": "11-06/19",
+      "to_rationale": "The journal entry for 11-06 records 'i was calm' after the screening and 'then mum's office at about half five', describing the aftermath of the event that precipitated the week's collapse in activity.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Your crossness about it ever since is how you know he was right.",
+      "strength": 4,
+      "from": "11-01/22",
+      "from_rationale": "The 11-01 edit to nordhavn-lease-petra-lund shows the ongoing paralysis about the lease decision, with '16 days' remaining to 11-14.",
+      "to": "11-13/27",
+      "to_rationale": "The 11-13 edit to the same note resolves that the writer remained 'cross' about Horatio's point from 10-31 until 11-13, when the decision to renew was finally made as an act of defusion rather than self-judgment.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Willingness doesn't need to know how Tuesday ends. It only needs you ready for it whichever way it goes, and ready is not the same thing as resigned.",
+      "strength": 4,
+      "from": "11-13/16",
+      "from_rationale": "The osric-match-message note records osric's 11:52 voice message on 11-13 proposing 'tuesday, gothersgade, seven' with laertes, where 'claudius says he'll come and watch, and bring something to toast whoever wins'.",
+      "to": "11-13/20",
+      "to_rationale": "The journal entry for 11-13 records 'i laughed out loud in the street outside ursa, properly, for the first time in weeks, because it is such a *transparent* piece of work' and 'i said yes. i am writing down that i said yes, and that i knew, so that i cannot come back to this page later and pretend i did not.'",
+      "kind": "intra"
+    },
+    {
+      "sentence": "The ring shows a body in better shape than the man wearing it.",
+      "strength": 4,
+      "from": "oura-11-13.md",
+      "from_rationale": "The Oura report shows sleep scores of 83–96 throughout the week, resting HR 42–53 bpm within baseline, HRV stable at 52–98 ms.",
+      "to": "11-13/34",
+      "to_rationale": "The nyholm-appointment note for 11-13 records things the writer must say: 'awake at three, most nights, and the ring says seven hours', 'stopped eating without noticing', 'flat underneath the anger', and newly 'something happened with ophelia on 11-12'.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Voltemand's report to the board got Fortinbras data-room access for a possible partnership, and your journal from Lisbon has Norvik's deal team in the hotel bar celebrating a warehouse in Setúbal that has lost money every year for a decade.",
+      "strength": 4,
+      "from": "10-24/16",
+      "from_rationale": "The journal hunk on 10-24 records the writer observing Norvik's deal team celebrating a warehouse acquisition in Setúbal during the trip to Lisbon, noting the warehouse has lost money every year for a decade.",
+      "to": "11-13/6",
+      "to_rationale": "The lisbon-booking-voltemand-file hunk on 11-13 reveals that Voltemand reported to the board on Norvik and secured data-room access for Fortinbras as a 'possible partnership', the move that gave Fortinbras access to suppress Elsinore's suppliers.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Your mother rang to tell you, and described the willow and how long Ophelia's coat held her up on the water as though she had been standing on the bank.",
+      "strength": 4,
+      "from": "11-13/35",
+      "from_rationale": "The mum-drafts-unsent hunk on 11-13 contains the draft beginning 'im sorry about polonius. im sorry about ophelia' and records that the mother called to tell the writer about Ophelia, 'the first time since 11-05', describing the willow and how long the coat held her.",
+      "to": "11-13/3",
+      "to_rationale": "The roskilde-house-empty hunk on 11-13 notes 'the water below the house. that is where they found her', identifying the water end location where the groundskeeper is digging on Saturday for Monday.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Claudius put his glass down at the screening without looking for the table, and when you told Horatio about Osric's message his whole answer was take your own bottle and let me come and watch.",
+      "strength": 4,
+      "from": "11-06/15",
+      "from_rationale": "The claudius-chief-executive hunk on 11-06 records that at 16:47 on 11-05, 'nine seconds of the archive section and he put his glass down without looking for the table. out at 16:47 through the back with the lights still down.'",
+      "to": "11-06/7",
+      "to_rationale": "The horatio-what-we-know hunk on 11-06 records that the writer asked Horatio on Wednesday to watch Claudius during the film rather than the screen, and Horatio 'had the glass at the same second i did', confirming he saw the same moment.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "The offsite running order had him down to raise a glass to \"the founder\", and on the phone your mother said he wants to bring something to the hall to toast the two of you afterwards.",
+      "strength": 4,
+      "from": "11-06/1",
+      "from_rationale": "The offsite-running-order hunk on 11-06 documents the final running order with '17:20 close, drinks on nine — claudius to raise a glass to \"the founder\"'.",
+      "to": "10-24/11",
+      "to_rationale": "The claudius-chief-executive hunk on 10-24 notes that on the phone the mother said 'he wants to bring something to the hall to toast the two of you afterwards', establishing the pattern of Claudius toasting at company occasions.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Guildenstern turned your ring over twice and couldn't tell you how you slept, which is exactly what your own sleep log says about it: it counts the hours and not the dreams.",
+      "strength": 4,
+      "from": "11-01/20",
+      "from_rationale": "The rosencrantz-guildenstern-review hunk on 11-01 records that on 11-05 Guildenstern said 'we just want to understand whats wrong, as friends' and the writer 'took the ring off and handed it to him and asked him to tell me how i slept last night. he turned it over twice. it doesnt work like that.'",
+      "to": "10-24/22",
+      "to_rationale": "The sleep-ring-score-log hunk on 10-24 establishes the core problem: 'the ring has said seven for three weeks. i have said four for three weeks. one of us is wrong and the ring is the one with the sensor.'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "slept like something switched off. the day before lisbon",
+      "strength": 4,
+      "from": "oura-11-13.md",
+      "from_rationale": "The Oura report shows 11-08 as exceptional: 9.19 hours of sleep, 96 score, resting HR of 42 (lowest of the week), with an entry marked 'above' baseline for total sleep by +1.95 SD.",
+      "to": "11-13/23",
+      "to_rationale": "The log hunk on 11-13 dated 11-08 records '9.19h, rhr 42. slept eleven hours in two pieces. itinerary from osric 17:14', connecting the best sleep of the month to the day before the Lisbon trip.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "If you would be Laertes, you also know he might be a man who is quietly relieved to be offered the ordinary version.",
+      "strength": 4,
+      "from": "10-24/15",
+      "from_rationale": "[10-24/15] describes Laertes as someone the writer has fenced with at Wittenberg, and establishes his facility with the sport: \"fenced at wittenberg, better than me, and knows it in the way that does not need saying.\"",
+      "to": "11-13/16",
+      "to_rationale": "[11-13/16] contains Osric's message inviting the writer to a bout with Laertes on Tuesday at the hall—\"nothing formal, just a bout\"—which is indeed the ordinary version of what might have been a more fraught encounter.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "the churchyard again, or dinner with horatio.",
+      "strength": 4,
+      "from": "10-24/20",
+      "from_rationale": "[10-24/20] mentions the churchyard as a possible private way to mark the anniversary instead of attending the company event.",
+      "to": "11-13/3",
+      "to_rationale": "[11-13/3] records that the writer must go to the churchyard on Monday for Ophelia's burial, transforming what was meant as a private choice into an unavoidable necessity tied to Ophelia's death at \"the water below the house.\"",
+      "kind": "inter"
+    },
+    {
+      "sentence": "The ledger's 4.54 at Gothersgade Fencing Hall on 11-12 is a coffee in the hall on the day your Tuesdays fencing note gives a single word: no.",
+      "strength": 4,
+      "from": "finances-11-13.md",
+      "from_rationale": "The ledger records a 4.54 USD transaction at Gothersgade Fencing Hall on 11-12.",
+      "to": "11-01/0",
+      "to_rationale": "The 11-01 version of fencing-gothersgade-tuesdays.md records for 11-05 only: 'the offsite. no.', indicating the writer did not go to fencing that day.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "The ledger's 107.90 to Gothersgade Fencing Hall on 11-06 went through as online shopping, and your kit note says the hall rents a jacket for 40 and has settled it in three words: rent the hall's.",
+      "strength": 4,
+      "from": "finances-11-13.md",
+      "from_rationale": "The ledger shows a 107.90 USD transaction at Gothersgade Fencing Hall on 11-06 categorized as online shopping.",
+      "to": "10-24/0",
+      "to_rationale": "The 10-24 version of fencing-kit-dad-jacket.md records: 'the hall rents a jacket for 40. i have not rented the jacket for 40.'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "You have half-answered this already: *i am not the kind of person who backs out, which i notice is a description of me rather than a thing i actually want.*",
+      "strength": 4,
+      "from": "11-13/16",
+      "from_rationale": "11-13/16 (osric-match-message) records the explicit framing of the fencing bout as inevitable and ordinary: 'tuesday is a fencing night. it has always been a fencing night. that is what makes it workable — nobody has to invent anything'",
+      "to": "11-13/27",
+      "to_rationale": "11-13/27 (nordhavn-lease-petra-lund) shows the same pattern: 'the reason is not that i have decided anything about staying in copenhagen. the reason is that the lease is paperwork and i have been treating it as a verdict on who i am, and horatio pointed that out on 10-31 and i have been cross about it ever since, which is how you can tell'",
+      "kind": "intra"
+    },
+    {
+      "sentence": "When penance turns up dressed as integrity, it's still penance.",
+      "strength": 4,
+      "from": "11-01/11",
+      "from_rationale": "11-01/11 (anniversary-film-fen-co) documents the writer's decision to put the forty-second footage into the film as a form of accountability: 'i understood what i had just agreed to do' after standing in the corridor for four seconds",
+      "to": "11-13/16",
+      "to_rationale": "11-13/16 (osric-match-message) shows the same mechanism now at work with the fencing bout: 'tuesday is a fencing night... nobody has to invent anything, you just leave the ordinary thing where it is and let a man walk into it' — the form of integrity is preserved while the substance is penance for ophelia's death",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Threat sensitivity: high, but it goes into vigilance rather than panic.",
+      "strength": 4,
+      "from": "11-01/9",
+      "from_rationale": "11-01/9 (horatio-what-we-know) documents the vigilant surveillance work: a running table of 'who asked what, when', tracking who is asking questions about the writer's movements and sleep, and who they are reporting to",
+      "to": "oura-11-13.md",
+      "to_rationale": "oura-11-13.md shows resting heart rate consistently elevated or high-normal (42–53 bpm, baseline 48.16) with low HRV (52–98 ms, baseline 77.89), the physiological signature of sustained vigilance rather than acute panic",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Here is the sharper version. You wrote *i would be laertes*, and as perspective-taking that's the best thing in your notes.",
+      "strength": 4,
+      "from": "11-13/18",
+      "from_rationale": "11-13/18 (laertes-lisbon-office) contains the statement: 'i am not angry at him. i would be him. if somebody had done to my father what i think was done to mine, and then done to my sister whatever it is that has been done, i would be exactly where laertes is standing'",
+      "to": "11-13/16",
+      "to_rationale": "11-13/16 (osric-match-message) shows that perspective-taking at work in practice: the writer recognizes laertes's move as transparent ('it is such a *transparent* piece of work') yet accepts it ('i said yes'), understanding the logic from inside laertes's position",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Openness: high. You catch a pattern in board minutes that nobody else caught.",
+      "strength": 4,
+      "from": "10-24/11",
+      "from_rationale": "10-24/11 (claudius-chief-executive) documents the pattern caught: 'the board minutes from the month he died are in the company drive and i have read the appointment item four times. the wording of the resolution is dated the 18th. the announcement went out on the 17th'",
+      "to": "11-06/27",
+      "to_rationale": "11-06/27 (voltemand-norvik-billing) applies that same pattern-recognition to the present: 'the resolution was dated the 18th and the announcement went out on the 17th. he has done this before. he does it the same way each time: the thing is decided, then the room is arranged around it, then the room is told'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Your notes hold three things together: a new flatness, a list of six calls you didn't make to someone who has since died, and a Tuesday you believe is a setup and have agreed to anyway.",
+      "strength": 4,
+      "from": "10-24/1",
+      "from_rationale": "10-24/1 (horatio-what-we-know) holds the second element: 'a list of six calls you didn't make to someone who has since died'",
+      "to": "11-13/16",
+      "to_rationale": "11-13/16 (osric-match-message) documents the third element: 'laertes proposes tuesday, gothersgade, seven... i said yes... and that i knew, so that i cannot come back to this page later and pretend i did not'",
+      "kind": "inter"
+    },
+    {
+      "sentence": "On food: groceries come to 115.96, so food is being bought. Nyholm's list says *stopped eating without noticing*. Eat before Roskilde and eat before the hall.",
+      "strength": 4,
+      "from": "10-24/10",
+      "from_rationale": "Nyholm's clinical note records the pattern of stopped eating without noticing.",
+      "to": "finances-11-13.md",
+      "to_rationale": "The ledger for 11-05 to 11-13 shows groceries transactions of 115.96, demonstrating that food is being purchased despite the pattern Nyholm identified.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Willingness means making room for fear while you keep steering.",
+      "strength": 4,
+      "from": "11-06/12",
+      "from_rationale": "The horatio-what-we-know hunk records that horatio said 'dont', then 'all right', to the writer going to Tuesday, having access to the footage timestamps and cornelius's number—willingness to proceed despite fear.",
+      "to": "11-13/16",
+      "to_rationale": "The osric-match-message hunk records the writer saying yes at 12:04 to a bout on Tuesday, despite believing (writing 'i have agreed to something on tuesday that i believe is a setup') it is a setup, demonstrating willingness to proceed with an uncertain outcome.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Walk the three rows. This is contact with the present moment, and it's also overdue.",
+      "strength": 4,
+      "from": "11-13/3",
+      "from_rationale": "The roskilde-house-empty hunk records the man who mows the plot calling to say he has done that churchyard since the year the writer was born, and that yorick is buried three rows over from the writer's father.",
+      "to": "11-13/5",
+      "to_rationale": "The yorick-comms-quotes hunk records that yorick was head of comms for nineteen years and did the voices at the harvest supper, and that the writer's father let the writer sit under the desk during the quarterly when the writer was seven.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "After the service, go to your father, then go to Yorick. Yorick did the voices at the harvest supper, and he would have done a merciless Osric: *he's put money on you, actually, ha.*",
+      "strength": 4,
+      "from": "11-13/5",
+      "from_rationale": "The yorick-comms-quotes hunk records that yorick did the voices at the harvest supper and used to let the writer sit under the desk during quarterly meetings.",
+      "to": "11-13/16",
+      "to_rationale": "The osric-match-message hunk records osric's voice message stating 'claudius says he'll come and watch, and bring something to toast whoever wins — he's put money on you, actually, ha,' echoing the style yorick would have used.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "You have paid for that churchyard every quarter and never walked three rows.",
+      "strength": 4,
+      "from": "10-24/3",
+      "from_rationale": "The roskilde-house-empty hunk for 10-24 records that the plot maintenance is 380 a quarter out of the estate account and somebody mows it and the writer has never met them.",
+      "to": "11-13/3",
+      "to_rationale": "The roskilde-house-empty hunk for 11-13 records the man who mows the plot ringing for the first time in a year, revealing he has done that churchyard since the year the writer was born.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "the ring shows a body in better shape than the man wearing it.",
+      "strength": 4,
+      "from": "oura-11-13.md",
+      "from_rationale": "The Oura report shows that despite trauma on 11-05 and 11-06 (the screening and polonius's death), those nights produced the best sleep scores of the month (89, 89), with normal physiology readings.",
+      "to": "11-13/20",
+      "to_rationale": "The journal entry for 11-13 records the writer laughing in the street for the first time in weeks at osric's message, then immediately confronted with the reality of ophelia's death, showing the body's metrics do not register psychological devastation.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Voltemand's report to the board got Fortinbras data-room access for a possible partnership, and your journal from Lisbon has Norvik's deal team in the hotel bar celebrating a warehouse in Setúbal that has lost money every year for a decade.",
+      "strength": 4,
+      "from": "11-13/4",
+      "from_rationale": "The voltemand-norvik-billing hunk records that on 10-30 'voltemand reported back to the board on norvik. claudius sent him in january to get fortinbras to stop picking off our suppliers, and the news is that fortinbras will stand off, and would in return like \"data-room access for a possible partnership\". the board said yes in eleven minutes.'",
+      "to": "10-24/16",
+      "to_rationale": "The journal hunk on the lisbon entry notes 'norvik in the hotel bar' during the stay from 11-09 to 11-11, implying the deal team's presence there.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Claudius put his glass down at the screening without looking for the table, and when you told Horatio about Osric's message his whole answer was take your own bottle and let me come and watch.",
+      "strength": 4,
+      "from": "11-06/15",
+      "from_rationale": "The claudius-chief-executive hunk on 11-05 records 'nine seconds of the archive section and he put his glass down without looking for the table.'",
+      "to": "11-13/12",
+      "to_rationale": "The horatio-what-we-know hunk on 11-13 records that Horatio's response was 'take your own bottle and let me come and watch' when the writer told him about the plan.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Every row in *who-asked-what-when* went through someone else.",
+      "strength": 4,
+      "from": "10-24/1",
+      "from_rationale": "[10-24/1] establishes that horatio asked the writer to separate what they know from what they think, creating the practice of documenting facts.",
+      "to": "11-01/14",
+      "to_rationale": "[11-01/14] is the table tracking who asked what when, showing that each inquiry came through an intermediary rather than directly to the writer.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Tell Horatio on Sunday in plain words, not logistics.",
+      "strength": 4,
+      "from": "10-24/1",
+      "from_rationale": "[10-24/1] establishes horatio as the person who knows about the forty seconds and has made conditions about secrecy.",
+      "to": "10-24/16",
+      "to_rationale": "[10-24/16] records watching the forty seconds with horatio at the flat, twice, then a third time with sound off, and his response that they should know who the shoulder belongs to before saying anything.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Bring the paper and the ring table, and let her argue with the ring on your behalf.",
+      "strength": 4,
+      "from": "10-24/22",
+      "from_rationale": "[10-24/22] documents the sleep ring score log, recording both what the ring says and what the writer says about their sleep, establishing a discrepancy between the two.",
+      "to": "10-24/10",
+      "to_rationale": "[10-24/10] names Nyholm, the GP first seen three months ago about sleep, to whom the writer can bring evidence of the conflict between ring measurements and subjective experience.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Nobody has mentioned the film since 11-05, and you don't have to be the first.",
+      "strength": 4,
+      "from": "11-06/17",
+      "from_rationale": "[11-06/17] notes the screening happened on 11-05 and no one has said a word about the film since, with tobias emailing about the public cut but receiving no reply.",
+      "to": "11-06/19",
+      "to_rationale": "[11-06/19] records that the screening was 16:40 on the ninth floor and claudius left the room at 16:47, ten seconds into the archive section, implying the film's content caused his departure.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "The ledger's 29.97 at Ursa on 11-12 is the morning your roof-footage note has Marcellus at the back table at 06:15, coat still on, coffee untouched, telling you Bernardo had asked about the footage.",
+      "strength": 4,
+      "from": "finances-11-13.md",
+      "from_rationale": "The ledger records a transaction of 29.97 USD at Ursa on 11-12, categorized as Food:Groceries.",
+      "to": "11-13/15",
+      "to_rationale": "The marcellus-shift-logs note records that on 11-12 he called at 22:47 Thursday and met at Ursa Friday 06:15 before his shift, where Bernardo had asked him about the footage.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Export the whole vault before Tuesday, and give Horatio all of it, not just his one file: he is the one who will be asked what happened, and he should be able to answer from the record rather than from memory.",
+      "strength": 4,
+      "from": "10-24/1",
+      "from_rationale": "The horatio-what-we-know note documents a pact: 'we say nothing to anyone, including ophelia, until we know who the shoulder belongs to' and Horatio is positioned as the keeper of facts.",
+      "to": "11-06/7",
+      "to_rationale": "The housekeeping note emphasizes that Horatio must have the full vault record before Tuesday because he will be asked by authorities, making him the archival trustee.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "At Roskilde, say one sentence you haven't rehearsed.",
+      "strength": 4,
+      "from": "10-24/3",
+      "from_rationale": "The roskilde-house-empty hunk from 10-24 records the writer cannot be in the house for more than an hour and has tried four times, establishing Roskilde as a place of difficulty; the 11-13 update reveals the writer has driven out, sat in the car, and did not go in—five attempts total—and now knows they must go back on Monday for a funeral.",
+      "to": "11-13/3",
+      "to_rationale": "The same note from 11-13 shows the writer's relationship to Roskilde has shifted from avoidance to necessity, with the graveyard now containing not just the father's plot but ophelia's recent body at the water's end, making whatever the writer says there unrehearsed by definition.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Be the first person in seven weeks to ask Laertes something directly.",
+      "strength": 4,
+      "from": "11-13/19",
+      "from_rationale": "The who-asked-what-when hunk notes that the last row is the first time in seven weeks anybody has asked the writer anything directly—osric on 11-13, on laertes's behalf—and records that nobody has asked the writer anything directly until then.",
+      "to": "11-13/18",
+      "to_rationale": "The laertes-lisbon-office hunk from 11-13 records laertes back in the building, in claudius's office twice since Thursday with the door shut, and osric relaying laertes's invitation to fence on Tuesday at gothersgade—establishing laertes as someone present and someone who has been asking things through intermediaries rather than directly.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "By Tuesday afternoon, finish this sentence honestly: *I am going to the hall because I want ___.* If the only word that fits is *to not be the kind of person who backs out*, text Laertes and move it to after the 26th.",
+      "strength": 4,
+      "from": "11-13/16",
+      "from_rationale": "The osric-match-message hunk records the exact invitation: 'laertes asked me to ask you, he wondered about tuesday, at the hall, seven?' and 'he said you'd know the time,' establishing Tuesday at seven as the moment the writer must decide why they are going.",
+      "to": "11-13/22",
+      "to_rationale": "The fencing-gothersgade-tuesdays hunk from 11-13 notes the writer has been at the hall every Tuesday since the funeral, and karin has asked whether laertes can fence with his own blades—establishing that Tuesday at seven is the time and place the writer has already been returning to, making the decision about going one of recognizing a pattern already set.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "**The laugh outside Ursa.** Treat it as evidence that you aren't only flat.",
+      "strength": 3,
+      "from": "11-06/3",
+      "from_rationale": "The rosencrantz-guildenstern-review note records the writer laughing 'outside Ursa' after seeing through a plot, 'properly, for the first time in weeks'.",
+      "to": "oura-11-13.md",
+      "to_rationale": "The Oura data for 11-06 shows an activity score of 87 with 421 active MET minutes, within normal range, but the sleep score of 89 is the best of the tracking month—suggesting a physiological recovery point aligned with the emotional event of the laugh.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "The trap is the first thing in weeks that has felt like it's *about* something, and a man who has been flat will walk a long way toward the only warm thing in the room.",
+      "strength": 3,
+      "from": "11-06/4",
+      "from_rationale": "The sleep-ring-score-log from 11-06 shows the writer's persistent complaint: 'the ring has said seven for three weeks. i have said four for three weeks' and notes that dreams are 'the part that is wrong'.",
+      "to": "oura-11-13.md",
+      "to_rationale": "The Oura data for 11-08 shows an anomalous resting heart rate of 42 bpm (z = -2.22, well below baseline) and sleep efficiency at 95%, following the decision to hand over the roof footage to Tobias—suggesting physiological signs of activation despite reported flatness.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Deliberating protected you from consequences.",
+      "strength": 3,
+      "from": "11-01/0",
+      "from_rationale": "The 11-01 update to fencing-kit-dad-jacket notes the writer has been fencing 'the only hour in the week where i am not doing the other thing', establishing fencing as escape from deliberation.",
+      "to": "11-13/16",
+      "to_rationale": "The osric-match-message for 11-13 invites the writer to 'a bout' on Tuesday, 'nothing formal', creating a situation where deliberation about consequences is bypassed by the apparent casualness of the invitation.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Energy has drained out of the day before it has drained out of the night.",
+      "strength": 3,
+      "from": "oura-11-13.md",
+      "from_rationale": "The Oura report shows Active MET minutes down −0.82 SD (−120.76 from baseline), with within-day activity CV reduced to 0.63 from baseline 0.69, indicating flattened daily rhythm.",
+      "to": "11-06/4",
+      "to_rationale": "The sleep-ring-score-log for 11-13 shows sleep scores remaining 83–96 throughout the week despite the writer's account of intense events, suggesting night recovery continues while daytime functioning collapses.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "The notebook is a witness, not a judge. Keep writing things down. Stop writing them down as evidence against yourself.",
+      "strength": 3,
+      "from": "11-06/4",
+      "from_rationale": "The sleep-ring-score-log note tracks sleep objectively: '11-13 | 6.84 | osric's message. laughed in the street. then this.', recording both the metric and the internal state without verdict.",
+      "to": "11-06/19",
+      "to_rationale": "The journal entry for 11-06 states 'i was calm. that is the part i keep coming back to and it is not the part i expected to keep coming back to', and for 11-13 records simply 'osric left a voice message at 11:52' followed by analysis, distinguishing witness from judge.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Eat before Roskilde and eat before the hall. That isn't a metaphor. Blood sugar is part of judgement.",
+      "strength": 3,
+      "from": "finances-11-13.md",
+      "from_rationale": "The ledger shows coffee purchases on 11-06, 11-08, 11-10, 11-11, 11-12 at Wittenberg and Gothersgade (the fencing hall location), and restaurant meals on 11-07 and 11-11, tracking food intake across the week.",
+      "to": "oura-11-13.md",
+      "to_rationale": "The Oura metrics for 11-11 show the worst activity score of the week (Active MET 265.80, z −2.24), with resting HR 47 bpm, HRV 59 ms—all indicators of a depleted system on the day after the critical 11-10 events.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Nyholm is Wednesday. That is the day *after* the thing you most need to discuss with her, which is scheduling worthy of Claudius.",
+      "strength": 3,
+      "from": "10-24/10",
+      "from_rationale": "[10-24/10] records that the next appointment with Nyholm is scheduled for 11-18 at 09:30, which is a Wednesday.",
+      "to": "10-24/11",
+      "to_rationale": "[10-24/11] describes Claudius's pattern of making decisions before meetings, with specific reference to board minutes where \"the wording of the resolution is dated the 18th. the announcement went out on the 17th,\" suggesting advance decision-making that Nyholm's appointment timing mirrors.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "If the toast worries you, remember she'll be at the table too.",
+      "strength": 3,
+      "from": "10-24/9",
+      "from_rationale": "[10-24/9] contains unsent drafts to the writer's mother, including concern about a toast, suggesting tension between them about the upcoming fencing event and what it represents.",
+      "to": "11-06/2",
+      "to_rationale": "[11-06/2] records that on 11-05 the writer \"said it all out loud instead, in her office\" rather than in a draft, meaning the mother was present for the actual conversation rather than only imagined as an audience.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "For seven weeks you were a man who deliberates. This week showed you that you also act: two pages to the audit chair at 23:10, the 19:40 home alone, and a yes to Osric twelve minutes after he asked.",
+      "strength": 3,
+      "from": "11-13/6",
+      "from_rationale": "11-13/6 records the exact action: 'forwarded both pages, with r&g's engagement letter — the one with no requesting director on it — to cornelius and to the chair of the audit committee, from my own account, at ten past eleven at night'",
+      "to": "finances-11-13.md",
+      "to_rationale": "finances-11-13.md shows a transaction on 11-11 at Bispebjerg for 24.87 USD (restaurants) and another on 11-11 at Gothersgade Fencing Hall for 6.02 USD (coffee), places where the writer was before sending the pages and after arriving home on the 19:40.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "The flatness is new, and it makes sense. A nervous system goes flat when it has taken in more than it can sort: a father, a year, a film, a man over a stair rail, a woman in the water, and proof you had stopped needing.",
+      "strength": 3,
+      "from": "11-13/20",
+      "from_rationale": "11-13/20 (journal) documents the sequence of events that produced flatness: screening on 11-05, polonius at 18:05, then ophelia found on 11-12 'at the water below roskilde'",
+      "to": "oura-11-13.md",
+      "to_rationale": "oura-11-13.md shows sleep efficiency flat at 87–95% all week despite visceral disturbance, and deep sleep consistently reduced (14–23% vs 21.59% baseline), reflecting compressed rather than absent feeling.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Active minutes fell by 120 a day (z −0.82), the clearest signal of the week.",
+      "strength": 3,
+      "from": "oura-11-13.md",
+      "from_rationale": "The Oura report records active MET minutes at 473.27 mean for the week, down 120.76 from baseline (z -0.82), the most pronounced deviation in the week.",
+      "to": "11-06/0",
+      "to_rationale": "The fencing-kit hunk for 11-06 records no fencing entries after 11-05, marking the week when active engagement stopped, corresponding to the day polonius died and the screening happened.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Eat before Roskilde and eat before the hall.",
+      "strength": 3,
+      "from": "11-13/3",
+      "from_rationale": "The roskilde-house-empty hunk for 11-13 records the writer's plan to attend a funeral on Monday and go to the fencing hall on Tuesday, both requiring preparation.",
+      "to": "finances-11-13.md",
+      "to_rationale": "The ledger shows consistent purchases at food vendors (groceries 115.96, restaurants 72.50, coffee 37.39) across the week, providing the means to fuel before these events.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Whatever happens to the people at the top of Elsinore this month, Fortinbras is the one standing nearest to what's left.",
+      "strength": 3,
+      "from": "11-13/4",
+      "from_rationale": "The voltemand-norvik-billing hunk on 11-04 records that Fortinbras will 'stand off' and gained 'data-room access for a possible partnership' and then on 11-13 that 'norvik closed two more of our suppliers on 11-10, and priced both out of the data room the board opened for them.'",
+      "to": "10-24/16",
+      "to_rationale": "The journal on 10-20 has the writer reflecting that 'Fortinbras is the one standing nearest to what's left' in the context of understanding the board's rapid decision.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "Break that pattern on Monday evening with one text: *\"Tuesday: hall blades, Karin directing? Or after the 26th if you'd rather.\"*",
+      "strength": 3,
+      "from": "10-24/19",
+      "from_rationale": "[10-24/19] names the fencing hall at gothersgade on tuesdays at 19:00, where karin directs bouts and does not ask questions.",
+      "to": "10-24/6",
+      "to_rationale": "[10-24/6] documents polonius as chief of staff who never gives straight answers, establishing him as someone who might appreciate the directness of the proposed message about the hall and the blades.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "The public cut was meant to be a public act, and the anniversary can be private instead.",
+      "strength": 3,
+      "from": "11-06/17",
+      "from_rationale": "[11-06/17] records that the public cut was meant to go out on the anniversary, wednesday, but no one has mentioned it since the screening.",
+      "to": "11-06/2",
+      "to_rationale": "[11-06/2] documents the draft unsent to the mother saying 'you married the man who was on the roof,' and the conversation in her office where the writer said things saved since the wedding.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Posting lag probably explains most of it.",
+      "strength": 3,
+      "from": "finances-11-13.md",
+      "from_rationale": "The housekeeping note mentions the ledger's 4.54 at Gothersgade Fencing Hall on 11-12 with the caveat 'Posting lag probably explains most of it.'",
+      "to": "10-24/19",
+      "to_rationale": "The fencing-gothersgade-tuesdays note records that on 10-20 the writer went and fenced, establishing this as a regular Tuesday activity with a coffee charge expected.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "By Tuesday afternoon, finish this sentence honestly: *I am going to the hall because I want ___.* If the only word that fits is *to not be the kind of person who backs out*, text Laertes and move it to after the 26th.",
+      "strength": 3,
+      "from": "11-13/13",
+      "from_rationale": "The inquest-bundle-gaps hunk from 11-13 records 'the review is listed for 11-26. four gaps and fourteen days,' establishing 11-26 as a critical date for the inquest review and the deadline for acquiring evidence.",
+      "to": "11-13/1",
+      "to_rationale": "The fencing-kit-dad-jacket hunk from 11-13 notes 'if i am going on tuesday i am going in a jacket that fits. rent the hall's,' establishing Tuesday as imminent and the decision about it as contingent on other factors, including potentially moving it to after 11-26.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Guildenstern turned your ring over twice and couldn't tell you how you slept, which is exactly what your own sleep log says about it: it counts the hours and not the dreams.",
+      "strength": 2,
+      "from": "10-24/22",
+      "from_rationale": "The sleep-ring-score-log note documents the mismatch between ring measurements (which report hours) and the writer's actual experience (which includes dreams and quality), establishing that the ring's data is incomplete.",
+      "to": "finances-11-13.md",
+      "to_rationale": "The ledger shows no purchase or rental of the ring itself, but the hunk [10-24/22] references the ring as an existing tool, implying it was acquired before this week's spending window began.",
+      "kind": "inter"
+    },
+    {
+      "sentence": "If Karin will say *no outside drinks in the hall*, flatly and once, even better.",
+      "strength": 2,
+      "from": "10-24/19",
+      "from_rationale": "[10-24/19] characterizes karin as someone who does not ask questions and does not miss a parry, establishing her as reliable and direct.",
+      "to": "10-24/1",
+      "to_rationale": "[10-24/1] records the agreement with horatio that they say nothing to anyone, including ophelia, until they know who the shoulder belongs to—karin enforcing a clear boundary would serve that silence.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "If some part of you answered yes to the question at the top, don't wait until Wednesday.",
+      "strength": 2,
+      "from": "10-24/10",
+      "from_rationale": "[10-24/10] names the nyholm appointment as 11-18 at 09:30, the anniversary date, a day the writer has noted with particular significance.",
+      "to": "10-24/1",
+      "to_rationale": "[10-24/1] documents the sworn agreement with horatio not to tell anyone about the forty seconds.",
+      "kind": "intra"
+    },
+    {
+      "sentence": "Your 10-21 no can be revised, and today is probably the last day you can revise it.",
+      "strength": 2,
+      "from": "10-24/18",
+      "from_rationale": "The roof-footage note records: 'he offered me a copy on 10-21 and i said no, which i have thought about every day since.'",
+      "to": "10-24/13",
+      "to_rationale": "The wittenberg-withdrawal-form note shows a deadline structure: withdrawal without fee is 12-15, suggesting decisions can be revised up to a point.",
+      "kind": "intra"
+    }
+  ]
+}

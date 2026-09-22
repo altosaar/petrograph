@@ -1,0 +1,6 @@
+[submodule "vendor/obsidian-microlite"]
+	path = vendor/obsidian-microlite
+	url = https://github.com/altosaar/obsidian-microlite.git
+[submodule "vendor/obsidian-oura-metrics"]
+	path = vendor/obsidian-oura-metrics
+	url = https://github.com/altosaar/obsidian-oura-metrics.git

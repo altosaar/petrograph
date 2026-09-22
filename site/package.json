@@ -1,0 +1,8 @@
+{
+  "name": "petrograph-site",
+  "private": true,
+  "description": "A password-gated one-off host for the synthetic connectome pages. Synthetic only.",
+  "dependencies": {
+    "@cloudflare/pages-plugin-cloudflare-access": "^1.0.5"
+  }
+}

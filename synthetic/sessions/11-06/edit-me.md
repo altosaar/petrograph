@@ -1,0 +1,29 @@
+---
+title: ACT re-entry read — synthetic week
+slug: compaction
+date: 11-06
+interlocutor: Bobby
+since: 7
+diff: /Users/me/projects/petrograph/synthetic/sessions/11-06/microlite.md
+attachments: /Users/me/projects/petrograph/synthetic/sessions/11-06/finances-11-06.md, /Users/me/projects/petrograph/synthetic/sessions/11-06/oura-11-06.md
+calendar:
+music:
+music-engine:
+engine:
+voice: WeAAwKYcS06VmXw086yZ
+voice-sample:
+llm: claude
+model: opus
+effort:
+---
+
+<!-- Written by tools/synth_corpus.py. Every name, note and figure below is invented; see
+     synthetic/README.md. The pipeline reads this file exactly as it reads a real week's. -->
+
+this upcoming week i have to find out whether thursday is going to be treated as a thing that happened or a thing that is handled, and i already know the answer because the note that went round on friday said "a tragic accident on company premises". cornelius says say nothing until asked and then say only the duty log, and the duty log says 18:05, and the duty log is not wrong. i am dreading laertes coming back from lisbon, which will be within days, and i am dreading it on his behalf rather than on mine. petra's lease answer is now nine days overdue and she has stopped putting deadlines on it, which is worse.
+
+tomorrow is saturday. i am going to drive to roskilde and probably sit in the car in the lane and not go in, because that is what the last four attempts have been. monday the building will be full of people being careful around me. cornelius wants twenty minutes about what i say if the coroner's office asks. nyholm is still 11-18 at half nine and i have tried to cancel it twice this week and put the phone down both times before it rang.
+
+today i wrote out the ninth floor timeline from the duty log and the running order rather than from memory, because my memory of thursday is four seconds long and the middle of it is missing. film at 16:40. claudius out at 16:47 with the lights still down, osric four seconds behind him. mum's office at half five. the chair at 18:04. the alarm logged at 18:05. i have not eaten anything since breakfast on thursday that i would call a meal. the ring gave me 8.19 hours last night and a score of 89, the best of the month, which is the single most useless number anybody has ever handed me.
+
+emotionally the clearest forty hours i have had all year and the worst thing i have ever done, and i cannot get those two facts to stop being the same forty hours. watching claudius watch it, i was calm. that is the part i keep returning to — not triumphant and not frightened, just calm, the way you are calm when a long arithmetic finally comes out. then mum's office and i said things i had been saving since the wedding and they came out worse than i had them saved. then the stairwell, and polonius, and i did not mean it, and i am also not sorry in the way a person is supposed to be sorry, and both of those are true and i cannot put either one down because admitting one looks like lying about the other. i keep checking whether i feel like someone who did that. mostly i feel like someone waiting to be told what happens next.
