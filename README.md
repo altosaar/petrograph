@@ -1,12 +1,14 @@
-# petrograph
+# Petrograph
 
-Markdown in, a letter you can listen to out. petrograph assembles a week of Obsidian notes,
+Markdown in, a letter you can listen to out. Petrograph assembles a week of Obsidian notes,
 spending, sleep and browsing into one file, asks a model to read it and write back a
 compaction letter, and narrates that letter over a backing track.
 
 Obsidian is volcanic glass; microlites are the tiny crystals whose arrangement records the
 molten flow; a petrograph studies their orientation. This repo keeps that record as markdown,
 not as artifacts on somebody's website.
+
+Accompanying blog post: https://jaan.io/lifelogging-with-large-language-models
 
 ## The process
 
