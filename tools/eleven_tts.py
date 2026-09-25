@@ -208,6 +208,52 @@ def synthesize(
     raise RuntimeError("ElevenLabs: retries exhausted")
 
 
+def subscription(key: str) -> dict | str:
+    """The account's monthly credit state, or why it could not be read. Never fatal: this is
+    a gauge, and a render should not fail because the gauge did."""
+    try:
+        with urlopen(Request(f"{BASE}/v1/user/subscription", headers={"xi-api-key": key}),
+                     timeout=10) as resp:
+            return json.load(resp)
+    except HTTPError as e:
+        if "user_read" in e.read()[:500].decode(errors="replace"):
+            return ("key lacks the user_read permission — enable User → Read on it at "
+                    "elevenlabs.io/app/settings/api-keys")
+        return f"HTTP {e.code}"
+    except (URLError, TimeoutError, ValueError) as e:
+        return str(e)
+
+
+def bar(label: str, used: int, limit: int, tail: str = "", width: int = 30) -> str:
+    """A labelled bar of `used` against `limit`; past the limit it fills and says by how much."""
+    frac = used / (limit or 1)
+    fill = round(min(frac, 1.0) * width)
+    rest = f"{limit - used:,} left" if used <= limit else f"{used - limit:,} OVER"
+    return (f"{label:<9}[{'█' * fill}{'░' * (width - fill)}] {frac:>4.0%}  "
+            f"{used:,} / {limit:,} used · {rest}{tail}")
+
+
+def credit_bars(sub: dict | str, per_run: int, runs_now: int = 0,
+                spent: int | None = None) -> str:
+    """Where the month stands, and where it ends if a letter of `per_run` characters goes out
+    once a week until the reset. `runs_now` counts a run about to happen that is not yet on the
+    meter (1 before this run bills, 0 after)."""
+    if isinstance(sub, str):
+        return f"credits  unavailable ({sub})"
+    used, limit = sub.get("character_count", 0), sub.get("character_limit", 0)
+    reset = sub.get("next_character_count_reset_unix")
+    when = f" · resets {time.strftime('%b %-d', time.localtime(reset))}" if reset else ""
+    delta = f" · {spent:,} this run" if spent is not None else ""
+    lines = [bar("credits", used, limit, delta + when)]
+    if reset:
+        # The next weekly letter is a week from now; count the ones that land before the reset.
+        weekly = max(0, int((reset - time.time()) // (7 * 86400)))
+        runs = runs_now + weekly
+        lines.append(bar("weekly", used + runs * per_run, limit,
+                         f" · {runs} × {per_run:,} by the reset"))
+    return "\n".join(lines)
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Narrate a microlite markdown file via ElevenLabs.")
     ap.add_argument("markdown", type=Path, help="Path to the markdown file.")
@@ -300,6 +346,10 @@ def main() -> None:
     cache_dir = None if args.no_cache else args.cache_dir.expanduser()
     print(f"voice={args.voice} model={args.model} format={args.format}")
     print(f"voice_settings={settings}")
+    # Where the month stands before this run spends anything; read again at the end.
+    sub_before = subscription(key) if key else None
+    if sub_before is not None:
+        print(credit_bars(sub_before, len(text), runs_now=1))
     steps.mark("parse markdown")
 
     # What this run actually costs, as opposed to what the document weighs — a chunk served
@@ -430,6 +480,11 @@ def main() -> None:
     cost = (f"{billed_chars:,} of {len(text):,} characters billed"
             if billed_chars != len(text) else f"characters billed: {len(text):,}")
     print(f"Saved {out.stat().st_size / 1024:.1f} KB → {link(out)}  ({cost})")
+    if isinstance(sub_before, dict):
+        sub_after = subscription(key)
+        spent = (sub_after["character_count"] - sub_before["character_count"]
+                 if isinstance(sub_after, dict) else None)
+        print(credit_bars(sub_after, len(text), spent=spent))
 
     # Optional backing track: hand the finished narration to mix_music.py, which names the
     # master by dropping the -voice suffix (see master_name) — so the master is the plain name.
