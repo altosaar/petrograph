@@ -20,7 +20,7 @@ code rather than by two that agree for now. This is the default engine; chatterb
 is the one that keeps the letter on the machine, and _speech.resolve_engine decides which
 of them a `just render` or a `review-and-narrate` actually calls.
 
-Highest-quality defaults: eleven_multilingual_v2 at mp3_44100_192 (Creator+ tier).
+Highest-quality defaults: eleven_v4 at mp3_44100_192 (Creator+ tier).
 The API key is read from ELEVENLABS_API_KEY — environment or a local .env, never
 hardcoded and never committed. Characters billed are printed after each request.
 
@@ -84,7 +84,7 @@ from _speech import (
 )
 
 BASE = "https://api.elevenlabs.io"
-MODEL = "eleven_multilingual_v2"  # high-quality long-form default
+MODEL = "eleven_v4"  # high-quality long-form default; the default voice has a v4 fine-tune
 OUTPUT_FORMAT = "mp3_44100_192"  # highest-quality mp3 (Creator+ tier)
 FALLBACK_FORMAT = "mp3_44100_128"  # highest mp3 below the Creator tier
 DEFAULT_VOICE = "WeAAwKYcS06VmXw086yZ"
@@ -94,7 +94,8 @@ DEFAULT_CACHE_DIR = REPO_ROOT / "share" / ".tts-cache"
 DEFAULT_CONCURRENCY = 3  # bounded to the tier's request-concurrency cap, not the chunk count
 
 # Honed voice_settings (see the Get-voice-settings schema): stability/similarity_boost/style
-# are 0-1 doubles, speed is a multiplier, speaker-boost is a bool. multilingual_v2 honors all.
+# are 0-1 doubles, speed is a multiplier, speaker-boost is a bool. Tuned on multilingual_v2;
+# eleven_v4 accepts them all (verified 2026-10-08) but they have not been retuned by ear for it.
 VOICE_SETTINGS = {
     "stability": 0.4,
     "similarity_boost": 0.7,
